@@ -1,0 +1,125 @@
+{
+  "scene": [
+    {
+      "refr": "FairyBackAndForth1",
+      "ownr": "sprite",
+      "batc": 1,
+      "dspt": "parallel",
+      "type": 1,
+      "tarx": 1.0,
+      "tary": 0.699999988079071,
+      "tarz": -2.0,
+      "sped": 0.5,
+      "time": 0.0
+    },
+    {
+      "refr": "FairyBackAndForth2",
+      "ownr": "sprite",
+      "batc": 1,
+      "dspt": "parallel",
+      "type": 1,
+      "tarx": 0.0,
+      "tary": 0.699999988079071,
+      "tarz": -3.0,
+      "sped": 0.5,
+      "time": 0.0
+    },
+    {
+      "refr": "FairyBackAndForth3",
+      "ownr": "sprite",
+      "batc": 1,
+      "dspt": "parallel",
+      "type": 2,
+      "tarx": -1.0,
+      "tary": 0.699999988079071,
+      "tarz": -2.0,
+      "sped": 0.0,
+      "time": 1.0
+    },
+    {
+      "refr": "FairyBackAndForth4",
+      "ownr": "sprite",
+      "batc": 1,
+      "dspt": "parallel",
+      "type": 1,
+      "tarx": 0.0,
+      "tary": 0.699999988079071,
+      "tarz": -3.0,
+      "sped": 0.5,
+      "time": 0.0
+    },
+    {
+      "refr": "FairyWakeLink1",
+      "ownr": "sprite",
+      "batc": 2,
+      "dspt": "parallel",
+      "type": 1,
+      "tarx": 0.0,
+      "tary": 0.6,
+      "tarz": 2.5,
+      "sped": 1.0,
+      "time": 0.0
+    },
+    {
+      "refr": "FairyWakeLink2",
+      "ownr": "sprite",
+      "batc": 2,
+      "dspt": "parallel",
+      "type": 1,
+      "tarx": 0.0,
+      "tary": 0.25,
+      "tarz": 2.5,
+      "sped": 1.5,
+      "time": 0.0
+    },
+    {
+      "refr": "FairyWakeLink2",
+      "ownr": "sprite",
+      "batc": 3,
+      "dspt": "parallel",
+      "type": 1,
+      "tarx": 0.0,
+      "tary": 0.71,
+      "tarz": 2.5,
+      "sped": 1.5,
+      "time": 0.0
+    },
+    {
+      "refr": "ShoutWakeup",
+      "ownr": "letter",
+      "batc": 3,
+      "dspt": "parallel",
+      "type": 1,
+      "tarx": 0.0,
+      "tary": 4.5,
+      "tarz": 2.5,
+      "sped": 1.5,
+      "time": 0.0
+    },
+    {
+      "refr": "LinkWakeUpMove",
+      "ownr": "link",
+      "batc": 4,
+      "dspt": "serial",
+      "type": 2,
+      "tarx": 0.0,
+      "tary": -0.55,
+      "tarz": 2.75,
+      "sped": 0.0,
+      "time": 1.5
+    },
+    {
+      "refr": "LinkWakeUpRotate",
+      "ownr": "link",
+      "batc": 4,
+      "dspt": "serial",
+      "type": 4,
+      "tarx": -1.57,
+      "tary": 1.57,
+      "tarz": -1.57,
+      "sped": 0.0,
+      "time": 1.5
+    }
+
+  ]
+}
