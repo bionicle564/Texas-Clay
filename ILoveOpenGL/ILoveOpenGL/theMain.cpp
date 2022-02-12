@@ -261,6 +261,9 @@ int main(void)
 
     flyCamera.setEye(glm::vec3(0.0f, 3.5f, -12.5f));
 
+
+    //TODO: Cut this out and replace with Phil's light loader 
+
     gTheLights.theLights[0].position = glm::vec4(0.0f, 25.0f, 5.0f, 1.0f);
     gTheLights.theLights[0].diffuse = glm::vec4(1.0f, 0.75f, 0.0f, 1.0f);
 //    //... and so on...
@@ -334,6 +337,8 @@ int main(void)
 
       gTheLights.SetUpUniformLocations(program);
 
+      //lighting end
+      
     sModelDrawInfo modelBunny;
     //    if (gVAOManager.LoadModelIntoVAO("bun_zipper_res2 (justXYZ).ply", modelBunny, program))
     if (gVAOManager->LoadModelIntoVAO("bun_zipper_res4_xyz_n_rgb.ply", modelBunny, program))
@@ -445,6 +450,22 @@ int main(void)
     wolf3->orientationXYZ.y = -1.57f;
     wolf3->orientationXYZ.x = -1.57f;
     wolf3->bDontLight = true;
+
+    cMesh* goal1 = new cMesh();
+    goal1->meshName = "SpriteHolder.ply";
+    goal1->scale = 0.5f;
+    goal1->positionXYZ = glm::vec3(10.0f, 0.0f, 10.5f);
+    goal1->orientationXYZ.y = -1.57f;
+    goal1->orientationXYZ.x = -1.57f;
+    goal1->bDontLight = true;
+
+    cMesh* goal2 = new cMesh();
+    goal2->meshName = "SpriteHolder.ply";
+    goal2->scale = 0.5f;
+    goal2->positionXYZ = glm::vec3(-8.0f, 0.0f, 10.5f);
+    goal2->orientationXYZ.y = -1.57f;
+    goal2->orientationXYZ.x = -1.57f;
+    goal2->bDontLight = true;
     
     cMesh* arcTemplate = new cMesh();
     arcTemplate->meshName = "SpriteHolder.ply";
@@ -496,6 +517,10 @@ int main(void)
     sprites.push_back(wolf2Entity);
     Entity* wolf3Entity = new Entity(wolf3);
     sprites.push_back(wolf3Entity);
+    Entity* goal1Entity = new Entity(goal1);
+    sprites.push_back(goal1Entity);
+    Entity* goal2Entity = new Entity(goal2);
+    sprites.push_back(goal2Entity);
     Entity* templateEntity = new Entity(arcTemplate);
     templates.push_back(templateEntity);
 
@@ -515,6 +540,7 @@ int main(void)
     glGetIntegerv(GL_MAX_TEXTURE_SIZE, &glMaxTextureSize);
     std::cout << "GL_MAX_TEXTURE_SIZE = " << glMaxTextureSize << std::endl;
 
+    //texture loading
 //    // Load the textures
     gTextureManager->SetBasePath("assets/textures");
 //
@@ -562,6 +588,23 @@ int main(void)
         std::cout << "DIDN'T load the texture" << std::endl;
     }
 
+    if (gTextureManager->Create2DTextureFromBMPFile("Coins.bmp", true))
+    {
+        std::cout << "Loaded the texture" << std::endl;
+    }
+    else
+    {
+        std::cout << "DIDN'T load the texture" << std::endl;
+    }
+    if (gTextureManager->Create2DTextureFromBMPFile("Crown.bmp", true))
+    {
+        std::cout << "Loaded the texture" << std::endl;
+    }
+    else
+    {
+        std::cout << "DIDN'T load the texture" << std::endl;
+    }
+
     if (gTextureManager->Create2DTextureFromBMPFile("Blank.bmp", true))
     {
         std::cout << "Loaded the texture" << std::endl;
@@ -580,6 +623,8 @@ int main(void)
         std::cout << "DIDN'T load the texture" << std::endl;
     }
 
+    //texture assignment
+
     //floor
     world[1]->mesh->textureNames[0] = "Grass.bmp";
     world[1]->mesh->textureRatios[0] = 1.0f;
@@ -591,6 +636,10 @@ int main(void)
     sprites[2]->mesh->textureRatios[0] = 1.0f;
     sprites[3]->mesh->textureNames[0] = "WolfBrown.bmp";
     sprites[3]->mesh->textureRatios[0] = 1.0f;
+    sprites[4]->mesh->textureNames[0] = "Coins.bmp";
+    sprites[4]->mesh->textureRatios[0] = 1.0f;
+    sprites[5]->mesh->textureNames[0] = "Crown.bmp";
+    sprites[5]->mesh->textureRatios[0] = 1.0f;
     templates[0]->mesh->textureNames[0] = "Blank.bmp";
     templates[0]->mesh->textureRatios[0] = 1.0f;
 
@@ -639,6 +688,8 @@ int main(void)
     }
 //
 //
+
+    //texture end
     
 
     //time to set up camera stuff
@@ -683,6 +734,7 @@ int main(void)
         // Screen is cleared and we are ready to draw the scene...
         // *******************************************************
 
+        //Calcs for arcball camera and Movement
         player->Update(); 
         glm::vec3 direction = flyCamera.eye - player->mesh->positionXYZ;
         glm::vec3 newCameraPos(0.0f);
@@ -719,6 +771,9 @@ int main(void)
         world[0]->mesh->positionXYZ = flyCamera.getEye();
         //cameraAngle = 0.0f;
 
+        //Arcball end
+
+        //make anything in the sprites list always face the camera
         for (int i = 0; i < sprites.size(); i++) {
             glm::vec2 spritePos(sprites[i]->mesh->positionXYZ.x, sprites[i]->mesh->positionXYZ.z);
             glm::vec2 camPos(newCameraPos.x, newCameraPos.z);
@@ -737,7 +792,7 @@ int main(void)
             sprites[i]->mesh->orientationXYZ.y = angle - 1.57f;
         }
         lastCameraAngle = cameraAngle;
-
+        //sprite facing end
 
         gTheLights.CopyLightInfoToShader();
 
@@ -782,6 +837,7 @@ int main(void)
 
         // Set up the discard texture, etc.
         
+        //for world objects
         for (unsigned int index = 0; index != world.size(); index++)
         {
             //world[index]->Process();
@@ -862,6 +918,7 @@ int main(void)
             }
         }
 
+        //for sprites
         for (unsigned int index = 0; index != sprites.size(); index++)
         {
             //world[index]->Process();
@@ -905,7 +962,7 @@ int main(void)
 
         }
 
-
+        // we probably be using this one
         for (unsigned int index = 0; index != templates.size(); index++)
         {
             //world[index]->Process();
