@@ -26,7 +26,7 @@
 
 #include "VAOManager.h"
 #include "Entity.h"
-#include "Player.h"
+#include "TreasureEntity.h"
 #include "ShaderManager.h"
 
 #include "LightManager.h"
@@ -517,9 +517,9 @@ int main(void)
     sprites.push_back(wolf2Entity);
     Entity* wolf3Entity = new Entity(wolf3);
     sprites.push_back(wolf3Entity);
-    Entity* goal1Entity = new Entity(goal1);
+    Entity* goal1Entity = new TreasureEntity(goal1, 0.5f, player);
     sprites.push_back(goal1Entity);
-    Entity* goal2Entity = new Entity(goal2);
+    Entity* goal2Entity = new TreasureEntity(goal2, 0.5f, player);
     sprites.push_back(goal2Entity);
     Entity* templateEntity = new Entity(arcTemplate);
     templates.push_back(templateEntity);
@@ -921,7 +921,7 @@ int main(void)
         //for sprites
         for (unsigned int index = 0; index != sprites.size(); index++)
         {
-            //world[index]->Process();
+            sprites[index]->Process();
 
             // So the code is a little easier...
             cMesh* curMesh = sprites[index]->mesh;

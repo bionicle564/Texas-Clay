@@ -165,6 +165,7 @@
     <ClCompile Include="ShaderManager.cpp" />
     <ClCompile Include="theMain.cpp" />
     <ClCompile Include="TheMainBlackscreenOnly.cpp" />
+    <ClCompile Include="TreasureEntity.cpp" />
     <ClCompile Include="VAOManager.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -185,6 +186,7 @@
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="ShaderManager.h" />
+    <ClInclude Include="TreasureEntity.h" />
     <ClInclude Include="VAOManager.h" />
     <ClInclude Include="Vertex_Types.h" />
   </ItemGroup>

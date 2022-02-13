@@ -57,6 +57,8 @@ bool JsonIOHandler::WriteSingleModel(const std::string& filePath, cMesh& mesh) {
 	writer.Double(mesh.wholeObjectSpecularRGB.z);
 	writer.Key("spcp");
 	writer.Double(mesh.wholeObjectShininess_SpecPower);
+	writer.Key("text");
+	writer.String(mesh.textureNames[0].c_str());
 	writer.EndObject();
 
 	fclose(fp);
@@ -76,6 +78,7 @@ bool JsonIOHandler::ReadSingleModel(const std::string& filePath, cMesh& mesh) {
 	Document d;
 	d.ParseStream(is);
 
+	//do actual stuff
 	//do actual stuff
 	mesh.meshName = d["name"].GetString();
 	mesh.meshName = d["mesh"].GetString();
@@ -97,6 +100,8 @@ bool JsonIOHandler::ReadSingleModel(const std::string& filePath, cMesh& mesh) {
 	mesh.wholeObjectSpecularRGB.y = d["spcg"].GetFloat();
 	mesh.wholeObjectSpecularRGB.z = d["spcb"].GetFloat();
 	mesh.wholeObjectShininess_SpecPower = d["spcp"].GetFloat();
+	mesh.textureNames[0] = d["text"].GetString();
+	mesh.textureRatios[0] = 1.0f;
 
 	fclose(fp);
 	return true;
@@ -271,6 +276,8 @@ bool JsonIOHandler::WriteManyModels(const std::string& filePath, std::vector<Ent
 		writer.Double(entities[i]->mesh->wholeObjectSpecularRGB.z);
 		writer.Key("spcp");
 		writer.Double(entities[i]->mesh->wholeObjectShininess_SpecPower);
+		writer.Key("text");
+		writer.String(entities[i]->mesh->textureNames[0].c_str());
 		writer.EndObject();
 	}
 	writer.EndArray();
@@ -316,6 +323,8 @@ bool JsonIOHandler::ReadManyModels(const std::string& filePath, std::vector<Enti
 		readIn->wholeObjectSpecularRGB.y = d["scene"].GetArray()[i].GetObject()["spcg"].GetFloat();
 		readIn->wholeObjectSpecularRGB.z = d["scene"].GetArray()[i].GetObject()["spcb"].GetFloat();
 		readIn->wholeObjectShininess_SpecPower = d["scene"].GetArray()[i].GetObject()["spcp"].GetFloat();
+		readIn->textureNames[0] = d["scene"].GetArray()[i].GetObject()["text"].GetString();
+		readIn->textureRatios[0] = 1.0f;
 		Entity* ent = new Entity(readIn);
 		entities.push_back(ent);
 	}

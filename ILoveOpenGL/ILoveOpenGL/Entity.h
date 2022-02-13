@@ -22,7 +22,7 @@ public:
 
 	//makes sure the currently executing command countinues
 	//if no currently executing command, does nothing.
-	void Process();
+	virtual void Process();
 
 	void ExecNextParallel();
 	void ExecSerial();
