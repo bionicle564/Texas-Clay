@@ -170,6 +170,15 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
         templates[0]->mesh->positionXYZ.z = player->mesh->positionXYZ.z;
         templates[0]->mesh->textureNames[0] = "arcTemplate.bmp";
     }
+    
+    if (key == GLFW_KEY_8 && action == GLFW_PRESS) {
+        gTheLights.SaveLightInformationToFile("testLights.txt");
+    }
+
+    if (key == GLFW_KEY_9 && action == GLFW_PRESS)
+    {
+        gTheLights.LoadLightInformationFromFile("testLights.txt");
+    }
 
     
 

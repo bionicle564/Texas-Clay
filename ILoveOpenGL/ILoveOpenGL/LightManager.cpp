@@ -4,6 +4,7 @@
 
 #include <sstream>
 #include <string>
+#include <fstream>
 
 cLightManager::cLightManager()
 {
@@ -149,260 +150,95 @@ void cLightManager::SetUpUniformLocations(unsigned int shaderProgram)
 // Copies the values from the array into the shader
 void cLightManager::CopyLightInfoToShader(void)
 {
-	glUniform4f(this->theLights[0].position_uniform_location,
-		this->theLights[0].position.x,
-		this->theLights[0].position.y,
-		this->theLights[0].position.z,
-		this->theLights[0].position.w);
+	for (unsigned int lightIndex = 0; lightIndex != NUMBER_OF_LIGHTS; lightIndex++)
+	{
+		glUniform4f(this->theLights[lightIndex].position_uniform_location,
+			this->theLights[lightIndex].position.x,
+			this->theLights[lightIndex].position.y,
+			this->theLights[lightIndex].position.z,
+			this->theLights[lightIndex].position.w);
 
-	glUniform4f(this->theLights[0].diffuse_uniform_location,
-		this->theLights[0].diffuse.x,
-		this->theLights[0].diffuse.y,
-		this->theLights[0].diffuse.z,
-		this->theLights[0].diffuse.w);
+		glUniform4f(this->theLights[lightIndex].diffuse_uniform_location,
+			this->theLights[lightIndex].diffuse.x,
+			this->theLights[lightIndex].diffuse.y,
+			this->theLights[lightIndex].diffuse.z,
+			this->theLights[lightIndex].diffuse.w);
 
-	glUniform4f(this->theLights[0].specular_uniform_location,
-		this->theLights[0].specular.x,
-		this->theLights[0].specular.y,
-		this->theLights[0].specular.z,
-		this->theLights[0].specular.w);
+		glUniform4f(this->theLights[lightIndex].specular_uniform_location,
+			this->theLights[lightIndex].specular.x,
+			this->theLights[lightIndex].specular.y,
+			this->theLights[lightIndex].specular.z,
+			this->theLights[lightIndex].specular.w);
 
-	glUniform4f(this->theLights[0].atten_uniform_location,
-		this->theLights[0].atten.x,
-		this->theLights[0].atten.y,
-		this->theLights[0].atten.z,
-		this->theLights[0].atten.w);
+		glUniform4f(this->theLights[lightIndex].atten_uniform_location,
+			this->theLights[lightIndex].atten.x,
+			this->theLights[lightIndex].atten.y,
+			this->theLights[lightIndex].atten.z,
+			this->theLights[lightIndex].atten.w);
 
-	glUniform4f(this->theLights[0].direction_uniform_location,
-		this->theLights[0].direction.x,
-		this->theLights[0].direction.y,
-		this->theLights[0].direction.z,
-		this->theLights[0].direction.w);
+		glUniform4f(this->theLights[lightIndex].direction_uniform_location,
+			this->theLights[lightIndex].direction.x,
+			this->theLights[lightIndex].direction.y,
+			this->theLights[lightIndex].direction.z,
+			this->theLights[lightIndex].direction.w);
 
-	glUniform4f(this->theLights[0].param1_uniform_location,
-		this->theLights[0].param1.x,
-		this->theLights[0].param1.y,
-		this->theLights[0].param1.z,
-		this->theLights[0].param1.w);
+		glUniform4f(this->theLights[lightIndex].param1_uniform_location,
+			this->theLights[lightIndex].param1.x,
+			this->theLights[lightIndex].param1.y,
+			this->theLights[lightIndex].param1.z,
+			this->theLights[lightIndex].param1.w);
 
-	glUniform4f(this->theLights[0].param2_uniform_location,
-		this->theLights[0].param2.x,
-		this->theLights[0].param2.y,
-		this->theLights[0].param2.z,
-		this->theLights[0].param2.w);
+		glUniform4f(this->theLights[lightIndex].param2_uniform_location,
+			this->theLights[lightIndex].param2.x,
+			this->theLights[lightIndex].param2.y,
+			this->theLights[lightIndex].param2.z,
+			this->theLights[lightIndex].param2.w);
+	}//for (unsigned int lightIndex...
 
-	// And so on...
 
-	glUniform4f(this->theLights[1].position_uniform_location,
-		this->theLights[1].position.x,
-		this->theLights[1].position.y,
-		this->theLights[1].position.z,
-		this->theLights[1].position.w);
-
-	glUniform4f(this->theLights[1].diffuse_uniform_location,
-		this->theLights[1].diffuse.x,
-		this->theLights[1].diffuse.y,
-		this->theLights[1].diffuse.z,
-		this->theLights[1].diffuse.w);
-
-	glUniform4f(this->theLights[1].specular_uniform_location,
-		this->theLights[1].specular.x,
-		this->theLights[1].specular.y,
-		this->theLights[1].specular.z,
-		this->theLights[1].specular.w);
-
-	glUniform4f(this->theLights[1].atten_uniform_location,
-		this->theLights[1].atten.x,
-		this->theLights[1].atten.y,
-		this->theLights[1].atten.z,
-		this->theLights[1].atten.w);
-
-	glUniform4f(this->theLights[1].direction_uniform_location,
-		this->theLights[1].direction.x,
-		this->theLights[1].direction.y,
-		this->theLights[1].direction.z,
-		this->theLights[1].direction.w);
-
-	glUniform4f(this->theLights[1].param1_uniform_location,
-		this->theLights[1].param1.x,
-		this->theLights[1].param1.y,
-		this->theLights[1].param1.z,
-		this->theLights[1].param1.w);
-
-	glUniform4f(this->theLights[1].param2_uniform_location,
-		this->theLights[1].param2.x,
-		this->theLights[1].param2.y,
-		this->theLights[1].param2.z,
-		this->theLights[1].param2.w);
-
-	//
-	glUniform4f(this->theLights[2].position_uniform_location,
-		this->theLights[2].position.x,
-		this->theLights[2].position.y,
-		this->theLights[2].position.z,
-		this->theLights[2].position.w);
-
-	glUniform4f(this->theLights[2].diffuse_uniform_location,
-		this->theLights[2].diffuse.x,
-		this->theLights[2].diffuse.y,
-		this->theLights[2].diffuse.z,
-		this->theLights[2].diffuse.w);
-
-	glUniform4f(this->theLights[2].specular_uniform_location,
-		this->theLights[2].specular.x,
-		this->theLights[2].specular.y,
-		this->theLights[2].specular.z,
-		this->theLights[2].specular.w);
-
-	glUniform4f(this->theLights[2].atten_uniform_location,
-		this->theLights[2].atten.x,
-		this->theLights[2].atten.y,
-		this->theLights[2].atten.z,
-		this->theLights[2].atten.w);
-
-	glUniform4f(this->theLights[2].direction_uniform_location,
-		this->theLights[2].direction.x,
-		this->theLights[2].direction.y,
-		this->theLights[2].direction.z,
-		this->theLights[2].direction.w);
-
-	glUniform4f(this->theLights[2].param1_uniform_location,
-		this->theLights[2].param1.x,
-		this->theLights[2].param1.y,
-		this->theLights[2].param1.z,
-		this->theLights[2].param1.w);
-
-	glUniform4f(this->theLights[2].param2_uniform_location,
-		this->theLights[2].param2.x,
-		this->theLights[2].param2.y,
-		this->theLights[2].param2.z,
-		this->theLights[2].param2.w);
-
-	glUniform4f(this->theLights[3].position_uniform_location,
-		this->theLights[3].position.x,
-		this->theLights[3].position.y,
-		this->theLights[3].position.z,
-		this->theLights[3].position.w);
-
-	glUniform4f(this->theLights[3].diffuse_uniform_location,
-		this->theLights[3].diffuse.x,
-		this->theLights[3].diffuse.y,
-		this->theLights[3].diffuse.z,
-		this->theLights[3].diffuse.w);
-
-	glUniform4f(this->theLights[3].specular_uniform_location,
-		this->theLights[3].specular.x,
-		this->theLights[3].specular.y,
-		this->theLights[3].specular.z,
-		this->theLights[3].specular.w);
-
-	glUniform4f(this->theLights[3].atten_uniform_location,
-		this->theLights[3].atten.x,
-		this->theLights[3].atten.y,
-		this->theLights[3].atten.z,
-		this->theLights[3].atten.w);
-
-	glUniform4f(this->theLights[3].direction_uniform_location,
-		this->theLights[3].direction.x,
-		this->theLights[3].direction.y,
-		this->theLights[3].direction.z,
-		this->theLights[3].direction.w);
-
-	glUniform4f(this->theLights[3].param1_uniform_location,
-		this->theLights[3].param1.x,
-		this->theLights[3].param1.y,
-		this->theLights[3].param1.z,
-		this->theLights[3].param1.w);
-
-	glUniform4f(this->theLights[3].param2_uniform_location,
-		this->theLights[3].param2.x,
-		this->theLights[3].param2.y,
-		this->theLights[3].param2.z,
-		this->theLights[3].param2.w);
-
-	glUniform4f(this->theLights[4].position_uniform_location,
-		this->theLights[4].position.x,
-		this->theLights[4].position.y,
-		this->theLights[4].position.z,
-		this->theLights[4].position.w);
-
-	glUniform4f(this->theLights[4].diffuse_uniform_location,
-		this->theLights[4].diffuse.x,
-		this->theLights[4].diffuse.y,
-		this->theLights[4].diffuse.z,
-		this->theLights[4].diffuse.w);
-
-	glUniform4f(this->theLights[4].specular_uniform_location,
-		this->theLights[4].specular.x,
-		this->theLights[4].specular.y,
-		this->theLights[4].specular.z,
-		this->theLights[4].specular.w);
-
-	glUniform4f(this->theLights[4].atten_uniform_location,
-		this->theLights[4].atten.x,
-		this->theLights[4].atten.y,
-		this->theLights[4].atten.z,
-		this->theLights[4].atten.w);
-
-	glUniform4f(this->theLights[4].direction_uniform_location,
-		this->theLights[4].direction.x,
-		this->theLights[4].direction.y,
-		this->theLights[4].direction.z,
-		this->theLights[4].direction.w);
-
-	glUniform4f(this->theLights[4].param1_uniform_location,
-		this->theLights[4].param1.x,
-		this->theLights[4].param1.y,
-		this->theLights[4].param1.z,
-		this->theLights[4].param1.w);
-
-	glUniform4f(this->theLights[4].param2_uniform_location,
-		this->theLights[4].param2.x,
-		this->theLights[4].param2.y,
-		this->theLights[4].param2.z,
-		this->theLights[4].param2.w);
-
-	glUniform4f(this->theLights[5].position_uniform_location,
-		this->theLights[5].position.x,
-		this->theLights[5].position.y,
-		this->theLights[5].position.z,
-		this->theLights[5].position.w);
-
-	glUniform4f(this->theLights[5].diffuse_uniform_location,
-		this->theLights[5].diffuse.x,
-		this->theLights[5].diffuse.y,
-		this->theLights[5].diffuse.z,
-		this->theLights[5].diffuse.w);
-
-	glUniform4f(this->theLights[5].specular_uniform_location,
-		this->theLights[5].specular.x,
-		this->theLights[5].specular.y,
-		this->theLights[5].specular.z,
-		this->theLights[5].specular.w);
-
-	glUniform4f(this->theLights[5].atten_uniform_location,
-		this->theLights[5].atten.x,
-		this->theLights[5].atten.y,
-		this->theLights[5].atten.z,
-		this->theLights[5].atten.w);
-
-	glUniform4f(this->theLights[5].direction_uniform_location,
-		this->theLights[5].direction.x,
-		this->theLights[5].direction.y,
-		this->theLights[5].direction.z,
-		this->theLights[5].direction.w);
-
-	glUniform4f(this->theLights[5].param1_uniform_location,
-		this->theLights[5].param1.x,
-		this->theLights[5].param1.y,
-		this->theLights[5].param1.z,
-		this->theLights[5].param1.w);
-
-	glUniform4f(this->theLights[5].param2_uniform_location,
-		this->theLights[5].param2.x,
-		this->theLights[5].param2.y,
-		this->theLights[5].param2.z,
-		this->theLights[5].param2.w);
 
 	return;
+}
+
+void cLightManager::SaveLightInformationToFile(std::string fileName)
+{
+	std::ofstream file(fileName);
+
+	file << NUMBER_OF_LIGHTS << std::endl;
+
+	for (int i = 0; i < NUMBER_OF_LIGHTS; i++)
+	{
+		sLight light = theLights[i];
+
+		file << "difuseColour: " << light.diffuse.r << " " << light.diffuse.g << " " << light.diffuse.b << " " << light.diffuse.a << std::endl
+			<< "attenuation: " << light.atten.x << " " << light.atten.y << " " << light.atten.z << " " << light.atten.w << std::endl
+			<< "direction: " << light.direction.x << " " << light.direction.y << " " << light.direction.z << " " << light.direction.w << std::endl
+			<< "lightType:innerAngle:outerAngle:na " << light.param1.x << " " << light.param1.y << " " << light.param1.z << " " << light.param1.w << std::endl
+			<< "isOn/Off:na:na:na " << light.param2.x << " " << light.param2.y << " " << light.param2.z << " " << light.param2.w << std::endl
+			<< "position: " << light.position.x << " " << light.position.y << " " << light.position.z << " " << light.position.w << std::endl
+			<< "specularColour: " << light.specular.r << " " << light.specular.g << " " << light.specular.b << " " << light.specular.a << std::endl
+			<< "--------------" << std::endl;
+	}
+	file.close();
+}
+
+void cLightManager::LoadLightInformationFromFile(std::string fileName)
+{
+	std::ifstream file(fileName);
+	int length;
+	std::string trashWord;
+	file >> length;
+
+	for (int i = 0; i < length; i++)
+	{
+		file >> trashWord >> theLights[i].diffuse.r >> theLights[i].diffuse.g >> theLights[i].diffuse.b >> theLights[i].diffuse.a
+			>> trashWord >> theLights[i].atten.x >> theLights[i].atten.y >> theLights[i].atten.z >> theLights[i].atten.w
+			>> trashWord >> theLights[i].direction.x >> theLights[i].direction.y >> theLights[i].direction.z >> theLights[i].direction.w
+			>> trashWord >> theLights[i].param1.x >> theLights[i].param1.y >> theLights[i].param1.z >> theLights[i].param1.w
+			>> trashWord >> theLights[i].param2.x >> theLights[i].param2.y >> theLights[i].param2.z >> theLights[i].param2.w
+			>> trashWord >> theLights[i].position.x >> theLights[i].position.y >> theLights[i].position.z >> theLights[i].position.w
+			>> trashWord >> theLights[i].specular.r >> theLights[i].specular.g >> theLights[i].specular.b >> theLights[i].specular.a
+			>> trashWord;
+	}
+	file.close();
 }
