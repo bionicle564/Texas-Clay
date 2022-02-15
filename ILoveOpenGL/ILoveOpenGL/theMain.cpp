@@ -716,7 +716,7 @@ int main(void)
         //        mat4x4 m, p, mvp;
 
         double currentTime = glfwGetTime();
-        double deltaTime = previousTime - currentTime;
+        double deltaTime = currentTime - previousTime;
         deltaTime = (deltaTime > MAX_DELTA_TIME ? MAX_DELTA_TIME : deltaTime);
         previousTime = currentTime;
 
@@ -735,7 +735,7 @@ int main(void)
         // *******************************************************
 
         //Calcs for arcball camera and Movement
-        player->Update(); 
+        player->Update(deltaTime); 
         glm::vec3 direction = flyCamera.eye - player->mesh->positionXYZ;
         glm::vec3 newCameraPos(0.0f);
         //position = (Rotate(some other angle, (0, 1, 0)) * (position - target)) + target;
