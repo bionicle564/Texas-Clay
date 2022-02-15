@@ -1,11 +1,13 @@
 #include "Player.h"
 
 #include <glm/gtx/euler_angles.hpp>
+#include <iostream>
 
 Player::Player(cMesh* mesh) : Entity(mesh) {
-	jumpingUp = false;
+	isJumping = false;
 
-	jumpOffset = 0.0f;
+	verticalSpeed = 0.0f;
+	gravity = -9.8f;
 
 	speed = 2.25f;
 }
@@ -14,23 +16,43 @@ Player::~Player() {
 
 }
 
-void Player::Update() {
-	if (jumpingUp) {
-		mesh->positionXYZ.y += speed * 0.03f;
-		jumpOffset += speed * 0.03f;
-		if (jumpOffset >= speed) {
-			jumpingUp = false;
-		}
-	}
-	else if (jumpOffset > 0.0f) {
-		mesh->positionXYZ.y -= speed * 0.03f;
-		jumpOffset -= speed * 0.03f;
-		if (jumpOffset < 0.0f) {
-			mesh->positionXYZ.y = 0.0f;
-			jumpOffset = 0.0f;
-		}
-	}
+void Player::Update(float deltaTime) 
+{
+	//if (jumpingUp) {
+	//	mesh->positionXYZ.y += speed * 0.03f;
+	//	jumpOffset += speed * 0.03f;
+	//	if (jumpOffset >= speed) {
+	//		jumpingUp = false;
+	//	}
+	//}
+	//else if (jumpOffset > 0.0f) {
+	//	mesh->positionXYZ.y -= speed * 0.03f;
+	//	jumpOffset -= speed * 0.03f;
+	//	if (jumpOffset < 0.0f) {
+	//		mesh->positionXYZ.y = 0.0f;
+	//		jumpOffset = 0.0f;
+	//	}
+	//}
 	
+	if (isJumping)
+	{
+		mesh->positionXYZ.y += verticalSpeed * deltaTime;
+		verticalSpeed += gravity * deltaTime;
+
+		if (mesh->positionXYZ.y <= 0.f)
+		{
+			mesh->positionXYZ.y = 0.f;
+			verticalSpeed = 0.f;
+			isJumping = false;
+		}
+
+		std::cout << "POSITION: " << mesh->positionXYZ.y << std::endl;
+		std::cout << "SPEED: " << verticalSpeed << std::endl;
+	}
+	//else
+	//{
+
+	//}
 }
 
 void Player::MoveFoward() {
@@ -142,8 +164,16 @@ void Player::MoveBackward() {
 	mesh->positionXYZ -= movement;
 }
 
-void Player::Jump() {
-	if (!jumpingUp && jumpOffset <= 0.0f) {
-		jumpingUp = true;
+void Player::Jump() 
+{
+	//if (!jumpingUp && jumpOffset <= 0.0f) {
+	//	jumpingUp = true;
+	//}
+	std::cout << "JUMP" << std::endl;
+
+	if (!isJumping)
+	{
+		verticalSpeed = 5.f;
+		isJumping = true;
 	}
 }
