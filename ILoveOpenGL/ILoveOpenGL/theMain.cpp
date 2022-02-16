@@ -434,6 +434,7 @@ int main(void)
 
     cMesh* dude = new cMesh();
     dude->meshName = "SpriteHolder.ply";
+    dude->positionXYZ.y = 10.f;
     dude->orientationXYZ.y = -1.57f;
     dude->orientationXYZ.x = -1.57;
     dude->bDontLight = true;

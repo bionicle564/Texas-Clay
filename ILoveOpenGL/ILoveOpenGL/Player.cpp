@@ -3,51 +3,63 @@
 #include <glm/gtx/euler_angles.hpp>
 #include <iostream>
 
-Player::Player(cMesh* mesh) : Entity(mesh) {
-	isJumping = false;
-
+Player::Player(cMesh* mesh) : Entity(mesh) 
+{
+	isOnAir = false;
 	verticalSpeed = 0.0f;
 	gravity = -9.8f;
 
 	speed = 2.25f;
+
+	Floor plat1;
+	plat1.position = glm::vec3(0.f, 10.f, 0.f);
+	plat1.width = 10.f;
+	plat1.length = 10.f;
+	plataforms.push_back(plat1);
+
+	Floor plat2;
+	plat2.position = glm::vec3(5.f, 0.f, 0.f);
+	plat2.width = 10.f;
+	plat2.length = 10.f;
+	plataforms.push_back(plat2);
 }
 
-Player::~Player() {
+Player::~Player() 
+{
 
 }
 
 void Player::Update(float deltaTime) 
-{
-	//if (jumpingUp) {
-	//	mesh->positionXYZ.y += speed * 0.03f;
-	//	jumpOffset += speed * 0.03f;
-	//	if (jumpOffset >= speed) {
-	//		jumpingUp = false;
-	//	}
-	//}
-	//else if (jumpOffset > 0.0f) {
-	//	mesh->positionXYZ.y -= speed * 0.03f;
-	//	jumpOffset -= speed * 0.03f;
-	//	if (jumpOffset < 0.0f) {
-	//		mesh->positionXYZ.y = 0.0f;
-	//		jumpOffset = 0.0f;
-	//	}
-	//}
-	
-	if (isJumping)
+{	
+	std::cout << "POSITION: " << mesh->positionXYZ.x << ", " << mesh->positionXYZ.y << ", " << mesh->positionXYZ.z << std::endl;
+	//std::cout << "SPEED: " << verticalSpeed << std::endl;
+
+	for (int i = 0; i < plataforms.size(); i++)
+	{
+		float maxX = plataforms[i].position.x + (plataforms[i].width / 2);
+		float minX = plataforms[i].position.x - (plataforms[i].width / 2);
+		float maxZ = plataforms[i].position.z + (plataforms[i].length / 2);
+		float minZ = plataforms[i].position.z - (plataforms[i].length / 2);
+
+		if ((mesh->positionXYZ.x <= maxX && mesh->positionXYZ.x >= minX) && (mesh->positionXYZ.z <= maxZ && mesh->positionXYZ.z >= minZ) && verticalSpeed < 0.f)
+		{
+			float distanceFromPlataform = mesh->positionXYZ.y - plataforms[i].position.y;
+			if (distanceFromPlataform <= 0.2f && distanceFromPlataform >= 0.f)
+			{
+				mesh->positionXYZ.y = plataforms[i].position.y;
+				verticalSpeed = 0.f;
+				isOnAir = false;
+				break;
+			}
+		}
+
+		isOnAir = true;
+	}
+
+	if (isOnAir)
 	{
 		mesh->positionXYZ.y += verticalSpeed * deltaTime;
 		verticalSpeed += gravity * deltaTime;
-
-		if (mesh->positionXYZ.y <= 0.f)
-		{
-			mesh->positionXYZ.y = 0.f;
-			verticalSpeed = 0.f;
-			isJumping = false;
-		}
-
-		std::cout << "POSITION: " << mesh->positionXYZ.y << std::endl;
-		std::cout << "SPEED: " << verticalSpeed << std::endl;
 	}
 	//else
 	//{
@@ -55,7 +67,8 @@ void Player::Update(float deltaTime)
 	//}
 }
 
-void Player::MoveFoward() {
+void Player::MoveFoward() 
+{
 
 	//A bunch of math we gotta do to make the particle go the right direction
 	//cannon defaults to face absolute Z (even it if it's state is loaded in, it's relative to this)
@@ -85,7 +98,8 @@ void Player::MoveFoward() {
 	mesh->positionXYZ += movement;
 }
 
-void Player::MoveRight() {
+void Player::MoveRight() 
+{
 	//A bunch of math we gotta do to make the particle go the right direction
 	//cannon defaults to face absolute Z (even it if it's state is loaded in, it's relative to this)
 	glm::vec4 defaultDirection = glm::vec4(0.0f, 0.0f, 1.0f, 0.0f);
@@ -109,7 +123,8 @@ void Player::MoveRight() {
 	mesh->positionXYZ += movement;
 }
 
-void Player::MoveLeft() {
+void Player::MoveLeft() 
+{
 	//A bunch of math we gotta do to make the particle go the right direction
 	//cannon defaults to face absolute Z (even it if it's state is loaded in, it's relative to this)
 	glm::vec4 defaultDirection = glm::vec4(0.0f, 0.0f, 1.0f, 0.0f);
@@ -135,7 +150,8 @@ void Player::MoveLeft() {
 	//mesh->positionXYZ.x += speed * 0.03f;
 }
 
-void Player::MoveBackward() {
+void Player::MoveBackward() 
+{
 	//A bunch of math we gotta do to make the particle go the right direction
 	//cannon defaults to face absolute Z (even it if it's state is loaded in, it's relative to this)
 	glm::vec4 defaultDirection = glm::vec4(0.0f, 0.0f, 1.0f, 0.0f);
@@ -171,9 +187,9 @@ void Player::Jump()
 	//}
 	std::cout << "JUMP" << std::endl;
 
-	if (!isJumping)
+	if (!isOnAir)
 	{
 		verticalSpeed = 5.f;
-		isJumping = true;
+		isOnAir = true;
 	}
 }

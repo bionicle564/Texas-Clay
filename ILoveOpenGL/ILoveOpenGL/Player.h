@@ -1,14 +1,20 @@
 #pragma once
 
 #include "Entity.h"
+struct Floor
+{
+	glm::vec3 position;
+	float width; // x
+	float length; // z
+};
 
 class Player : public Entity {
 public:
-	bool isJumping;
-	
-	//float jumpOffset;
+	bool isOnAir;
 	float verticalSpeed;
 	float gravity;
+
+	std::vector<Floor> plataforms;
 
 	float speed;
 
