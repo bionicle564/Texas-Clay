@@ -656,12 +656,12 @@ int main(void)
     // Add a skybox texture
     std::string errorTextString;
     if (!gTextureManager->CreateCubeTextureFromBMPFiles("Skybox",
-        "side1.bmp",    /* posX_fileName */
-        "side2.bmp",     /*negX_fileName */
-        "ground.bmp",     /*posY_fileName*/
-        "sky.bmp",       /*negY_fileName*/
-        "side3.bmp",     /*posZ_fileName*/
-        "side4.bmp",    /*negZ_fileName*/
+        "stoneBoxSide.bmp",    /* posX_fileName */
+        "stoneBoxSide.bmp",     /*negX_fileName */
+        "stoneBoxBot.bmp",     /*posY_fileName*/
+        "stoneBoxTop.bmp",       /*negY_fileName*/
+        "stoneBoxSide.bmp",     /*posZ_fileName*/
+        "stoneBoxSide.bmp",    /*negZ_fileName*/
         true, errorTextString))
     {
         std::cout << "Didn't load because: " << errorTextString << std::endl;
