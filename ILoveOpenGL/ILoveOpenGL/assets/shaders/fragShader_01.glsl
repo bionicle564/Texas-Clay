@@ -143,7 +143,7 @@ void main()
 		// Take average of this RGB sample
 		float discardSample = (vec3DisSample.r + vec3DisSample.g + vec3DisSample.b)/3.0f;
 		//
-		if (discardSample < 0.1f )
+		if (discardSample < 0.05f )
 		{	// "black enough"
 		
 			// DON'T even draw the pixel here

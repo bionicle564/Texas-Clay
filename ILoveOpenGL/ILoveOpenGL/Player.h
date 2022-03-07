@@ -14,6 +14,9 @@ public:
 	float verticalSpeed;
 	float gravity;
 
+	bool hasMoved;
+	float moveTimer;
+
 	std::vector<Floor> plataforms;
 
 	float speed;

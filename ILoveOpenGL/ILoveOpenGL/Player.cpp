@@ -11,6 +11,9 @@ Player::Player(cMesh* mesh) : Entity(mesh)
 
 	speed = 2.25f;
 
+	hasMoved = false;
+	moveTimer = 0.0f;
+
 	Floor plat1;
 	plat1.position = glm::vec3(0.f, 10.f, 0.f);
 	plat1.width = 10.f;
@@ -31,8 +34,32 @@ Player::~Player()
 
 void Player::Update(float deltaTime) 
 {	
-	std::cout << "POSITION: " << mesh->positionXYZ.x << ", " << mesh->positionXYZ.y << ", " << mesh->positionXYZ.z << std::endl;
+	//std::cout << "POSITION: " << mesh->positionXYZ.x << ", " << mesh->positionXYZ.y << ", " << mesh->positionXYZ.z << std::endl;
 	//std::cout << "SPEED: " << verticalSpeed << std::endl;
+
+	if (!hasMoved) {
+		moveTimer = 0.0f;
+		mesh->textureNames[0] = "TexasClayFront1.bmp";
+	}
+	else {
+		moveTimer += deltaTime;
+		if (moveTimer < 0.15f) {
+			mesh->textureNames[0] = "TexasClayFront1.bmp";
+		}
+		else if (moveTimer < 0.3f) {
+			mesh->textureNames[0] = "TexasClayFront2.bmp";
+		}
+		else if (moveTimer < 0.45f) {
+			mesh->textureNames[0] = "TexasClayFront1.bmp";
+		}
+		else if (moveTimer < 0.6f) {
+			mesh->textureNames[0] = "TexasClayFront3.bmp";
+		}
+		else {
+			moveTimer = 0.0f;
+		}
+		//hasMoved = false;
+	}
 
 	for (int i = 0; i < plataforms.size(); i++)
 	{
@@ -96,6 +123,8 @@ void Player::MoveFoward()
 	glm::vec3 movement = direction * (speed * 0.03f);
 
 	mesh->positionXYZ += movement;
+
+	hasMoved = true;
 }
 
 void Player::MoveRight() 
@@ -178,6 +207,8 @@ void Player::MoveBackward()
 	glm::vec3 movement = direction * (speed * 0.03f);
 
 	mesh->positionXYZ -= movement;
+
+	hasMoved = true;
 }
 
 void Player::Jump() 

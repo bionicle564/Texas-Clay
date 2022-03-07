@@ -563,7 +563,7 @@ int main(void)
        std::cout << "DIDN'T load the texture" << std::endl;
     }
 
-    if (gTextureManager->Create2DTextureFromBMPFile("Link.bmp", true))
+    if (gTextureManager->Create2DTextureFromBMPFile("TexasClayFront1.bmp", true))
     {
         std::cout << "Loaded the texture" << std::endl;
     }
@@ -572,7 +572,16 @@ int main(void)
         std::cout << "DIDN'T load the texture" << std::endl;
     }
 
-    if (gTextureManager->Create2DTextureFromBMPFile("LinkBlink.bmp", true))
+    if (gTextureManager->Create2DTextureFromBMPFile("TexasClayFront2.bmp", true))
+    {
+        std::cout << "Loaded the texture" << std::endl;
+    }
+    else
+    {
+        std::cout << "DIDN'T load the texture" << std::endl;
+    }
+
+    if (gTextureManager->Create2DTextureFromBMPFile("TexasClayFront3.bmp", true))
     {
         std::cout << "Loaded the texture" << std::endl;
     }
@@ -638,7 +647,7 @@ int main(void)
     //floor
     world[1]->mesh->textureNames[0] = "Grass.bmp";
     world[1]->mesh->textureRatios[0] = 1.0f;
-    sprites[0]->mesh->textureNames[0] = "Link.bmp";
+    sprites[0]->mesh->textureNames[0] = "TexasClayFront1.bmp";
     sprites[0]->mesh->textureRatios[0] = 1.0f;
     sprites[1]->mesh->textureNames[0] = "WolfGrey.bmp";
     sprites[1]->mesh->textureRatios[0] = 1.0f;
