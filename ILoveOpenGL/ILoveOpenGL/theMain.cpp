@@ -106,6 +106,10 @@ static void error_callback(int error, const char* description)
 //
 //}
 
+bool up = false;
+bool down = false;
+bool left = false;
+bool right = false;
 
 static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
@@ -115,31 +119,57 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
     //float cameraSpeed = 0.1f;
 
     // Basic camera controls
-    if (key == GLFW_KEY_A)
+    if (key == GLFW_KEY_A && action == GLFW_PRESS)
     {
         //cameraEye.x -= cameraSpeed;     // Go left
         //flyCamera.MoveLeftRight_X(-flyCamera.movementSpeed);
-        player->MoveLeft();
+        //player->MoveLeft();
+        left = true;
     }
-    if (key == GLFW_KEY_D)
+    else if (key == GLFW_KEY_A && action == GLFW_RELEASE)
+    {
+        left = false;
+    }
+
+
+    if (key == GLFW_KEY_D && action == GLFW_PRESS)
     {
         //cameraEye.x += cameraSpeed;     // Go right
         //flyCamera.MoveLeftRight_X(flyCamera.movementSpeed);
-        player->MoveRight();
+        //player->MoveRight();
+        right = true;
+    }
+    else if (key == GLFW_KEY_D && action == GLFW_RELEASE)
+    {
+        right = false;
     }
 
-    if (key == GLFW_KEY_W)
+
+    if (key == GLFW_KEY_W && action == GLFW_PRESS)
     {
         //cameraEye.z += cameraSpeed;     // Go forward
         //flyCamera.MoveForward_Z(flyCamera.movementSpeed);
-        player->MoveFoward();
+        //player->MoveFoward();
+        up = true;
     }
-    if (key == GLFW_KEY_S)
+    else if (key == GLFW_KEY_W && action == GLFW_RELEASE)
+    {
+        up = false;
+    }
+
+
+    if (key == GLFW_KEY_S && action == GLFW_PRESS)
     {
         //cameraEye.z -= cameraSpeed;     // Go backwards
         //flyCamera.MoveForward_Z(-flyCamera.movementSpeed);
-        player->MoveBackward();
+        //player->MoveBackward();
+        down = true;
     }
+    else if (key == GLFW_KEY_S && action == GLFW_RELEASE)
+    {
+        down = false;
+    }
+
 
     if (key == GLFW_KEY_Q)
     {
@@ -748,6 +778,33 @@ int main(void)
 
         glViewport(0, 0, width, height);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        //======================
+        //    async controls
+        //======================
+
+        if (up)
+        {
+            player->MoveFoward();
+        }
+
+        if (down)
+        {
+            player->MoveBackward();
+        }
+
+        if (left)
+        {
+            player->MoveLeft();
+        }
+
+        if (right)
+        {
+            player->MoveRight();
+        }
+
+
+
 
         // *******************************************************
         // Screen is cleared and we are ready to draw the scene...
