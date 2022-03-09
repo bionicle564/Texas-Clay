@@ -111,6 +111,7 @@ bool up = false;
 bool down = false;
 bool left = false;
 bool right = false;
+bool space = false;
 
 static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
@@ -188,8 +189,13 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
         if (cameraAngle < -3.14f) { cameraAngle += 6.28f; }
     }
 
-    if (key == GLFW_KEY_SPACE) {
-        player->Jump();
+    if (key == GLFW_KEY_SPACE && action == GLFW_PRESS) {
+        
+        space = true;
+    }
+    else if (key == GLFW_KEY_SPACE && action == GLFW_RELEASE)
+    {
+        space = false;
     }
 
     /*if (key == GLFW_KEY_R && action == GLFW_PRESS) {
@@ -521,8 +527,7 @@ int main(void)
     {
         std::cout << "\t" << *itTexName << std::endl;
     }
-//
-//
+
 
     //texture end
     
@@ -589,6 +594,11 @@ int main(void)
             player->MoveRight();
         }
 
+        if (space)
+        {
+            player->Jump();
+            space = false;
+        }
 
 
 
