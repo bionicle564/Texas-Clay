@@ -834,49 +834,7 @@ int main(void)
 
         }
 
-        // we probably be using this one
-        for (unsigned int index = 0; index != templates.size(); index++)
-        {
-            //world[index]->Process();
 
-            // So the code is a little easier...
-            cMesh* curMesh = templates[index]->mesh;
-
-            {
-                GLint bDiscardTransparencyWindowsOn_LodID = glGetUniformLocation(program, "bDiscardTransparencyWindowsOn");
-                // Turn discard transparency off
-                glUniform1f(bDiscardTransparencyWindowsOn_LodID, (GLfloat)GL_FALSE);
-
-                if (curMesh->meshName == "SpriteHolder.ply")
-                {
-                    //                GLuint discardTextureNumber = ::g_pTextureManager->getTextureIDFromName("Lisse_mobile_shipyard-mal1.bmp");
-                    GLuint discardTextureNumber = gTextureManager->getTextureIDFromName(curMesh->textureNames[0]);
-                    // I'm picking texture unit 30 since it's not in use.
-                    GLuint discardTextureUnit = 30;			// Texture unit go from 0 to 79
-                    glActiveTexture(discardTextureUnit + GL_TEXTURE0);	// GL_TEXTURE0 = 33984
-                    glBindTexture(GL_TEXTURE_2D, discardTextureNumber);
-                    GLint discardTexture_LocID = glGetUniformLocation(program, "discardTexture");
-                    glUniform1i(discardTexture_LocID, discardTextureUnit);
-
-                    // Turn discard function on
-                    glUniform1f(bDiscardTransparencyWindowsOn_LodID, (GLfloat)GL_TRUE);
-                }
-            }
-
-            matModel = glm::mat4(1.0f);  // "Identity" ("do nothing", like x1)
-            //mat4x4_identity(m);
-
-            // Alpha transparency
-            glEnable(GL_BLEND);
-            // Basic "alpha transparency"
-            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-            glDisable(GL_BLEND); //if we're not at the transparent stuff, don't actully blend
-
-            DrawObject(curMesh, matModel, matModel_Location, matModelInverseTranspose_Location, program,
-                gVAOManager, gTextureManager, gradualIncrease);
-
-        }
 
         glfwSwapBuffers(window);
         glfwPollEvents();
