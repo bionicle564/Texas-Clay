@@ -309,78 +309,30 @@ int main(void)
     gTheLights.LoadLightInformationFromFile("testLights.txt");
     gTheLights.CopyLightInfoToShader();
 
+    //easier to read and load models, just add to this vector
+    std::vector<std::string> modelNames;
+    modelNames.push_back("bun_zipper_res4_xyz_n_rgb.ply");
+    modelNames.push_back("debug_triangle.ply");
+    modelNames.push_back("Ground.ply");
+    modelNames.push_back("SpriteHolder.ply");
+    modelNames.push_back("Isosphere_Smooth_Inverted_Normals_for_SkyBox.ply");
 
-
-      //lighting end
-      
-    sModelDrawInfo modelBunny;
-    //    if (gVAOManager.LoadModelIntoVAO("bun_zipper_res2 (justXYZ).ply", modelBunny, program))
-    if (gVAOManager->LoadModelIntoVAO("bun_zipper_res4_xyz_n_rgb.ply", modelBunny, program))
+    for (int i = 0; i < modelNames.size(); i++)
     {
-        std::cout << "Loaded the model: " << modelBunny.meshName << std::endl;
-        std::cout << modelBunny.numberOfVertices << " vertices loaded" << std::endl;
-        std::cout << modelBunny.numberOfTriangles << " triangles loaded" << std::endl;
+        sModelDrawInfo tempInfo;
+        //    if (gVAOManager.LoadModelIntoVAO("bun_zipper_res2 (justXYZ).ply", modelBunny, program))
+        if (gVAOManager->LoadModelIntoVAO(modelNames[i], tempInfo, program))
+        {
+            std::cout << "Loaded the model: " << tempInfo.meshName << std::endl;
+            std::cout << tempInfo.numberOfVertices << " vertices loaded" << std::endl;
+            std::cout << tempInfo.numberOfTriangles << " triangles loaded" << std::endl;
+        }
+        else
+        {
+            std::cout << "Error: Didn't load the model OK" << std::endl;
+        }
     }
-    else
-    {
-        std::cout << "Error: Didn't load the model OK" << std::endl;
-    }
-
-    sModelDrawInfo modelDebug;
-    //    if (gVAOManager.LoadModelIntoVAO("bun_zipper_res2 (justXYZ).ply", modelBunny, program))
-    if (gVAOManager->LoadModelIntoVAO("debug_triangle.ply", modelDebug, program))
-    {
-        std::cout << "Loaded the model: " << modelDebug.meshName << std::endl;
-        std::cout << modelDebug.numberOfVertices << " vertices loaded" << std::endl;
-        std::cout << modelDebug.numberOfTriangles << " triangles loaded" << std::endl;
-    }
-    else
-    {
-        std::cout << "Error: Didn't load the model OK" << std::endl;
-    }
-
-    //here's the list of models i'm using
-    //Room
-    sModelDrawInfo modelFloor;
-    //    if (gVAOManager.LoadModelIntoVAO("bun_zipper_res2 (justXYZ).ply", modelBunny, program))
-    if (gVAOManager->LoadModelIntoVAO("Ground.ply", modelFloor, program))
-    {
-        std::cout << "Loaded the model: " << modelFloor.meshName << std::endl;
-        std::cout << modelFloor.numberOfVertices << " vertices loaded" << std::endl;
-        std::cout << modelFloor.numberOfTriangles << " triangles loaded" << std::endl;
-    }
-    else
-    {
-        std::cout << "Error: Didn't load the model OK" << std::endl;
-    }
-    //SpriteHolder
-    sModelDrawInfo modelSprite;
-    //    if (gVAOManager.LoadModelIntoVAO("bun_zipper_res2 (justXYZ).ply", modelBunny, program))
-    if (gVAOManager->LoadModelIntoVAO("SpriteHolder.ply", modelSprite, program))
-    {
-        std::cout << "Loaded the model: " << modelSprite.meshName << std::endl;
-        std::cout << modelSprite.numberOfVertices << " vertices loaded" << std::endl;
-        std::cout << modelSprite.numberOfTriangles << " triangles loaded" << std::endl;
-    }
-    else
-    {
-        std::cout << "Error: Didn't load the model OK" << std::endl;
-    }
-    //Sky boox
-    sModelDrawInfo modelSkybox;
-    //    if (gVAOManager.LoadModelIntoVAO("bun_zipper_res2 (justXYZ).ply", modelBunny, program))
-    if (gVAOManager->LoadModelIntoVAO("Isosphere_Smooth_Inverted_Normals_for_SkyBox.ply", modelSkybox, program))
-    {
-        std::cout << "Loaded the model: " << modelSkybox.meshName << std::endl;
-        std::cout << modelSkybox.numberOfVertices << " vertices loaded" << std::endl;
-        std::cout << modelSkybox.numberOfTriangles << " triangles loaded" << std::endl;
-    }
-    else
-    {
-        std::cout << "Error: Didn't load the model OK" << std::endl;
-    }
-
-    // Add the models I'd like to draw in the scene
+    
 
 
     cMesh* debug = new cMesh();
