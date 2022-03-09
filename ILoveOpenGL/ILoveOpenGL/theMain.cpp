@@ -26,6 +26,7 @@
 
 #include "VAOManager.h"
 #include "Entity.h"
+#include "Player.h"
 #include "TreasureEntity.h"
 #include "ShaderManager.h"
 
@@ -202,11 +203,6 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
         AttemptToGoToNextFrame();
     }*/
 
-    if (key == GLFW_KEY_1 && action == GLFW_PRESS) {
-        templates[0]->mesh->positionXYZ.x = player->mesh->positionXYZ.x - 1.0f;
-        templates[0]->mesh->positionXYZ.z = player->mesh->positionXYZ.z;
-        templates[0]->mesh->textureNames[0] = "arcTemplate.bmp";
-    }
     
     if (key == GLFW_KEY_8 && action == GLFW_PRESS) {
         gTheLights.SaveLightInformationToFile("testLights.txt");
@@ -230,7 +226,7 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 {
     if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
-        templates[0]->mesh->textureNames[0] = "Blank.bmp";
+        std::cout << "\tglick." << std::endl;
     }
 }
 
@@ -363,28 +359,6 @@ int main(void)
     dude->orientationXYZ.x = -1.57;
     dude->bDontLight = true;
 
-    cMesh* wolf1 = new cMesh();
-    wolf1->meshName = "SpriteHolder.ply";
-    wolf1->positionXYZ = glm::vec3(7.5f, 0.0f, 7.5f);
-    wolf1->scale = 1.25f;
-    wolf1->orientationXYZ.y = -1.57f;
-    wolf1->orientationXYZ.x = -1.57f;
-    wolf1->bDontLight = true;
-
-    cMesh* wolf2 = new cMesh();
-    wolf2->meshName = "SpriteHolder.ply";
-    wolf2->positionXYZ = glm::vec3(8.0f, 0.0f, 6.5f);
-    wolf2->orientationXYZ.y = -1.57f;
-    wolf2->orientationXYZ.x = -1.57f;
-    wolf2->bDontLight = true;
-
-    cMesh* wolf3 = new cMesh();
-    wolf3->meshName = "SpriteHolder.ply";
-    wolf3->positionXYZ = glm::vec3(8.0f, 0.0f, 8.5f);
-    wolf3->orientationXYZ.y = -1.57f;
-    wolf3->orientationXYZ.x = -1.57f;
-    wolf3->bDontLight = true;
-
     cMesh* goal1 = new cMesh();
     goal1->meshName = "SpriteHolder.ply";
     goal1->scale = 0.5f;
@@ -400,13 +374,7 @@ int main(void)
     goal2->orientationXYZ.y = -1.57f;
     goal2->orientationXYZ.x = -1.57f;
     goal2->bDontLight = true;
-    
-    cMesh* arcTemplate = new cMesh();
-    arcTemplate->meshName = "SpriteHolder.ply";
-    arcTemplate->alphaTransparency = 0.35f;
-    arcTemplate->orientationXYZ.z = -1.57f;
-    arcTemplate->positionXYZ = glm::vec3(0.0f, 0.1f, 0.0f);
-    arcTemplate->bDontLight = true;
+
 
     // Create a skybox object (a sphere with inverted normals that moves with the camera eye)
     cMesh* pSkyBox = new cMesh();
@@ -423,23 +391,12 @@ int main(void)
     player = new Player(dude);
     sprites.push_back(player);
 
-    Entity* wolf1Entity = new Entity(wolf1);
-    sprites.push_back(wolf1Entity);
-
-    Entity* wolf2Entity = new Entity(wolf2);
-    sprites.push_back(wolf2Entity);
-
-    Entity* wolf3Entity = new Entity(wolf3);
-    sprites.push_back(wolf3Entity);
-
     Entity* goal1Entity = new TreasureEntity(goal1, 0.5f, player);
     sprites.push_back(goal1Entity);
 
     Entity* goal2Entity = new TreasureEntity(goal2, 0.5f, player);
     sprites.push_back(goal2Entity);
 
-    Entity* templateEntity = new Entity(arcTemplate);
-    templates.push_back(templateEntity);
 
     //jsonIO.ReadManyModels("SceneModels.json", entities);
 
@@ -467,22 +424,15 @@ int main(void)
     //texture assignment
 
     //floor
-    world[1]->mesh->textureNames[0] = "Grass.bmp";
+    world[1]->mesh->textureNames[0] = "futurebrick.bmp";
     world[1]->mesh->textureRatios[0] = 1.0f;
     sprites[0]->mesh->textureNames[0] = "TexasClayFront1.bmp";
     sprites[0]->mesh->textureRatios[0] = 1.0f;
-    sprites[1]->mesh->textureNames[0] = "WolfGrey.bmp";
+    sprites[1]->mesh->textureNames[0] = "Coins.bmp";
     sprites[1]->mesh->textureRatios[0] = 1.0f;
-    sprites[2]->mesh->textureNames[0] = "WolfBrown.bmp";
+    sprites[2]->mesh->textureNames[0] = "Crown.bmp";
     sprites[2]->mesh->textureRatios[0] = 1.0f;
-    sprites[3]->mesh->textureNames[0] = "WolfBrown.bmp";
-    sprites[3]->mesh->textureRatios[0] = 1.0f;
-    sprites[4]->mesh->textureNames[0] = "Coins.bmp";
-    sprites[4]->mesh->textureRatios[0] = 1.0f;
-    sprites[5]->mesh->textureNames[0] = "Crown.bmp";
-    sprites[5]->mesh->textureRatios[0] = 1.0f;
-    templates[0]->mesh->textureNames[0] = "Blank.bmp";
-    templates[0]->mesh->textureRatios[0] = 1.0f;
+
 
     // Add a skybox texture
     std::string errorTextString;

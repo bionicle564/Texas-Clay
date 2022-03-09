@@ -49,6 +49,9 @@
     <Filter Include="Loader">
       <UniqueIdentifier>{8d1e6659-1cfa-486b-9946-0537fd7e77ba}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ExternConfig">
+      <UniqueIdentifier>{19aee410-b1cf-4355-b1e0-c8812fcda688}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="theMain.cpp">
@@ -196,5 +199,13 @@
     <None Include="SceneAnims.json">
       <Filter>Debug\JSON</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="testLights.txt">
+      <Filter>ExternConfig</Filter>
+    </Text>
+    <Text Include="textures.txt">
+      <Filter>ExternConfig</Filter>
+    </Text>
   </ItemGroup>
 </Project>
