@@ -208,7 +208,9 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
     if (key == GLFW_KEY_9 && action == GLFW_PRESS)
     {
         gTheLights.LoadLightInformationFromFile("testLights.txt");
+        gTheLights.CopyLightInfoToShader();
     }
+
 
     
 
@@ -301,80 +303,13 @@ int main(void)
     flyCamera.setEye(glm::vec3(0.0f, 3.5f, -12.5f));
 
 
-    //TODO: Cut this out and replace with Phil's light loader 
 
-    gTheLights.theLights[0].position = glm::vec4(0.0f, 25.0f, 5.0f, 1.0f);
-    gTheLights.theLights[0].diffuse = glm::vec4(1.0f, 0.75f, 0.0f, 1.0f);
-//    //... and so on...
-////    	vec4 param1;	// x = lightType, y = inner angle, z = outer angle, w = TBD
-////	                // 0 = pointlight
-////					// 1 = spot light
-////					// 2 = directional light
-////    ::g_pTheLights->theLights[0].param1.x = 1.0f;    // Spot light
-      gTheLights.theLights[0].param1.x = 2.0f;    // point light
-//    // Direction RELATIVE TO THE LIGHT
-//    // (-1 in y is straight down)
-      gTheLights.theLights[0].direction = glm::vec4(0.0f, -1.0f, 0.0f, 1.0f);
-      gTheLights.theLights[0].param1.y = 15.0f;   // Inner
-      gTheLights.theLights[0].param1.z = 30.0f;   // Outer
+    //loads from external .txt file now
+    gTheLights.SetUpUniformLocations(program);
+    gTheLights.LoadLightInformationFromFile("testLights.txt");
+    gTheLights.CopyLightInfoToShader();
 
-      gTheLights.theLights[0].atten.y = 0.08f;
-      gTheLights.theLights[0].atten.z = 0.03f;
 
-      //candle1
-      gTheLights.theLights[1].position = glm::vec4(-1.2f, 0.2f, -1.2f, 1.0f);
-      gTheLights.theLights[1].diffuse = glm::vec4(0.9f, 0.25f, 0.0f, 1.0f);
-      gTheLights.theLights[1].param1.x = 0.0f;
-      gTheLights.theLights[1].direction = glm::vec4(0.0f, -1.0f, 0.0f, 1.0f);
-      gTheLights.theLights[1].param1.y = 15.0f;   // Inner
-      gTheLights.theLights[1].param1.z = 30.0f;   // Outer
-      gTheLights.theLights[1].atten.y = 1.0f;
-      gTheLights.theLights[1].atten.z = 1.0f;
-      //candle2
-      gTheLights.theLights[2].position = glm::vec4(1.5f, 1.2f, -3.0f, 1.0f);
-      gTheLights.theLights[2].diffuse = glm::vec4(0.9f, 0.25f, 0.0f, 1.0f);
-      gTheLights.theLights[2].param1.x = 0.0f;
-      gTheLights.theLights[2].direction = glm::vec4(0.0f, -1.0f, 0.0f, 1.0f);
-      gTheLights.theLights[2].param1.y = 15.0f;   // Inner
-      gTheLights.theLights[2].param1.z = 30.0f;   // Outer
-      gTheLights.theLights[2].atten.y = 1.0f;
-      gTheLights.theLights[2].atten.z = 1.0f;
-      //candle3
-      gTheLights.theLights[3].position = glm::vec4(1.5f, 1.2f, 1.5f, 1.0f);
-      gTheLights.theLights[3].diffuse = glm::vec4(0.9f, 0.25f, 0.0f, 1.0f);
-      gTheLights.theLights[3].param1.x = 0.0f;
-      gTheLights.theLights[3].direction = glm::vec4(0.0f, -1.0f, 0.0f, 1.0f);
-      gTheLights.theLights[3].param1.y = 15.0f;   // Inner
-      gTheLights.theLights[3].param1.z = 30.0f;   // Outer
-      gTheLights.theLights[3].atten.y = 1.0f;
-      gTheLights.theLights[3].atten.z = 1.0f;
-      //candle4
-      gTheLights.theLights[4].position = glm::vec4(-1.5f, 1.2f, -3.0f, 1.0f);
-      gTheLights.theLights[4].diffuse = glm::vec4(0.9f, 0.25f, 0.0f, 1.0f);
-      gTheLights.theLights[4].param1.x = 0.0f;
-      gTheLights.theLights[4].direction = glm::vec4(0.0f, -1.0f, 0.0f, 1.0f);
-      gTheLights.theLights[4].param1.y = 15.0f;   // Inner
-      gTheLights.theLights[4].param1.z = 30.0f;   // Outer
-      gTheLights.theLights[4].atten.y = 1.0f;
-      gTheLights.theLights[4].atten.z = 1.0f;
-      //candle5
-      gTheLights.theLights[5].position = glm::vec4(-1.5f, 1.2f, 1.5f, 1.0f);
-      gTheLights.theLights[5].diffuse = glm::vec4(0.9f, 0.25f, 0.0f, 1.0f);
-      gTheLights.theLights[5].param1.x = 0.0f;
-      gTheLights.theLights[5].direction = glm::vec4(0.0f, -1.0f, 0.0f, 1.0f);
-      gTheLights.theLights[5].param1.y = 15.0f;   // Inner
-      gTheLights.theLights[5].param1.z = 30.0f;   // Outer
-      gTheLights.theLights[5].atten.y = 1.0f;
-      gTheLights.theLights[5].atten.z = 1.0f;
-
-      gTheLights.TurnOnLight(0);  // Or this!
-      //gTheLights.TurnOnLight(1);  // Or this!
-      //gTheLights.TurnOnLight(2);  // Or this!
-      //gTheLights.TurnOnLight(3);  // Or this!
-      //gTheLights.TurnOnLight(4);  // Or this!
-      //gTheLights.TurnOnLight(5);  // Or this!
-
-      gTheLights.SetUpUniformLocations(program);
 
       //lighting end
       
