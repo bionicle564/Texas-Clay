@@ -28,6 +28,9 @@ public:
 
 	void GetLoadedTextureList(std::vector<std::string> &vecTexturesLoaded);
 
+	//I added this many projects ago, figured I'd add it here
+	bool HasTexture(std::string textureName);
+
 private:
 	std::string m_basePath;
 	std::string m_lastError;

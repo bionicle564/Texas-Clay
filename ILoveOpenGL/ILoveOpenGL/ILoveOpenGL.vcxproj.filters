@@ -46,6 +46,9 @@
     <Filter Include="Commands And Adjencent\Entities">
       <UniqueIdentifier>{3fe51c16-ef47-45e2-bfda-6ee63ee110d8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Loader">
+      <UniqueIdentifier>{8d1e6659-1cfa-486b-9946-0537fd7e77ba}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="theMain.cpp">
@@ -108,6 +111,9 @@
     <ClCompile Include="TreasureEntity.cpp">
       <Filter>Commands And Adjencent\Entities</Filter>
     </ClCompile>
+    <ClCompile Include="cLoader.cpp">
+      <Filter>Loader</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="linmath.h">
@@ -169,6 +175,9 @@
     </ClInclude>
     <ClInclude Include="TreasureEntity.h">
       <Filter>Commands And Adjencent\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="cLoader.h">
+      <Filter>Loader</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

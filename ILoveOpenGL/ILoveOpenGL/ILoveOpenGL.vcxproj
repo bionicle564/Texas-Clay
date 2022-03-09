@@ -150,6 +150,7 @@
     <ClCompile Include="C24BitBMPpixel.cpp" />
     <ClCompile Include="cBasicTextureManager.cpp" />
     <ClCompile Include="cFlyCamera.cpp" />
+    <ClCompile Include="cLoader.cpp" />
     <ClCompile Include="CTextureFromBMP.cpp" />
     <ClCompile Include="DebugMarker.cpp" />
     <ClCompile Include="Entity.cpp" />
@@ -172,6 +173,7 @@
     <ClInclude Include="C24BitBMPpixel.h" />
     <ClInclude Include="cBasicTextureManager.h" />
     <ClInclude Include="cFlyCamera.h" />
+    <ClInclude Include="cLoader.h" />
     <ClInclude Include="Command.h" />
     <ClInclude Include="CTextureFromBMP.h" />
     <ClInclude Include="DebugMarker.h" />

@@ -1,0 +1,11 @@
+10
+Grass.bmp
+TexasClayFront1.bmp
+TexasClayFront2.bmp
+TexasClayFront3.bmp
+WolfBrown.bmp
+WolfGrey.bmp
+Coins.bmp
+Crown.bmp
+Blank.bmp
+arcTemplate.bmp

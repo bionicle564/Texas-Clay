@@ -8,6 +8,10 @@ void cBasicTextureManager::SetBasePath(std::string basepath)
 	return;
 }
 
+bool cBasicTextureManager::HasTexture(std::string textureName)
+{
+	return m_map_TexNameToTexture.count(textureName);
+}
 
 bool cBasicTextureManager::Create2DTextureFromBMPFile( std::string textureFileName, bool bGenerateMIPMap )
 {

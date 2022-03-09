@@ -37,6 +37,7 @@
 #include "JsonIOHandler.h"
 #include "cBasicTextureManager.h"
 #include "MainHelpers.h"
+#include "cLoader.h"
 
 // 2 stages: Load file into the RAM, then copy RAM into GPU format
 bool LoadPlyFile(std::string fileName);
@@ -403,51 +404,34 @@ int main(void)
 
     // Create a skybox object (a sphere with inverted normals that moves with the camera eye)
     cMesh* pSkyBox = new cMesh();
-    //pSkyBox->meshName = "Isosphere_Smooth_Normals.ply";
-    //
-    // We are using a sphere with INWARD facing normals. 
-    // This is so we see the "back" of the sphere.
-    // 
     pSkyBox->meshName = "Isosphere_Smooth_Inverted_Normals_for_SkyBox.ply";
-    //
-    // 2 main ways we can do a skybox:
-    //
-    // - Make a sphere really big, so everything fits inside
-    //   (be careful of the far clipping plane)
-    // 
-    // - Typical way is:
-    //   - Turn off the depth test
-    //   - Turn off the depth function (i.e. writing to the depth buffer)
-    //   - Draw the skybox object (which can be really small, since it's not interacting with the depth buffer)
-    //   - Once drawn:
-    //      - turn on the depth function
-    //      - turn on the depth test
-    // 
-    //    pSkyBox->scale = 5'000'000.0f;
-    //    
-    // We are now turning off the depth check, so this can be quite small, 
-    // just big enough to be beyond the near clipping plane.
-    // (here I'm making it 10x the size of the near plane)
     pSkyBox->scale = flyCamera.nearPlane * 1000.0f;
-    // 
     pSkyBox->positionXYZ = flyCamera.getEye();
 
     Entity* skyBoxEntity = new Entity(pSkyBox);
     world.push_back(skyBoxEntity);
+
     Entity* groundEntity = new Entity(room);
     world.push_back(groundEntity);
+
     player = new Player(dude);
     sprites.push_back(player);
+
     Entity* wolf1Entity = new Entity(wolf1);
     sprites.push_back(wolf1Entity);
+
     Entity* wolf2Entity = new Entity(wolf2);
     sprites.push_back(wolf2Entity);
+
     Entity* wolf3Entity = new Entity(wolf3);
     sprites.push_back(wolf3Entity);
+
     Entity* goal1Entity = new TreasureEntity(goal1, 0.5f, player);
     sprites.push_back(goal1Entity);
+
     Entity* goal2Entity = new TreasureEntity(goal2, 0.5f, player);
     sprites.push_back(goal2Entity);
+
     Entity* templateEntity = new Entity(arcTemplate);
     templates.push_back(templateEntity);
 
@@ -468,96 +452,11 @@ int main(void)
     std::cout << "GL_MAX_TEXTURE_SIZE = " << glMaxTextureSize << std::endl;
 
     //texture loading
-//    // Load the textures
     gTextureManager->SetBasePath("assets/textures");
-//
-    if (gTextureManager->Create2DTextureFromBMPFile("Grass.bmp", true))
-    {
-        std::cout << "Loaded the texture" << std::endl;
-    }
-    else
-    {
-       std::cout << "DIDN'T load the texture" << std::endl;
-    }
 
-    if (gTextureManager->Create2DTextureFromBMPFile("TexasClayFront1.bmp", true))
-    {
-        std::cout << "Loaded the texture" << std::endl;
-    }
-    else
-    {
-        std::cout << "DIDN'T load the texture" << std::endl;
-    }
-
-    if (gTextureManager->Create2DTextureFromBMPFile("TexasClayFront2.bmp", true))
-    {
-        std::cout << "Loaded the texture" << std::endl;
-    }
-    else
-    {
-        std::cout << "DIDN'T load the texture" << std::endl;
-    }
-
-    if (gTextureManager->Create2DTextureFromBMPFile("TexasClayFront3.bmp", true))
-    {
-        std::cout << "Loaded the texture" << std::endl;
-    }
-    else
-    {
-        std::cout << "DIDN'T load the texture" << std::endl;
-    }
-
-    if (gTextureManager->Create2DTextureFromBMPFile("WolfBrown.bmp", true))
-    {
-        std::cout << "Loaded the texture" << std::endl;
-    }
-    else
-    {
-        std::cout << "DIDN'T load the texture" << std::endl;
-    }
-    if (gTextureManager->Create2DTextureFromBMPFile("WolfGrey.bmp", true))
-    {
-        std::cout << "Loaded the texture" << std::endl;
-    }
-    else
-    {
-        std::cout << "DIDN'T load the texture" << std::endl;
-    }
-
-    if (gTextureManager->Create2DTextureFromBMPFile("Coins.bmp", true))
-    {
-        std::cout << "Loaded the texture" << std::endl;
-    }
-    else
-    {
-        std::cout << "DIDN'T load the texture" << std::endl;
-    }
-    if (gTextureManager->Create2DTextureFromBMPFile("Crown.bmp", true))
-    {
-        std::cout << "Loaded the texture" << std::endl;
-    }
-    else
-    {
-        std::cout << "DIDN'T load the texture" << std::endl;
-    }
-
-    if (gTextureManager->Create2DTextureFromBMPFile("Blank.bmp", true))
-    {
-        std::cout << "Loaded the texture" << std::endl;
-    }
-    else
-    {
-        std::cout << "DIDN'T load the texture" << std::endl;
-    }
-
-    if (gTextureManager->Create2DTextureFromBMPFile("arcTemplate.bmp", true))
-    {
-        std::cout << "Loaded the texture" << std::endl;
-    }
-    else
-    {
-        std::cout << "DIDN'T load the texture" << std::endl;
-    }
+    cLoader texLoader;
+    texLoader.LoadTextureNames(gTextureManager);
+    
 
     //texture assignment
 
