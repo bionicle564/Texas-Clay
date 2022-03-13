@@ -5,10 +5,20 @@
 #include <vector>
 #include <queue>
 
+enum Facing {
+	FACING_UP, //away from cam
+	FACING_DOWN, // towards cam
+	FACING_LEFT,
+	FACING_RIGHT,
+};
+
 class Entity {
 public:
 	bool executing;
 	std::string dispatch;
+
+	Facing facing;
+
 	cMesh* mesh;
 
 	std::queue<Command> parallels;

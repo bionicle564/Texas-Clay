@@ -39,26 +39,96 @@ void Player::Update(float deltaTime)
 
 	if (!hasMoved) {
 		moveTimer = 0.0f;
-		mesh->textureNames[0] = "TexasClayFront1.bmp";
+		switch (facing)
+		{
+		case FACING_UP:
+			mesh->textureNames[0] = "TexasClayBack1.bmp";
+			break;
+		case FACING_DOWN:
+			mesh->textureNames[0] = "TexasClayFront1.bmp";
+			break;
+		case FACING_LEFT:
+			mesh->textureNames[0] = "TexasClayLeft1.bmp";
+			break;
+		case FACING_RIGHT:
+			mesh->textureNames[0] = "TexasClayRight1.bmp";
+			break;
+		}
 	}
 	else {
 		moveTimer += deltaTime;
 		if (moveTimer < 0.15f) {
-			mesh->textureNames[0] = "TexasClayFront1.bmp";
+			switch (facing)
+			{
+			case FACING_UP:
+				mesh->textureNames[0] = "TexasClayBack1.bmp";
+				break;
+			case FACING_DOWN:
+				mesh->textureNames[0] = "TexasClayFront1.bmp";
+				break;
+			case FACING_LEFT:
+				mesh->textureNames[0] = "TexasClayLeft1.bmp";
+				break;
+			case FACING_RIGHT:
+				mesh->textureNames[0] = "TexasClayRight1.bmp";
+				break;
+			}
 		}
 		else if (moveTimer < 0.3f) {
-			mesh->textureNames[0] = "TexasClayFront2.bmp";
+			switch (facing)
+			{
+			case FACING_UP:
+				mesh->textureNames[0] = "TexasClayBack2.bmp";
+				break;
+			case FACING_DOWN:
+				mesh->textureNames[0] = "TexasClayFront2.bmp";
+				break;
+			case FACING_LEFT:
+				mesh->textureNames[0] = "TexasClayLeft2.bmp";
+				break;
+			case FACING_RIGHT:
+				mesh->textureNames[0] = "TexasClayRight2.bmp";
+				break;
+			}
 		}
 		else if (moveTimer < 0.45f) {
-			mesh->textureNames[0] = "TexasClayFront1.bmp";
+			switch (facing)
+			{
+			case FACING_UP:
+				mesh->textureNames[0] = "TexasClayBack1.bmp";
+				break;
+			case FACING_DOWN:
+				mesh->textureNames[0] = "TexasClayFront1.bmp";
+				break;
+			case FACING_LEFT:
+				mesh->textureNames[0] = "TexasClayLeft1.bmp";
+				break;
+			case FACING_RIGHT:
+				mesh->textureNames[0] = "TexasClayRight1.bmp";
+				break;
+			}
 		}
 		else if (moveTimer < 0.6f) {
-			mesh->textureNames[0] = "TexasClayFront3.bmp";
+			switch (facing)
+			{
+			case FACING_UP:
+				mesh->textureNames[0] = "TexasClayBack3.bmp";
+				break;
+			case FACING_DOWN:
+				mesh->textureNames[0] = "TexasClayFront3.bmp";
+				break;
+			case FACING_LEFT:
+				mesh->textureNames[0] = "TexasClayLeft3.bmp";
+				break;
+			case FACING_RIGHT:
+				mesh->textureNames[0] = "TexasClayRight3.bmp";
+				break;
+			}
 		}
 		else {
 			moveTimer = 0.0f;
 		}
-		//hasMoved = false;
+		hasMoved = false;
 	}
 
 	for (int i = 0; i < plataforms.size(); i++)
@@ -81,10 +151,28 @@ void Player::Update(float deltaTime)
 		}
 
 		isOnAir = true;
+
+		
 	}
 
 	if (isOnAir)
 	{
+		//This isn't quite Working yet
+		/*switch (facing)
+		{
+		case FACING_UP:
+			mesh->textureNames[0] = "TexasClayBackFall.bmp";
+			break;
+		case FACING_DOWN:
+			mesh->textureNames[0] = "TexasClayFrontFall.bmp";
+			break;
+		case FACING_LEFT:
+			mesh->textureNames[0] = "TexasClayLeftFall.bmp";
+			break;
+		case FACING_RIGHT:
+			mesh->textureNames[0] = "TexasClayRightFall.bmp";
+			break;
+		}*/
 		mesh->positionXYZ.y += verticalSpeed * deltaTime;
 		verticalSpeed += gravity * deltaTime;
 	}
@@ -125,6 +213,7 @@ void Player::MoveFoward()
 	mesh->positionXYZ += movement;
 
 	hasMoved = true;
+	facing = FACING_UP;
 }
 
 void Player::MoveRight() 
@@ -150,6 +239,9 @@ void Player::MoveRight()
 	glm::vec3 movement = glm::normalize(vecLeft) * (speed * 0.03f);
 
 	mesh->positionXYZ += movement;
+
+	hasMoved = true;
+	facing = FACING_RIGHT;
 }
 
 void Player::MoveLeft() 
@@ -177,6 +269,9 @@ void Player::MoveLeft()
 	mesh->positionXYZ -= movement;
 
 	//mesh->positionXYZ.x += speed * 0.03f;
+
+	hasMoved = true;
+	facing = FACING_LEFT;
 }
 
 void Player::MoveBackward() 
@@ -209,6 +304,7 @@ void Player::MoveBackward()
 	mesh->positionXYZ -= movement;
 
 	hasMoved = true;
+	facing = FACING_DOWN;
 }
 
 void Player::Jump() 

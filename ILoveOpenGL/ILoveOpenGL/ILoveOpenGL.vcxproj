@@ -199,6 +199,10 @@
     <None Include="SceneLights.json" />
     <None Include="SceneModels.json" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="testLights.txt" />
+    <Text Include="textures.txt" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
