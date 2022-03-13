@@ -182,6 +182,15 @@
     <ClInclude Include="cLoader.h">
       <Filter>Loader</Filter>
     </ClInclude>
+    <ClInclude Include="sPlataform.h">
+      <Filter>PlayerStuff</Filter>
+    </ClInclude>
+    <ClInclude Include="cLevel.h">
+      <Filter>PlayerStuff</Filter>
+    </ClInclude>
+    <ClInclude Include="cButton.h">
+      <Filter>PlayerStuff</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="RecentModel.json">

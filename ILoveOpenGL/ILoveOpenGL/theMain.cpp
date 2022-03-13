@@ -39,6 +39,7 @@
 #include "cBasicTextureManager.h"
 #include "MainHelpers.h"
 #include "cLoader.h"
+#include "cLevel.h"
 
 // 2 stages: Load file into the RAM, then copy RAM into GPU format
 bool LoadPlyFile(std::string fileName);
@@ -58,6 +59,8 @@ cBasicTextureManager* gTextureManager;
 JsonIOHandler jsonIO;
 
 Player* player;
+std::vector<cLevel*> levels;
+cLevel* currentLevel;
 
 //std::vector<cMesh> g_vecMeshes;
 std::vector<Entity*> world;
@@ -417,9 +420,10 @@ int main(void)
     //texture loading
     gTextureManager->SetBasePath("assets/textures");
 
-    cLoader texLoader;
-    texLoader.LoadTextureNames(gTextureManager);
-    
+    cLoader loader;
+    loader.LoadTextureNames(gTextureManager);
+    loader.LoadAllLevels(levels);
+    currentLevel = levels[0];
 
     //texture assignment
 
@@ -550,7 +554,29 @@ int main(void)
             space = false;
         }
 
+        for (int i = 0; i < currentLevel->plataforms.size(); i++)
+        {
+            sPlataform currPlatform = currentLevel->plataforms[i];
 
+            float maxX = currPlatform.position.x + (currPlatform.width / 2);
+            float minX = currPlatform.position.x - (currPlatform.width / 2);
+            float maxZ = currPlatform.position.z + (currPlatform.length / 2);
+            float minZ = currPlatform.position.z - (currPlatform.length / 2);
+
+            if ((player->mesh->positionXYZ.x <= maxX && player->mesh->positionXYZ.x >= minX) && (player->mesh->positionXYZ.z <= maxZ && player->mesh->positionXYZ.z >= minZ) && player->verticalSpeed < 0.f)
+            {
+                float distanceFromPlataform = player->mesh->positionXYZ.y - currPlatform.position.y;
+                if (distanceFromPlataform <= 0.2f && distanceFromPlataform >= 0.f)
+                {
+                    player->mesh->positionXYZ.y = currPlatform.position.y;
+                    player->verticalSpeed = 0.f;
+                    player->isAirBorne = false;
+                    break;
+                }
+            }
+
+            player->isAirBorne = true;
+        }
 
         // *******************************************************
         // Screen is cleared and we are ready to draw the scene...

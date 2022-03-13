@@ -5,7 +5,7 @@
 
 Player::Player(cMesh* mesh) : Entity(mesh) 
 {
-	isOnAir = false;
+	isAirBorne = false;
 	verticalSpeed = 0.0f;
 	gravity = -9.8f;
 
@@ -14,17 +14,17 @@ Player::Player(cMesh* mesh) : Entity(mesh)
 	hasMoved = false;
 	moveTimer = 0.0f;
 
-	Floor plat1;
-	plat1.position = glm::vec3(0.f, 10.f, 0.f);
-	plat1.width = 10.f;
-	plat1.length = 10.f;
-	plataforms.push_back(plat1);
+	//Floor plat1;
+	//plat1.position = glm::vec3(0.f, 10.f, 0.f);
+	//plat1.width = 10.f;
+	//plat1.length = 10.f;
+	//plataforms.push_back(plat1);
 
-	Floor plat2;
-	plat2.position = glm::vec3(5.f, 0.f, 0.f);
-	plat2.width = 10.f;
-	plat2.length = 10.f;
-	plataforms.push_back(plat2);
+	//Floor plat2;
+	//plat2.position = glm::vec3(5.f, 0.f, 0.f);
+	//plat2.width = 10.f;
+	//plat2.length = 10.f;
+	//plataforms.push_back(plat2);
 }
 
 Player::~Player() 
@@ -131,55 +131,33 @@ void Player::Update(float deltaTime)
 		hasMoved = false;
 	}
 
-	for (int i = 0; i < plataforms.size(); i++)
+	//for (int i = 0; i < plataforms.size(); i++)
+	//{
+	//	float maxX = plataforms[i].position.x + (plataforms[i].width / 2);
+	//	float minX = plataforms[i].position.x - (plataforms[i].width / 2);
+	//	float maxZ = plataforms[i].position.z + (plataforms[i].length / 2);
+	//	float minZ = plataforms[i].position.z - (plataforms[i].length / 2);
+
+	//	if ((mesh->positionXYZ.x <= maxX && mesh->positionXYZ.x >= minX) && (mesh->positionXYZ.z <= maxZ && mesh->positionXYZ.z >= minZ) && verticalSpeed < 0.f)
+	//	{
+	//		float distanceFromPlataform = mesh->positionXYZ.y - plataforms[i].position.y;
+	//		if (distanceFromPlataform <= 0.2f && distanceFromPlataform >= 0.f)
+	//		{
+	//			mesh->positionXYZ.y = plataforms[i].position.y;
+	//			verticalSpeed = 0.f;
+	//			isAirBorne = false;
+	//			break;
+	//		}
+	//	}
+
+	//	isAirBorne = true;		
+	//}
+
+	if (isAirBorne)
 	{
-		float maxX = plataforms[i].position.x + (plataforms[i].width / 2);
-		float minX = plataforms[i].position.x - (plataforms[i].width / 2);
-		float maxZ = plataforms[i].position.z + (plataforms[i].length / 2);
-		float minZ = plataforms[i].position.z - (plataforms[i].length / 2);
-
-		if ((mesh->positionXYZ.x <= maxX && mesh->positionXYZ.x >= minX) && (mesh->positionXYZ.z <= maxZ && mesh->positionXYZ.z >= minZ) && verticalSpeed < 0.f)
-		{
-			float distanceFromPlataform = mesh->positionXYZ.y - plataforms[i].position.y;
-			if (distanceFromPlataform <= 0.2f && distanceFromPlataform >= 0.f)
-			{
-				mesh->positionXYZ.y = plataforms[i].position.y;
-				verticalSpeed = 0.f;
-				isOnAir = false;
-				break;
-			}
-		}
-
-		isOnAir = true;
-
-		
-	}
-
-	if (isOnAir)
-	{
-		//This isn't quite Working yet
-		/*switch (facing)
-		{
-		case FACING_UP:
-			mesh->textureNames[0] = "TexasClayBackFall.bmp";
-			break;
-		case FACING_DOWN:
-			mesh->textureNames[0] = "TexasClayFrontFall.bmp";
-			break;
-		case FACING_LEFT:
-			mesh->textureNames[0] = "TexasClayLeftFall.bmp";
-			break;
-		case FACING_RIGHT:
-			mesh->textureNames[0] = "TexasClayRightFall.bmp";
-			break;
-		}*/
 		mesh->positionXYZ.y += verticalSpeed * deltaTime;
 		verticalSpeed += gravity * deltaTime;
 	}
-	//else
-	//{
-
-	//}
 }
 
 void Player::MoveFoward() 
@@ -314,9 +292,19 @@ void Player::Jump()
 	//}
 	std::cout << "JUMP" << std::endl;
 
-	if (!isOnAir)
+	if (!isAirBorne)
 	{
 		verticalSpeed = 5.f;
-		isOnAir = true;
+		isAirBorne = true;
 	}
 }
+
+//void Player::SetIsAirborne(bool _isAirBorne)
+//{
+//	isAirBorne = _isAirBorne;
+//}
+//
+//glm::vec3 Player::GetPosition()
+//{
+//	return mesh->positionXYZ;
+//}

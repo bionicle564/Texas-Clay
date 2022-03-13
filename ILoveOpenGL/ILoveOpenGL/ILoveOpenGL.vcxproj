@@ -172,7 +172,9 @@
   <ItemGroup>
     <ClInclude Include="C24BitBMPpixel.h" />
     <ClInclude Include="cBasicTextureManager.h" />
+    <ClInclude Include="cButton.h" />
     <ClInclude Include="cFlyCamera.h" />
+    <ClInclude Include="cLevel.h" />
     <ClInclude Include="cLoader.h" />
     <ClInclude Include="Command.h" />
     <ClInclude Include="CTextureFromBMP.h" />
@@ -188,6 +190,7 @@
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="ShaderManager.h" />
+    <ClInclude Include="sPlataform.h" />
     <ClInclude Include="TreasureEntity.h" />
     <ClInclude Include="VAOManager.h" />
     <ClInclude Include="Vertex_Types.h" />
