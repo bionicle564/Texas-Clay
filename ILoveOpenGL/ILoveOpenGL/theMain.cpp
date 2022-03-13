@@ -434,7 +434,7 @@ int main(void)
     sprites[2]->mesh->textureRatios[0] = 1.0f;
 
 
-    // Add a skybox texture
+    // Add a skybox texture 
     std::string errorTextString;
     if (!gTextureManager->CreateCubeTextureFromBMPFiles("Skybox",
         "stoneBoxSide.bmp",    /* posX_fileName */
