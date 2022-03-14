@@ -119,33 +119,61 @@ void cLoader::LoadSpecificLevel(std::string levelFileName, cLevel* level)
     const Value& plataforms = d["plataforms"];
     for (int i = 0; i < plataforms.Size(); i++)
     {
-        sPlataform newPlataform;
-        newPlataform.id = plataforms[i]["id"].GetInt();
-        newPlataform.position.x = plataforms[i]["position"]["x"].GetFloat();
-        newPlataform.position.y = plataforms[i]["position"]["y"].GetFloat();
-        newPlataform.position.z = plataforms[i]["position"]["z"].GetFloat();
-        newPlataform.length = plataforms[i]["length"].GetFloat();
-        newPlataform.width = plataforms[i]["width"].GetFloat();
+        //sPlataform newPlataform;
+        //newPlataform.id = plataforms[i]["id"].GetInt();
+        //newPlataform.position.x = plataforms[i]["position"]["x"].GetFloat();
+        //newPlataform.position.y = plataforms[i]["position"]["y"].GetFloat();
+        //newPlataform.position.z = plataforms[i]["position"]["z"].GetFloat();
+        //newPlataform.length = plataforms[i]["length"].GetFloat();
+        //newPlataform.width = plataforms[i]["width"].GetFloat();
 
-        level->plataforms.push_back(newPlataform);
+        //level->plataforms.push_back(newPlataform);
+
+        cMesh* platformMesh = new cMesh();
+        platformMesh->positionXYZ.x = plataforms[i]["position"]["x"].GetFloat();
+        platformMesh->positionXYZ.y = plataforms[i]["position"]["y"].GetFloat();
+        platformMesh->positionXYZ.z = plataforms[i]["position"]["z"].GetFloat();
+        // change whatever you need for the mesh here
+
+        float platformWidth = plataforms[i]["width"].GetFloat();
+        float platformLength = plataforms[i]["length"].GetFloat();
+
+        PlatformEntity newPlatform = PlatformEntity(platformMesh, platformWidth, platformLength);
+        level->plataforms.push_back(newPlatform);
     }
 
     const Value& buttons = d["buttons"];
     for (int i = 0; i < buttons.Size(); i++)
     {
-        cButton newButton;
+        //cButton newButton;
 
-        int platId = buttons[i]["plataformId"].GetInt();
-        newButton.connectedPlataform = &(level->plataforms[platId]);
+        //int platId = buttons[i]["plataformId"].GetInt();
+        //newButton.connectedPlataform = &(level->plataforms[platId]);
 
-        newButton.position.x = buttons[i]["position"]["x"].GetFloat();
-        newButton.position.y = buttons[i]["position"]["y"].GetFloat();
-        newButton.position.z = buttons[i]["position"]["z"].GetFloat();
-        newButton.plataformAlternatePosition.x = buttons[i]["alternatePosition"]["x"].GetFloat();
-        newButton.plataformAlternatePosition.y = buttons[i]["alternatePosition"]["y"].GetFloat();
-        newButton.plataformAlternatePosition.z = buttons[i]["alternatePosition"]["z"].GetFloat();
-        newButton.plataformOgPosition = level->plataforms[platId].position;
-        
+        //newButton.position.x = buttons[i]["position"]["x"].GetFloat();
+        //newButton.position.y = buttons[i]["position"]["y"].GetFloat();
+        //newButton.position.z = buttons[i]["position"]["z"].GetFloat();
+        //newButton.plataformAlternatePosition.x = buttons[i]["alternatePosition"]["x"].GetFloat();
+        //newButton.plataformAlternatePosition.y = buttons[i]["alternatePosition"]["y"].GetFloat();
+        //newButton.plataformAlternatePosition.z = buttons[i]["alternatePosition"]["z"].GetFloat();
+        //newButton.plataformOgPosition = level->plataforms[platId].position;
+        //
+        //level->buttons.push_back(newButton);
+
+        cMesh* buttonMesh = new cMesh();
+        buttonMesh->positionXYZ.x = buttons[i]["position"]["x"].GetFloat();
+        buttonMesh->positionXYZ.y = buttons[i]["position"]["y"].GetFloat();
+        buttonMesh->positionXYZ.z = buttons[i]["position"]["z"].GetFloat();
+        // change whatever you need for the mesh here
+
+        glm::vec3 platformAlternatePosition;
+        platformAlternatePosition.x = buttons[i]["alternatePosition"]["x"].GetFloat();
+        platformAlternatePosition.y = buttons[i]["alternatePosition"]["y"].GetFloat();
+        platformAlternatePosition.z = buttons[i]["alternatePosition"]["z"].GetFloat();
+
+        int platformId = buttons[i]["plataformId"].GetInt();
+
+        ButtonEntity newButton = ButtonEntity(buttonMesh, platformAlternatePosition, platformId);
         level->buttons.push_back(newButton);
     }
 

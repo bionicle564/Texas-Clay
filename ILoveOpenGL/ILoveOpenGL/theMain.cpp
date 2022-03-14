@@ -528,19 +528,19 @@ int main(void)
 
         for (int i = 0; i < currentLevel->plataforms.size(); i++)
         {
-            sPlataform currPlatform = currentLevel->plataforms[i];
+            PlatformEntity currPlatform = currentLevel->plataforms[i];
 
-            float maxX = currPlatform.position.x + (currPlatform.width / 2);
-            float minX = currPlatform.position.x - (currPlatform.width / 2);
-            float maxZ = currPlatform.position.z + (currPlatform.length / 2);
-            float minZ = currPlatform.position.z - (currPlatform.length / 2);
+            float maxX = currPlatform.mesh->positionXYZ.x + (currPlatform.width / 2);
+            float minX = currPlatform.mesh->positionXYZ.x - (currPlatform.width / 2);
+            float maxZ = currPlatform.mesh->positionXYZ.z + (currPlatform.length / 2);
+            float minZ = currPlatform.mesh->positionXYZ.z - (currPlatform.length / 2);
 
             if ((player->mesh->positionXYZ.x <= maxX && player->mesh->positionXYZ.x >= minX) && (player->mesh->positionXYZ.z <= maxZ && player->mesh->positionXYZ.z >= minZ) && player->verticalSpeed < 0.f)
             {
-                float distanceFromPlataform = player->mesh->positionXYZ.y - currPlatform.position.y;
+                float distanceFromPlataform = player->mesh->positionXYZ.y - currPlatform.mesh->positionXYZ.y;
                 if (distanceFromPlataform <= 0.2f && distanceFromPlataform >= 0.f)
                 {
-                    player->mesh->positionXYZ.y = currPlatform.position.y;
+                    player->mesh->positionXYZ.y = currPlatform.mesh->positionXYZ.y;
                     player->verticalSpeed = 0.f;
                     player->isAirBorne = false;
                     break;
