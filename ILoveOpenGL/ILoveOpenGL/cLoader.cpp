@@ -138,7 +138,7 @@ void cLoader::LoadSpecificLevel(std::string levelFileName, cLevel* level)
         float platformWidth = plataforms[i]["width"].GetFloat();
         float platformLength = plataforms[i]["length"].GetFloat();
 
-        PlatformEntity newPlatform = PlatformEntity(platformMesh, platformWidth, platformLength);
+        PlatformEntity* newPlatform = new PlatformEntity(platformMesh, platformWidth, platformLength);
         level->plataforms.push_back(newPlatform);
     }
 
@@ -173,7 +173,7 @@ void cLoader::LoadSpecificLevel(std::string levelFileName, cLevel* level)
 
         int platformId = buttons[i]["plataformId"].GetInt();
 
-        ButtonEntity newButton = ButtonEntity(buttonMesh, platformAlternatePosition, platformId);
+        ButtonEntity* newButton = new ButtonEntity(buttonMesh, platformAlternatePosition, platformId);
         level->buttons.push_back(newButton);
     }
 

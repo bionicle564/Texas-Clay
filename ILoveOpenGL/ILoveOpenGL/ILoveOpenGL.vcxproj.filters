@@ -129,6 +129,9 @@
     <ClCompile Include="ButtonEntity.cpp">
       <Filter>Commands And Adjencent\Entities</Filter>
     </ClCompile>
+    <ClCompile Include="cLevel.cpp">
+      <Filter>PlayerStuff</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="linmath.h">

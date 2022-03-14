@@ -16,6 +16,8 @@ public:
 	//std::vector<sPlataform> plataforms;
 	//std::vector<cButton> buttons;
 
-	std::vector<PlatformEntity> plataforms;
-	std::vector<ButtonEntity> buttons;
+	std::vector<PlatformEntity*> plataforms;
+	std::vector<ButtonEntity*> buttons;
+
+	~cLevel();
 };
