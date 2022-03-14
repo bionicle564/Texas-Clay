@@ -126,6 +126,9 @@
     <ClCompile Include="PlatformEntity.cpp">
       <Filter>Commands And Adjencent\Entities</Filter>
     </ClCompile>
+    <ClCompile Include="ButtonEntity.cpp">
+      <Filter>Commands And Adjencent\Entities</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="linmath.h">
@@ -205,6 +208,9 @@
     </ClInclude>
     <ClInclude Include="SceneManager.h">
       <Filter>SceneStuff</Filter>
+    </ClInclude>
+    <ClInclude Include="ButtonEntity.h">
+      <Filter>Commands And Adjencent\Entities</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

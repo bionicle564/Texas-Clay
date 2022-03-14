@@ -147,6 +147,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ButtonEntity.cpp" />
     <ClCompile Include="C24BitBMPpixel.cpp" />
     <ClCompile Include="cBasicTextureManager.cpp" />
     <ClCompile Include="cFlyCamera.cpp" />
@@ -172,6 +173,7 @@
     <ClCompile Include="VAOManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ButtonEntity.h" />
     <ClInclude Include="C24BitBMPpixel.h" />
     <ClInclude Include="cBasicTextureManager.h" />
     <ClInclude Include="cButton.h" />
