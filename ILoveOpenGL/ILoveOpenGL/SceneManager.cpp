@@ -38,3 +38,27 @@ void SceneManager::Process() {
 		player->isAirBorne = true;
 	}
 }
+
+bool SceneManager::UseButton(int buttonIndex) {
+	if (buttonIndex >= buttons.size()) { return false; }
+
+	ButtonEntity* button = buttons[buttonIndex];
+
+	if (!button->isPressed) {
+		button->isPressed = true;
+		int index = button->platformIndex;
+
+		if (!platforms[index]->isMoving) {
+			//TODO: make this change gradual
+			if (button->moved) {
+				platforms[index]->mesh->positionXYZ -= button->offset;
+			}
+			else {
+				platforms[index]->mesh->positionXYZ += button->offset;
+			}
+		}
+		button->moved = !button->moved;
+	}
+
+	return false;
+}

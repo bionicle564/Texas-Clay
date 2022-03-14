@@ -321,6 +321,7 @@ int main(void)
     //1x room
     cMesh* room = new cMesh();
     room->meshName = "Invader_Single_Cube.ply";
+    room->orientationXYZ.x = 3.14f;
     //room->orientationXYZ.x = -1.57f;
     //room->orientationXYZ.y = 1.57f;
 
