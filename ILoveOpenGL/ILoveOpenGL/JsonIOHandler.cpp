@@ -34,7 +34,7 @@ bool JsonIOHandler::WriteSingleModel(const std::string& filePath, cMesh& mesh) {
 	writer.Key("oriz");
 	writer.Double(mesh.orientationXYZ.z);
 	writer.Key("scal");
-	writer.Double(mesh.scale);
+	writer.Double(mesh.scale.x);
 	writer.Key("litf");
 	writer.Bool(mesh.bDontLight);
 	writer.Key("depf");
@@ -88,7 +88,7 @@ bool JsonIOHandler::ReadSingleModel(const std::string& filePath, cMesh& mesh) {
 	mesh.orientationXYZ.x = d["orix"].GetFloat();
 	mesh.orientationXYZ.y = d["oriy"].GetFloat();
 	mesh.orientationXYZ.z = d["oriz"].GetFloat();
-	mesh.scale = d["scal"].GetFloat();
+	mesh.scale = glm::vec3(d["scal"].GetFloat());
 	mesh.bDontLight = d["litf"].GetBool();
 	mesh.bDisableDepthBufferCheck = d["depf"].GetBool();
 	mesh.bUseWholeObjectDiffuseColour = d["diff"].GetBool();
@@ -253,7 +253,7 @@ bool JsonIOHandler::WriteManyModels(const std::string& filePath, std::vector<Ent
 		writer.Key("oriz");
 		writer.Double(entities[i]->mesh->orientationXYZ.z);
 		writer.Key("scal");
-		writer.Double(entities[i]->mesh->scale);
+		writer.Double(entities[i]->mesh->scale.x);
 		writer.Key("litf");
 		writer.Bool(entities[i]->mesh->bDontLight);
 		writer.Key("depf");
@@ -311,7 +311,7 @@ bool JsonIOHandler::ReadManyModels(const std::string& filePath, std::vector<Enti
 		readIn->orientationXYZ.x = d["scene"].GetArray()[i].GetObject()["orix"].GetFloat();
 		readIn->orientationXYZ.y = d["scene"].GetArray()[i].GetObject()["oriy"].GetFloat();
 		readIn->orientationXYZ.z = d["scene"].GetArray()[i].GetObject()["oriz"].GetFloat();
-		readIn->scale = d["scene"].GetArray()[i].GetObject()["scal"].GetFloat();
+		readIn->scale = glm::vec3(d["scene"].GetArray()[i].GetObject()["scal"].GetFloat());
 		readIn->bDontLight = d["scene"].GetArray()[i].GetObject()["litf"].GetBool();
 		readIn->bDisableDepthBufferCheck = d["scene"].GetArray()[i].GetObject()["depf"].GetBool();
 		readIn->bUseWholeObjectDiffuseColour = d["scene"].GetArray()[i].GetObject()["diff"].GetBool();

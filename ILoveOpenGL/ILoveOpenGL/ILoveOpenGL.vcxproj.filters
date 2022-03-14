@@ -52,6 +52,9 @@
     <Filter Include="ExternConfig">
       <UniqueIdentifier>{19aee410-b1cf-4355-b1e0-c8812fcda688}</UniqueIdentifier>
     </Filter>
+    <Filter Include="SceneStuff">
+      <UniqueIdentifier>{c073172d-b8c0-4864-98af-d57f6fdbbac4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="theMain.cpp">
@@ -116,6 +119,12 @@
     </ClCompile>
     <ClCompile Include="cLoader.cpp">
       <Filter>Loader</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneManager.cpp">
+      <Filter>SceneStuff</Filter>
+    </ClCompile>
+    <ClCompile Include="PlatformEntity.cpp">
+      <Filter>Commands And Adjencent\Entities</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -190,6 +199,12 @@
     </ClInclude>
     <ClInclude Include="cButton.h">
       <Filter>PlayerStuff</Filter>
+    </ClInclude>
+    <ClInclude Include="PlatformEntity.h">
+      <Filter>Commands And Adjencent\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneManager.h">
+      <Filter>SceneStuff</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

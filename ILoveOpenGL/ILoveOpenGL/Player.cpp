@@ -131,27 +131,6 @@ void Player::Update(float deltaTime)
 		hasMoved = false;
 	}
 
-	//for (int i = 0; i < plataforms.size(); i++)
-	//{
-	//	float maxX = plataforms[i].position.x + (plataforms[i].width / 2);
-	//	float minX = plataforms[i].position.x - (plataforms[i].width / 2);
-	//	float maxZ = plataforms[i].position.z + (plataforms[i].length / 2);
-	//	float minZ = plataforms[i].position.z - (plataforms[i].length / 2);
-
-	//	if ((mesh->positionXYZ.x <= maxX && mesh->positionXYZ.x >= minX) && (mesh->positionXYZ.z <= maxZ && mesh->positionXYZ.z >= minZ) && verticalSpeed < 0.f)
-	//	{
-	//		float distanceFromPlataform = mesh->positionXYZ.y - plataforms[i].position.y;
-	//		if (distanceFromPlataform <= 0.2f && distanceFromPlataform >= 0.f)
-	//		{
-	//			mesh->positionXYZ.y = plataforms[i].position.y;
-	//			verticalSpeed = 0.f;
-	//			isAirBorne = false;
-	//			break;
-	//		}
-	//	}
-
-	//	isAirBorne = true;		
-	//}
 
 	if (isAirBorne)
 	{

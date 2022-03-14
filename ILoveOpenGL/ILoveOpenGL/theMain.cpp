@@ -29,6 +29,7 @@
 #include "Player.h"
 #include "TreasureEntity.h"
 #include "ShaderManager.h"
+#include "SceneManager.h"
 
 #include "LightManager.h"
 #include "LightHelper.h"
@@ -77,39 +78,6 @@ static void error_callback(int error, const char* description)
 {
     fprintf(stderr, "Error: %s\n", description);
 }
-
-
-//void AttemptToGoToNextFrame() {
-//    //check to see if stuff is still executing
-//    bool stillExecuting = false;
-//    for (int i = 0; i < entities.size(); i++) { stillExecuting |= entities[i]->executing; }
-//    if (!stillExecuting) {//the last frame is done, so we can get to business
-//
-//        currentAnimFrame++;
-//        for (int i = 0; i < anims.size(); i++) {
-//            //load the the models with the animations for this frame
-//            if (anims[i].batch == currentAnimFrame) {
-//                for (int j = 0; j < entities.size(); j++) {
-//
-//                    //find the right models for the animation
-//                    if (entities[j]->mesh->nameID == anims[i].owner) {
-//                        if (anims[i].dispatch == "parallel") { entities[j]->RegisterParallel(anims[i]); }
-//                        if (anims[i].dispatch == "serial") { entities[j]->RegisterSerial(anims[i]); }
-//                    }
-//                }
-//            }
-//        }
-//
-//        //have each model start executing it's commands
-//        //!For each batch, the model can only have set of paralells or a set of serials, NOT both
-//        for (int i = 0; i < entities.size(); i++) {
-//            entities[i]->ExecNextParallel();
-//            entities[i]->ExecSerial();
-//        }
-//
-//    }
-//
-//}
 
 bool up = false;
 bool down = false;
@@ -321,6 +289,7 @@ int main(void)
     modelNames.push_back("debug_triangle.ply");
     modelNames.push_back("Ground.ply");
     modelNames.push_back("SpriteHolder.ply");
+    modelNames.push_back("Invader_Single_Cube.ply");
     modelNames.push_back("Isosphere_Smooth_Inverted_Normals_for_SkyBox.ply");
 
     for (int i = 0; i < modelNames.size(); i++)
@@ -351,7 +320,7 @@ int main(void)
     //for this scene we will need
     //1x room
     cMesh* room = new cMesh();
-    room->meshName = "Ground.ply";
+    room->meshName = "Invader_Single_Cube.ply";
     //room->orientationXYZ.x = -1.57f;
     //room->orientationXYZ.y = 1.57f;
 
@@ -364,7 +333,7 @@ int main(void)
 
     cMesh* goal1 = new cMesh();
     goal1->meshName = "SpriteHolder.ply";
-    goal1->scale = 0.5f;
+    goal1->scale = glm::vec3(0.5f);
     goal1->positionXYZ = glm::vec3(10.0f, 0.0f, 10.5f);
     goal1->orientationXYZ.y = -1.57f;
     goal1->orientationXYZ.x = -1.57f;
@@ -372,7 +341,7 @@ int main(void)
 
     cMesh* goal2 = new cMesh();
     goal2->meshName = "SpriteHolder.ply";
-    goal2->scale = 0.5f;
+    goal2->scale = glm::vec3(0.5f);
     goal2->positionXYZ = glm::vec3(-8.0f, 0.0f, 10.5f);
     goal2->orientationXYZ.y = -1.57f;
     goal2->orientationXYZ.x = -1.57f;
@@ -382,13 +351,13 @@ int main(void)
     // Create a skybox object (a sphere with inverted normals that moves with the camera eye)
     cMesh* pSkyBox = new cMesh();
     pSkyBox->meshName = "Isosphere_Smooth_Inverted_Normals_for_SkyBox.ply";
-    pSkyBox->scale = flyCamera.nearPlane * 1000.0f;
+    pSkyBox->scale = glm::vec3(flyCamera.nearPlane * 1000.0f);
     pSkyBox->positionXYZ = flyCamera.getEye();
 
     Entity* skyBoxEntity = new Entity(pSkyBox);
     world.push_back(skyBoxEntity);
 
-    Entity* groundEntity = new Entity(room);
+    PlatformEntity* groundEntity = new PlatformEntity(room, 10.0f, 10.0f);
     world.push_back(groundEntity);
 
     player = new Player(dude);
@@ -437,6 +406,8 @@ int main(void)
     sprites[2]->mesh->textureNames[0] = "Crown.bmp";
     sprites[2]->mesh->textureRatios[0] = 1.0f;
 
+    SceneManager sceneManager(player);
+    sceneManager.RegisterPlatform(groundEntity);
 
     // Add a skybox texture 
     std::string errorTextString;
@@ -582,7 +553,10 @@ int main(void)
         // Screen is cleared and we are ready to draw the scene...
         // *******************************************************
 
+        sceneManager.Process();
+
         //Calcs for arcball camera and Movement
+        //=================================================================
         player->Update(deltaTime); 
         glm::vec3 direction = flyCamera.eye - player->mesh->positionXYZ;
         glm::vec3 newCameraPos(0.0f);
@@ -620,8 +594,10 @@ int main(void)
         //cameraAngle = 0.0f;
 
         //Arcball end
+        //===================================================================================
 
         //make anything in the sprites list always face the camera
+        //=============================================================================
         for (int i = 0; i < sprites.size(); i++) {
             glm::vec2 spritePos(sprites[i]->mesh->positionXYZ.x, sprites[i]->mesh->positionXYZ.z);
             glm::vec2 camPos(newCameraPos.x, newCameraPos.z);
@@ -641,6 +617,7 @@ int main(void)
         }
         lastCameraAngle = cameraAngle;
         //sprite facing end
+        //==================================================================
 
         gTheLights.CopyLightInfoToShader();
 

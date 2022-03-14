@@ -161,7 +161,9 @@
     <ClCompile Include="MainHelpers.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="MyMainBackup.cpp" />
+    <ClCompile Include="PlatformEntity.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="ShaderManager.cpp" />
     <ClCompile Include="theMain.cpp" />
@@ -188,7 +190,9 @@
     <ClInclude Include="linmath.h" />
     <ClInclude Include="MainHelpers.h" />
     <ClInclude Include="Mesh.h" />
+    <ClInclude Include="PlatformEntity.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="SceneManager.h" />
     <ClInclude Include="ShaderManager.h" />
     <ClInclude Include="sPlataform.h" />
     <ClInclude Include="TreasureEntity.h" />

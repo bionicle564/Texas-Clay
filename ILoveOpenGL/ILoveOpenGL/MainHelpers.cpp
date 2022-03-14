@@ -221,9 +221,9 @@ void DrawObject(cMesh* curMesh, glm::mat4 matModel,
     // *****************************************************
     // Scale the model
     glm::mat4 matScale = glm::scale(glm::mat4(1.0f),
-        glm::vec3(curMesh->scale,  // Scale in X
-            curMesh->scale,  // Scale in Y
-            curMesh->scale));// Scale in Z
+        glm::vec3(curMesh->scale.x,  // Scale in X
+            curMesh->scale.y,  // Scale in Y
+            curMesh->scale.z));// Scale in Z
 
 //matModel = matModel * matScale;
 // *****************************************************
