@@ -172,7 +172,7 @@ void cLoader::LoadSpecificLevel(std::string levelFileName, cLevel* level)
         buttonMesh->positionXYZ.y = buttons[i]["position"]["y"].GetFloat();
         buttonMesh->positionXYZ.z = buttons[i]["position"]["z"].GetFloat();
         buttonMesh->bDontLight = true;
-        buttonMesh->textureNames[0] = "buttonUp.bmp";
+        buttonMesh->textureNames[0] = "ButtonUp.bmp";
         buttonMesh->textureRatios[0] = 1.0f;
         // change whatever you need for the mesh here
 
