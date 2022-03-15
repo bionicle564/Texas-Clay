@@ -57,7 +57,7 @@ void cLoader::SaveTextureNames(std::vector<std::string> texNames, cBasicTextureM
     file.close();
 }
 
-void cLoader::LoadAllLevels(std::vector<cLevel*>& levels)
+void cLoader::LoadAllLevels()
 {
     using namespace rapidjson;
 
@@ -130,9 +130,13 @@ void cLoader::LoadSpecificLevel(std::string levelFileName, cLevel* level)
         //level->plataforms.push_back(newPlataform);
 
         cMesh* platformMesh = new cMesh();
+        platformMesh->meshName = "Invader_Single_Cube.ply";
+        platformMesh->orientationXYZ.x = 3.14f;
         platformMesh->positionXYZ.x = plataforms[i]["position"]["x"].GetFloat();
         platformMesh->positionXYZ.y = plataforms[i]["position"]["y"].GetFloat();
         platformMesh->positionXYZ.z = plataforms[i]["position"]["z"].GetFloat();
+        platformMesh->textureNames[0] = "futurebrick.bmp";
+        platformMesh->textureRatios[0] = 1.0f;
         // change whatever you need for the mesh here
 
         float platformWidth = plataforms[i]["width"].GetFloat();
@@ -161,9 +165,15 @@ void cLoader::LoadSpecificLevel(std::string levelFileName, cLevel* level)
         //level->buttons.push_back(newButton);
 
         cMesh* buttonMesh = new cMesh();
+        buttonMesh->meshName = "SpriteHolder.ply";
+        buttonMesh->orientationXYZ.y = -1.57f;
+        buttonMesh->orientationXYZ.x = -1.57f;
         buttonMesh->positionXYZ.x = buttons[i]["position"]["x"].GetFloat();
         buttonMesh->positionXYZ.y = buttons[i]["position"]["y"].GetFloat();
         buttonMesh->positionXYZ.z = buttons[i]["position"]["z"].GetFloat();
+        buttonMesh->bDontLight = true;
+        buttonMesh->textureNames[0] = "buttonUp.bmp";
+        buttonMesh->textureRatios[0] = 1.0f;
         // change whatever you need for the mesh here
 
         glm::vec3 platformAlternatePosition;

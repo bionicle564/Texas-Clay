@@ -27,7 +27,6 @@
 #include "VAOManager.h"
 #include "Entity.h"
 #include "Player.h"
-#include "TreasureEntity.h"
 #include "ShaderManager.h"
 #include "SceneManager.h"
 
@@ -39,8 +38,7 @@
 #include "JsonIOHandler.h"
 #include "cBasicTextureManager.h"
 #include "MainHelpers.h"
-#include "cLoader.h"
-#include "cLevel.h"
+#include "SceneManager.h"
 
 // 2 stages: Load file into the RAM, then copy RAM into GPU format
 bool LoadPlyFile(std::string fileName);
@@ -60,8 +58,8 @@ cBasicTextureManager* gTextureManager;
 JsonIOHandler jsonIO;
 
 Player* player;
-std::vector<cLevel*> levels;
-cLevel* currentLevel;
+//std::vector<cLevel*> levels;
+//cLevel* currentLevel;
 
 //std::vector<cMesh> g_vecMeshes;
 std::vector<Entity*> world;
@@ -319,9 +317,9 @@ int main(void)
 
     //for this scene we will need
     //1x room
-    cMesh* room = new cMesh();
-    room->meshName = "Invader_Single_Cube.ply";
-    room->orientationXYZ.x = 3.14f;
+    //cMesh* room = new cMesh();
+    //room->meshName = "Invader_Single_Cube.ply";
+    //room->orientationXYZ.x = 3.14f;
     //room->orientationXYZ.x = -1.57f;
     //room->orientationXYZ.y = 1.57f;
 
@@ -329,10 +327,10 @@ int main(void)
     dude->meshName = "SpriteHolder.ply";
     dude->positionXYZ.y = 10.f;
     dude->orientationXYZ.y = -1.57f;
-    dude->orientationXYZ.x = -1.57;
+    dude->orientationXYZ.x = -1.57f;
     dude->bDontLight = true;
 
-    cMesh* goal1 = new cMesh();
+    /*cMesh* goal1 = new cMesh();
     goal1->meshName = "SpriteHolder.ply";
     goal1->scale = glm::vec3(0.5f);
     goal1->positionXYZ = glm::vec3(10.0f, 0.0f, 10.5f);
@@ -346,7 +344,7 @@ int main(void)
     goal2->positionXYZ = glm::vec3(-8.0f, 0.0f, 10.5f);
     goal2->orientationXYZ.y = -1.57f;
     goal2->orientationXYZ.x = -1.57f;
-    goal2->bDontLight = true;
+    goal2->bDontLight = true;*/
 
 
     // Create a skybox object (a sphere with inverted normals that moves with the camera eye)
@@ -358,17 +356,17 @@ int main(void)
     Entity* skyBoxEntity = new Entity(pSkyBox);
     world.push_back(skyBoxEntity);
 
-    PlatformEntity* groundEntity = new PlatformEntity(room, 10.0f, 10.0f);
-    world.push_back(groundEntity);
+    //PlatformEntity* groundEntity = new PlatformEntity(room, 10.0f, 10.0f);
+    //world.push_back(groundEntity);
 
     player = new Player(dude);
     sprites.push_back(player);
 
-    Entity* goal1Entity = new TreasureEntity(goal1, 0.5f, player);
-    sprites.push_back(goal1Entity);
+    //Entity* goal1Entity = new TreasureEntity(goal1, 0.5f, player);
+    //sprites.push_back(goal1Entity);
 
-    Entity* goal2Entity = new TreasureEntity(goal2, 0.5f, player);
-    sprites.push_back(goal2Entity);
+    //Entity* goal2Entity = new TreasureEntity(goal2, 0.5f, player);
+    //sprites.push_back(goal2Entity);
 
 
     //jsonIO.ReadManyModels("SceneModels.json", entities);
@@ -390,25 +388,33 @@ int main(void)
     //texture loading
     gTextureManager->SetBasePath("assets/textures");
 
-    cLoader loader;
-    loader.LoadTextureNames(gTextureManager);
-    loader.LoadAllLevels(levels);
-    currentLevel = levels[0];
+    //cLoader loader;
+    //loader.LoadTextureNames(gTextureManager);
+    //loader.LoadAllLevels(levels);
+    //currentLevel = levels[0];
+    SceneManager sceneManager(player);
+    sceneManager.LoadTextures(gTextureManager);
+    sceneManager.SetUpLevel(0);
+    sceneManager.CopyOverWorldEntities(world);
+    sceneManager.CopyOverSpriteEntities(sprites);
+    //sceneManager.RegisterPlatform(groundEntity);
 
     //texture assignment
 
     //floor
-    world[1]->mesh->textureNames[0] = "futurebrick.bmp";
-    world[1]->mesh->textureRatios[0] = 1.0f;
+    //world[1]->mesh->textureNames[0] = "futurebrick.bmp";
+    //world[1]->mesh->textureRatios[0] = 1.0f;
     sprites[0]->mesh->textureNames[0] = "TexasClayFront1.bmp";
     sprites[0]->mesh->textureRatios[0] = 1.0f;
-    sprites[1]->mesh->textureNames[0] = "Coins.bmp";
-    sprites[1]->mesh->textureRatios[0] = 1.0f;
-    sprites[2]->mesh->textureNames[0] = "Crown.bmp";
-    sprites[2]->mesh->textureRatios[0] = 1.0f;
 
-    SceneManager sceneManager(player);
-    sceneManager.RegisterPlatform(groundEntity);
+
+
+    //sprites[1]->mesh->textureNames[0] = "Coins.bmp";
+    //sprites[1]->mesh->textureRatios[0] = 1.0f;
+    //sprites[2]->mesh->textureNames[0] = "Crown.bmp";
+    //sprites[2]->mesh->textureRatios[0] = 1.0f;
+
+    
 
     // Add a skybox texture 
     std::string errorTextString;
@@ -523,32 +529,10 @@ int main(void)
         if (space)
         {
             player->Jump();
-            space = false;
+            //space = false;
         }
 
-        for (int i = 0; i < currentLevel->plataforms.size(); i++)
-        {
-            PlatformEntity* currPlatform = currentLevel->plataforms[i];
-
-            float maxX = currPlatform->mesh->positionXYZ.x + (currPlatform->width / 2);
-            float minX = currPlatform->mesh->positionXYZ.x - (currPlatform->width / 2);
-            float maxZ = currPlatform->mesh->positionXYZ.z + (currPlatform->length / 2);
-            float minZ = currPlatform->mesh->positionXYZ.z - (currPlatform->length / 2);
-
-            if ((player->mesh->positionXYZ.x <= maxX && player->mesh->positionXYZ.x >= minX) && (player->mesh->positionXYZ.z <= maxZ && player->mesh->positionXYZ.z >= minZ) && player->verticalSpeed < 0.f)
-            {
-                float distanceFromPlataform = player->mesh->positionXYZ.y - currPlatform->mesh->positionXYZ.y;
-                if (distanceFromPlataform <= 0.2f && distanceFromPlataform >= 0.f)
-                {
-                    player->mesh->positionXYZ.y = currPlatform->mesh->positionXYZ.y;
-                    player->verticalSpeed = 0.f;
-                    player->isAirBorne = false;
-                    break;
-                }
-            }
-
-            player->isAirBorne = true;
-        }
+        
 
         // *******************************************************
         // Screen is cleared and we are ready to draw the scene...
@@ -747,7 +731,7 @@ int main(void)
         //for sprites
         for (unsigned int index = 0; index != sprites.size(); index++)
         {
-            sprites[index]->Process();
+            //sprites[index]->Process();
 
             // So the code is a little easier...
             cMesh* curMesh = sprites[index]->mesh;

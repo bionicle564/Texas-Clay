@@ -1,4 +1,4 @@
-17
+19
 futurebrick.bmp
 TexasClayFront1.bmp
 TexasClayFront2.bmp
@@ -18,5 +18,7 @@ TexasClayRight3.bmp
 TexasClayRightFall.bmp
 Coins.bmp
 Crown.bmp
+ButtonUp.bmp
+ButtonDown.bmp
 Blank.bmp
 
