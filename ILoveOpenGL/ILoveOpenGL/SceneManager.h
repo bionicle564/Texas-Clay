@@ -25,6 +25,8 @@ public:
 	void PlayerInteract();
 
 private:
+	glm::vec3 spawn;
+	
 	Player* player;
 
 	cLoader loader;

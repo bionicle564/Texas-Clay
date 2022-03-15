@@ -50,6 +50,7 @@ void SceneManager::SetUpLevel(int levelIndex) {
 	}
 
 	player->mesh->positionXYZ = level->spawnPosition;
+	spawn = level->spawnPosition;
 	treasures[0]->mesh->positionXYZ = level->goalPosition;
 }
 
@@ -96,6 +97,11 @@ void SceneManager::Process() {
 
 	for (int i = 0; i < treasures.size(); i++) {
 		treasures[i]->Process();
+	}
+
+	if (player->mesh->positionXYZ.y < 0.0f) {
+		player->mesh->positionXYZ = spawn;
+		player->isAirBorne = false;
 	}
 }
 
