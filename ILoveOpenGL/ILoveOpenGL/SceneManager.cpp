@@ -46,6 +46,7 @@ void SceneManager::SetUpLevel(int levelIndex) {
 
 	for (int i = 0; i < level->buttons.size(); i++) {
 		buttons.push_back(level->buttons[i]);
+		buttons[i]->SetPlayerReference(player);
 	}
 
 	player->mesh->positionXYZ = level->spawnPosition;
@@ -57,6 +58,7 @@ void SceneManager::CopyOverWorldEntities(std::vector<Entity*>& world) {
 		world.push_back(platforms[i]);
 	}
 }
+
 void SceneManager::CopyOverSpriteEntities(std::vector<Entity*>& sprites) {
 	for (int i = 0; i < treasures.size(); i++) {
 		sprites.push_back(treasures[i]);
@@ -97,6 +99,24 @@ void SceneManager::Process() {
 	}
 }
 
+void SceneManager::PlayerInteract() {
+	//find what the player is interacting with
+	int index = -1;
+	float closestDistance = 100.0f; //an unreasonable amount;
+	for (int i = 0; i < buttons.size(); i++) {
+		if (buttons[i]->GetPlayerInteractable()) {
+			float buttonDistance = buttons[i]->CalcButtonDistance();
+			if (buttonDistance < closestDistance) {
+				index = i;
+				closestDistance = buttonDistance;
+			}
+		}
+	}
+	if (index >= 0) {
+		UseButton(index);
+	}
+}
+
 bool SceneManager::UseButton(int buttonIndex) {
 	if (buttonIndex >= buttons.size()) { return false; }
 
@@ -104,6 +124,7 @@ bool SceneManager::UseButton(int buttonIndex) {
 
 	if (!button->isPressed) {
 		button->isPressed = true;
+		button->mesh->textureNames[0] = "ButtonDown.bmp";
 		int index = button->platformIndex;
 
 		if (!platforms[index]->isMoving) {

@@ -183,7 +183,7 @@ void cLoader::LoadSpecificLevel(std::string levelFileName, cLevel* level)
 
         int platformId = buttons[i]["plataformId"].GetInt();
 
-        ButtonEntity* newButton = new ButtonEntity(buttonMesh, platformAlternatePosition, platformId);
+        ButtonEntity* newButton = new ButtonEntity(buttonMesh, 0.5f, platformAlternatePosition, platformId);
         level->buttons.push_back(newButton);
     }
 

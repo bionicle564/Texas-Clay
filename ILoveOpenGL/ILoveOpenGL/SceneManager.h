@@ -22,7 +22,7 @@ public:
 
 	void Process();
 
-	bool UseButton(int buttonIndex);
+	void PlayerInteract();
 
 private:
 	Player* player;
@@ -32,5 +32,7 @@ private:
 	std::vector<PlatformEntity*> platforms;
 	std::vector<ButtonEntity*> buttons;
 	std::vector<TreasureEntity*> treasures;
+
+	bool UseButton(int buttonIndex);
 };
 

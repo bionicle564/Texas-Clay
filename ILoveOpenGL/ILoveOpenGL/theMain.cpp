@@ -81,6 +81,7 @@ bool up = false;
 bool down = false;
 bool left = false;
 bool right = false;
+bool interact = false;
 bool space = false;
 
 static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
@@ -157,6 +158,18 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
         //flyCamera.MoveUpDown_Y(flyCamera.movementSpeed);
         cameraAngle -= 0.03f;
         if (cameraAngle < -3.14f) { cameraAngle += 6.28f; }
+    }
+
+    if (key == GLFW_KEY_X && action == GLFW_PRESS)
+    {
+        //cameraEye.z += cameraSpeed;     // Go forward
+        //flyCamera.MoveForward_Z(flyCamera.movementSpeed);
+        //player->MoveFoward();
+        interact = true;
+    }
+    else if (key == GLFW_KEY_X && action == GLFW_RELEASE)
+    {
+        interact = false;
     }
 
     if (key == GLFW_KEY_SPACE && action == GLFW_PRESS) {
@@ -532,7 +545,9 @@ int main(void)
             //space = false;
         }
 
-        
+        if (interact) {
+            sceneManager.PlayerInteract();
+        }
 
         // *******************************************************
         // Screen is cleared and we are ready to draw the scene...
