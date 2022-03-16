@@ -1,5 +1,5 @@
 10
-difuseColour: 1 0.75 0 1
+difuseColour: 0.68 0.65 1 1
 attenuation: 0 0.08 0.03 100000
 direction: 0 -1 0 1
 lightType:innerAngle:outerAngle:na 2 15 30 1
