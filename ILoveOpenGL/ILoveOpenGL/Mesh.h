@@ -13,7 +13,7 @@ public:
 
 	glm::vec3 positionXYZ;
 	glm::vec3 orientationXYZ;		// "angle"
-	float scale;
+	glm::vec3 scale;
 
 	// Sets the overall colour of the object
 	//	by overwriting the colour variable

@@ -27,8 +27,8 @@
 #include "VAOManager.h"
 #include "Entity.h"
 #include "Player.h"
-#include "TreasureEntity.h"
 #include "ShaderManager.h"
+#include "SceneManager.h"
 
 #include "LightManager.h"
 #include "LightHelper.h"
@@ -38,7 +38,7 @@
 #include "JsonIOHandler.h"
 #include "cBasicTextureManager.h"
 #include "MainHelpers.h"
-#include "cLoader.h"
+#include "SceneManager.h"
 
 // 2 stages: Load file into the RAM, then copy RAM into GPU format
 bool LoadPlyFile(std::string fileName);
@@ -58,6 +58,8 @@ cBasicTextureManager* gTextureManager;
 JsonIOHandler jsonIO;
 
 Player* player;
+//std::vector<cLevel*> levels;
+//cLevel* currentLevel;
 
 //std::vector<cMesh> g_vecMeshes;
 std::vector<Entity*> world;
@@ -75,43 +77,11 @@ static void error_callback(int error, const char* description)
     fprintf(stderr, "Error: %s\n", description);
 }
 
-
-//void AttemptToGoToNextFrame() {
-//    //check to see if stuff is still executing
-//    bool stillExecuting = false;
-//    for (int i = 0; i < entities.size(); i++) { stillExecuting |= entities[i]->executing; }
-//    if (!stillExecuting) {//the last frame is done, so we can get to business
-//
-//        currentAnimFrame++;
-//        for (int i = 0; i < anims.size(); i++) {
-//            //load the the models with the animations for this frame
-//            if (anims[i].batch == currentAnimFrame) {
-//                for (int j = 0; j < entities.size(); j++) {
-//
-//                    //find the right models for the animation
-//                    if (entities[j]->mesh->nameID == anims[i].owner) {
-//                        if (anims[i].dispatch == "parallel") { entities[j]->RegisterParallel(anims[i]); }
-//                        if (anims[i].dispatch == "serial") { entities[j]->RegisterSerial(anims[i]); }
-//                    }
-//                }
-//            }
-//        }
-//
-//        //have each model start executing it's commands
-//        //!For each batch, the model can only have set of paralells or a set of serials, NOT both
-//        for (int i = 0; i < entities.size(); i++) {
-//            entities[i]->ExecNextParallel();
-//            entities[i]->ExecSerial();
-//        }
-//
-//    }
-//
-//}
-
 bool up = false;
 bool down = false;
 bool left = false;
 bool right = false;
+bool interact = false;
 bool space = false;
 
 static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
@@ -188,6 +158,18 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
         //flyCamera.MoveUpDown_Y(flyCamera.movementSpeed);
         cameraAngle -= 0.03f;
         if (cameraAngle < -3.14f) { cameraAngle += 6.28f; }
+    }
+
+    if (key == GLFW_KEY_X && action == GLFW_PRESS)
+    {
+        //cameraEye.z += cameraSpeed;     // Go forward
+        //flyCamera.MoveForward_Z(flyCamera.movementSpeed);
+        //player->MoveFoward();
+        interact = true;
+    }
+    else if (key == GLFW_KEY_X && action == GLFW_RELEASE)
+    {
+        interact = false;
     }
 
     if (key == GLFW_KEY_SPACE && action == GLFW_PRESS) {
@@ -318,6 +300,7 @@ int main(void)
     modelNames.push_back("debug_triangle.ply");
     modelNames.push_back("Ground.ply");
     modelNames.push_back("SpriteHolder.ply");
+    modelNames.push_back("Invader_Single_Cube.ply");
     modelNames.push_back("Isosphere_Smooth_Inverted_Normals_for_SkyBox.ply");
 
     for (int i = 0; i < modelNames.size(); i++)
@@ -347,8 +330,9 @@ int main(void)
 
     //for this scene we will need
     //1x room
-    cMesh* room = new cMesh();
-    room->meshName = "Ground.ply";
+    //cMesh* room = new cMesh();
+    //room->meshName = "Invader_Single_Cube.ply";
+    //room->orientationXYZ.x = 3.14f;
     //room->orientationXYZ.x = -1.57f;
     //room->orientationXYZ.y = 1.57f;
 
@@ -356,12 +340,12 @@ int main(void)
     dude->meshName = "SpriteHolder.ply";
     dude->positionXYZ.y = 10.f;
     dude->orientationXYZ.y = -1.57f;
-    dude->orientationXYZ.x = -1.57;
+    dude->orientationXYZ.x = -1.57f;
     dude->bDontLight = true;
 
-    cMesh* goal1 = new cMesh();
+    /*cMesh* goal1 = new cMesh();
     goal1->meshName = "SpriteHolder.ply";
-    goal1->scale = 0.5f;
+    goal1->scale = glm::vec3(0.5f);
     goal1->positionXYZ = glm::vec3(10.0f, 0.0f, 10.5f);
     goal1->orientationXYZ.y = -1.57f;
     goal1->orientationXYZ.x = -1.57f;
@@ -369,33 +353,33 @@ int main(void)
 
     cMesh* goal2 = new cMesh();
     goal2->meshName = "SpriteHolder.ply";
-    goal2->scale = 0.5f;
+    goal2->scale = glm::vec3(0.5f);
     goal2->positionXYZ = glm::vec3(-8.0f, 0.0f, 10.5f);
     goal2->orientationXYZ.y = -1.57f;
     goal2->orientationXYZ.x = -1.57f;
-    goal2->bDontLight = true;
+    goal2->bDontLight = true;*/
 
 
     // Create a skybox object (a sphere with inverted normals that moves with the camera eye)
     cMesh* pSkyBox = new cMesh();
     pSkyBox->meshName = "Isosphere_Smooth_Inverted_Normals_for_SkyBox.ply";
-    pSkyBox->scale = flyCamera.nearPlane * 1000.0f;
+    pSkyBox->scale = glm::vec3(flyCamera.nearPlane * 1000.0f);
     pSkyBox->positionXYZ = flyCamera.getEye();
 
     Entity* skyBoxEntity = new Entity(pSkyBox);
     world.push_back(skyBoxEntity);
 
-    Entity* groundEntity = new Entity(room);
-    world.push_back(groundEntity);
+    //PlatformEntity* groundEntity = new PlatformEntity(room, 10.0f, 10.0f);
+    //world.push_back(groundEntity);
 
     player = new Player(dude);
     sprites.push_back(player);
 
-    Entity* goal1Entity = new TreasureEntity(goal1, 0.5f, player);
-    sprites.push_back(goal1Entity);
+    //Entity* goal1Entity = new TreasureEntity(goal1, 0.5f, player);
+    //sprites.push_back(goal1Entity);
 
-    Entity* goal2Entity = new TreasureEntity(goal2, 0.5f, player);
-    sprites.push_back(goal2Entity);
+    //Entity* goal2Entity = new TreasureEntity(goal2, 0.5f, player);
+    //sprites.push_back(goal2Entity);
 
 
     //jsonIO.ReadManyModels("SceneModels.json", entities);
@@ -417,24 +401,35 @@ int main(void)
     //texture loading
     gTextureManager->SetBasePath("assets/textures");
 
-    cLoader texLoader;
-    texLoader.LoadTextureNames(gTextureManager);
-    
+    //cLoader loader;
+    //loader.LoadTextureNames(gTextureManager);
+    //loader.LoadAllLevels(levels);
+    //currentLevel = levels[0];
+    SceneManager sceneManager(player);
+    sceneManager.LoadTextures(gTextureManager);
+    sceneManager.SetUpLevel(0);
+    sceneManager.CopyOverWorldEntities(world);
+    sceneManager.CopyOverSpriteEntities(sprites);
+    //sceneManager.RegisterPlatform(groundEntity);
 
     //texture assignment
 
     //floor
-    world[1]->mesh->textureNames[0] = "futurebrick.bmp";
-    world[1]->mesh->textureRatios[0] = 1.0f;
+    //world[1]->mesh->textureNames[0] = "futurebrick.bmp";
+    //world[1]->mesh->textureRatios[0] = 1.0f;
     sprites[0]->mesh->textureNames[0] = "TexasClayFront1.bmp";
     sprites[0]->mesh->textureRatios[0] = 1.0f;
-    sprites[1]->mesh->textureNames[0] = "Coins.bmp";
-    sprites[1]->mesh->textureRatios[0] = 1.0f;
-    sprites[2]->mesh->textureNames[0] = "Crown.bmp";
-    sprites[2]->mesh->textureRatios[0] = 1.0f;
 
 
-    // Add a skybox texture
+
+    //sprites[1]->mesh->textureNames[0] = "Coins.bmp";
+    //sprites[1]->mesh->textureRatios[0] = 1.0f;
+    //sprites[2]->mesh->textureNames[0] = "Crown.bmp";
+    //sprites[2]->mesh->textureRatios[0] = 1.0f;
+
+    
+
+    // Add a skybox texture 
     std::string errorTextString;
     if (!gTextureManager->CreateCubeTextureFromBMPFiles("Skybox",
         "stoneBoxSide.bmp",    /* posX_fileName */
@@ -547,16 +542,21 @@ int main(void)
         if (space)
         {
             player->Jump();
-            space = false;
+            //space = false;
         }
 
-
+        if (interact) {
+            sceneManager.PlayerInteract();
+        }
 
         // *******************************************************
         // Screen is cleared and we are ready to draw the scene...
         // *******************************************************
 
+        sceneManager.Process();
+
         //Calcs for arcball camera and Movement
+        //=================================================================
         player->Update(deltaTime); 
         glm::vec3 direction = flyCamera.eye - player->mesh->positionXYZ;
         glm::vec3 newCameraPos(0.0f);
@@ -594,8 +594,10 @@ int main(void)
         //cameraAngle = 0.0f;
 
         //Arcball end
+        //===================================================================================
 
         //make anything in the sprites list always face the camera
+        //=============================================================================
         for (int i = 0; i < sprites.size(); i++) {
             glm::vec2 spritePos(sprites[i]->mesh->positionXYZ.x, sprites[i]->mesh->positionXYZ.z);
             glm::vec2 camPos(newCameraPos.x, newCameraPos.z);
@@ -615,6 +617,7 @@ int main(void)
         }
         lastCameraAngle = cameraAngle;
         //sprite facing end
+        //==================================================================
 
         gTheLights.CopyLightInfoToShader();
 
@@ -743,7 +746,7 @@ int main(void)
         //for sprites
         for (unsigned int index = 0; index != sprites.size(); index++)
         {
-            sprites[index]->Process();
+            //sprites[index]->Process();
 
             // So the code is a little easier...
             cMesh* curMesh = sprites[index]->mesh;

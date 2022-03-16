@@ -4,7 +4,10 @@
 #include <iostream>
 #include <sstream>
 
+#include <rapidjson/filereadstream.h>
+#include <rapidjson/document.h>
 
+static const std::string levelListFileName = "assets/LevelList.json";
 
 void cLoader::LoadTextureNames(cBasicTextureManager* manager)
 {
@@ -52,4 +55,137 @@ void cLoader::SaveTextureNames(std::vector<std::string> texNames, cBasicTextureM
     }
 
     file.close();
+}
+
+void cLoader::LoadAllLevels()
+{
+    using namespace rapidjson;
+
+    FILE* fp = 0;
+    fopen_s(&fp, levelListFileName.c_str(), "rb"); // non-Windows use "r"
+
+    char readBuffer[65536];
+    FileReadStream is(fp, readBuffer, sizeof(readBuffer));
+
+    Document d;
+    d.ParseStream(is);
+
+    std::vector<std::string> levelFileNames;
+
+    const Value& levelNames = d["LevelList"];
+    for (int i = 0; i < levelNames.Size(); i++)
+    {
+        //languages.insert(languages.end(), languageOptions[i].GetString());
+        levelFileNames.push_back(levelNames[i].GetString());
+    }
+
+    fclose(fp);
+
+    for (int i = 0; i < levelFileNames.size(); i++)
+    {
+        std::string fileName = "assets/levels/" + levelFileNames[i];
+        cLevel* newLevel = new cLevel();
+
+        LoadSpecificLevel(fileName, newLevel);
+        levels.push_back(newLevel);
+    }
+}
+
+void cLoader::LoadSpecificLevel(std::string levelFileName, cLevel* level)
+{
+    using namespace rapidjson;
+
+    FILE* fp = 0;
+    fopen_s(&fp, levelFileName.c_str(), "rb"); // non-Windows use "r"
+
+    char readBuffer[65536];
+    FileReadStream is(fp, readBuffer, sizeof(readBuffer));
+
+    Document d;
+    d.ParseStream(is);
+
+    glm::vec3 spawnPosition;
+    spawnPosition.x = d["spawnPosition"]["x"].GetFloat();
+    spawnPosition.y = d["spawnPosition"]["y"].GetFloat();
+    spawnPosition.z = d["spawnPosition"]["z"].GetFloat();
+    level->spawnPosition = spawnPosition;
+
+    glm::vec3 goalPosition;
+    goalPosition.x = d["goalPosition"]["x"].GetFloat();
+    goalPosition.y = d["goalPosition"]["y"].GetFloat();
+    goalPosition.z = d["goalPosition"]["z"].GetFloat();
+    level->goalPosition = goalPosition;
+
+    const Value& plataforms = d["plataforms"];
+    for (int i = 0; i < plataforms.Size(); i++)
+    {
+        //sPlataform newPlataform;
+        //newPlataform.id = plataforms[i]["id"].GetInt();
+        //newPlataform.position.x = plataforms[i]["position"]["x"].GetFloat();
+        //newPlataform.position.y = plataforms[i]["position"]["y"].GetFloat();
+        //newPlataform.position.z = plataforms[i]["position"]["z"].GetFloat();
+        //newPlataform.length = plataforms[i]["length"].GetFloat();
+        //newPlataform.width = plataforms[i]["width"].GetFloat();
+
+        //level->plataforms.push_back(newPlataform);
+
+        cMesh* platformMesh = new cMesh();
+        platformMesh->meshName = "Invader_Single_Cube.ply";
+        platformMesh->orientationXYZ.x = 3.14f;
+        platformMesh->positionXYZ.x = plataforms[i]["position"]["x"].GetFloat();
+        platformMesh->positionXYZ.y = plataforms[i]["position"]["y"].GetFloat();
+        platformMesh->positionXYZ.z = plataforms[i]["position"]["z"].GetFloat();
+        platformMesh->textureNames[0] = "futurebrick.bmp";
+        platformMesh->textureRatios[0] = 1.0f;
+        // change whatever you need for the mesh here
+
+        float platformWidth = plataforms[i]["width"].GetFloat();
+        float platformLength = plataforms[i]["length"].GetFloat();
+
+        PlatformEntity* newPlatform = new PlatformEntity(platformMesh, platformWidth, platformLength);
+        level->plataforms.push_back(newPlatform);
+    }
+
+    const Value& buttons = d["buttons"];
+    for (int i = 0; i < buttons.Size(); i++)
+    {
+        //cButton newButton;
+
+        //int platId = buttons[i]["plataformId"].GetInt();
+        //newButton.connectedPlataform = &(level->plataforms[platId]);
+
+        //newButton.position.x = buttons[i]["position"]["x"].GetFloat();
+        //newButton.position.y = buttons[i]["position"]["y"].GetFloat();
+        //newButton.position.z = buttons[i]["position"]["z"].GetFloat();
+        //newButton.plataformAlternatePosition.x = buttons[i]["alternatePosition"]["x"].GetFloat();
+        //newButton.plataformAlternatePosition.y = buttons[i]["alternatePosition"]["y"].GetFloat();
+        //newButton.plataformAlternatePosition.z = buttons[i]["alternatePosition"]["z"].GetFloat();
+        //newButton.plataformOgPosition = level->plataforms[platId].position;
+        //
+        //level->buttons.push_back(newButton);
+
+        cMesh* buttonMesh = new cMesh();
+        buttonMesh->meshName = "SpriteHolder.ply";
+        buttonMesh->orientationXYZ.y = -1.57f;
+        buttonMesh->orientationXYZ.x = -1.57f;
+        buttonMesh->positionXYZ.x = buttons[i]["position"]["x"].GetFloat();
+        buttonMesh->positionXYZ.y = buttons[i]["position"]["y"].GetFloat();
+        buttonMesh->positionXYZ.z = buttons[i]["position"]["z"].GetFloat();
+        buttonMesh->bDontLight = true;
+        buttonMesh->textureNames[0] = "ButtonUp.bmp";
+        buttonMesh->textureRatios[0] = 1.0f;
+        // change whatever you need for the mesh here
+
+        glm::vec3 platformAlternatePosition;
+        platformAlternatePosition.x = buttons[i]["alternatePosition"]["x"].GetFloat();
+        platformAlternatePosition.y = buttons[i]["alternatePosition"]["y"].GetFloat();
+        platformAlternatePosition.z = buttons[i]["alternatePosition"]["z"].GetFloat();
+
+        int platformId = buttons[i]["plataformId"].GetInt();
+
+        ButtonEntity* newButton = new ButtonEntity(buttonMesh, 0.5f, platformAlternatePosition, platformId);
+        level->buttons.push_back(newButton);
+    }
+
+    fclose(fp);
 }

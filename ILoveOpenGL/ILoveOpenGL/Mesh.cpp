@@ -7,7 +7,7 @@ cMesh::cMesh()
 	this->positionXYZ = glm::vec3(0.0f, 0.0f, 0.0f);
 	this->orientationXYZ = glm::vec3(0.0f, 0.0f, 0.0f);
 
-	this->scale = 1.0f;
+	this->scale = glm::vec3(1.0f);
 
 	this->bIsWireframe = false;
 
