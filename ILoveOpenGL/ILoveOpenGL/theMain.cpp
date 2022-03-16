@@ -81,6 +81,10 @@ bool up = false;
 bool down = false;
 bool left = false;
 bool right = false;
+bool cameraLeft = false;
+bool cameraRight = false;
+
+
 bool interact = false;
 bool space = false;
 
@@ -144,20 +148,31 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
     }
 
 
-    if (key == GLFW_KEY_Q)
+    if (key == GLFW_KEY_Q && action == GLFW_PRESS)
     {
-        //cameraEye.y -= cameraSpeed;     // Go "Down"
-        //flyCamera.MoveUpDown_Y(-flyCamera.movementSpeed);
-        cameraAngle += 0.03f;
-        if (cameraAngle > 3.14f) { cameraAngle -= 6.28;  }
+        cameraLeft = true;
+
+        //cameraAngle += 0.03f;
+        //if (cameraAngle > 3.14f) { cameraAngle -= 6.28;  }
         
     }
-    if (key == GLFW_KEY_E)
+    else if (key == GLFW_KEY_Q && action == GLFW_RELEASE)
+    {
+        cameraLeft = false;
+    }
+
+    if (key == GLFW_KEY_E && action == GLFW_PRESS)
     {
         //cameraEye.y += cameraSpeed;     // Go "Up"
         //flyCamera.MoveUpDown_Y(flyCamera.movementSpeed);
-        cameraAngle -= 0.03f;
-        if (cameraAngle < -3.14f) { cameraAngle += 6.28f; }
+        cameraRight= true;
+
+        //cameraAngle -= 0.03f;
+        //if (cameraAngle < -3.14f) { cameraAngle += 6.28f; }
+    }
+    else if (key == GLFW_KEY_E && action == GLFW_RELEASE)
+    {
+        cameraRight = false;
     }
 
     if (key == GLFW_KEY_X && action == GLFW_PRESS)
@@ -537,6 +552,24 @@ int main(void)
         if (right)
         {
             player->MoveRight();
+        }
+
+        if (cameraLeft)
+        {
+            cameraAngle += 0.03f;
+            if (cameraAngle > 3.14f) 
+            {
+                cameraAngle -= 6.28;  
+            }
+        }
+
+        if (cameraRight)
+        {
+            cameraAngle -= 0.03f;
+            if (cameraAngle < -3.14f)
+            {
+                cameraAngle += 6.28f; 
+            }
         }
 
         if (space)
