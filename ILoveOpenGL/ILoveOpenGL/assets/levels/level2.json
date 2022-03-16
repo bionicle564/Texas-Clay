@@ -1,0 +1,112 @@
+{
+  "spawnPosition": {
+    "x": 0.0,
+    "y": 1.0,
+    "z": 0.0
+  },
+  "goalPosition": {
+    "x": -15.0,
+    "y": 1.0,
+    "z": 0.0
+  },
+  "plataforms": [
+    {
+      "id": 0,
+      "position": {
+        "x": 0.0,
+        "y": 1.0,
+        "z": 0.0
+      },
+      "width": 5.0,
+      "length": 5.0
+    },
+    {
+      "id": 1,
+      "position": {
+        "x": 0.0,
+        "y": 1.0,
+        "z": -7.5
+      },
+      "width": 5.0,
+      "length": 5.0
+    },
+    {
+      "id": 2,
+      "position": {
+        "x": 0.0,
+        "y": 1.0,
+        "z": -15.0
+      },
+      "width": 5.0,
+      "length": 5.0
+    },
+    {
+      "id": 3,
+      "position": {
+        "x": 7.5,
+        "y": 1.0,
+        "z": 0.0
+      },
+      "width": 5.0,
+      "length": 5.0
+    },
+    {
+      "id": 4,
+      "position": {
+        "x": 15.0,
+        "y": 1.0,
+        "z": 0.0
+      },
+      "width": 5.0,
+      "length": 5.0
+    },
+    {
+      "id": 5,
+      "position": {
+        "x": 0.0,
+        "y": 1.0,
+        "z": 15.0
+      },
+      "width": 5.0,
+      "length": 5.0
+    },
+    {
+      "id": 6,
+      "position": {
+        "x": -15.0,
+        "y": 1.0,
+        "z": 0.0
+      },
+      "width": 5.0,
+      "length": 5.0
+    }
+  ],
+  "buttons": [
+    {
+      "position": {
+        "x": 0.0,
+        "y": 1.0,
+        "z": -15.0
+      },
+      "plataformId": 3,
+      "alternatePosition": {
+        "x": -7.5,
+        "y": 0.0,
+        "z": 7.5
+      }
+    },
+    {
+      "position": {
+        "x": 0.0,
+        "y": 1.0,
+        "z": 15.0
+      },
+      "plataformId": 1,
+      "alternatePosition": {
+        "x": -7.5,
+        "y": 0.0,
+        "z": 7.5
+      }
+    }
+  ]
+}

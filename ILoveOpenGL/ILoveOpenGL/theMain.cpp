@@ -437,7 +437,7 @@ int main(void)
     //currentLevel = levels[0];
     SceneManager sceneManager(player);
     sceneManager.LoadTextures(gTextureManager);
-    sceneManager.SetUpLevel(0);
+    sceneManager.SetUpLevel(1);
     sceneManager.CopyOverWorldEntities(world);
     sceneManager.CopyOverSpriteEntities(sprites);
     //sceneManager.RegisterPlatform(groundEntity);
