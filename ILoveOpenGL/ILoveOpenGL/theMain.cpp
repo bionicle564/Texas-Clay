@@ -11,6 +11,7 @@
 #include <glm/vec4.hpp> // glm::vec4
 #include <glm/mat4x4.hpp> // glm::mat4
 #include <glm/gtc/matrix_transform.hpp> 
+#include <glm/gtx/rotate_vector.hpp>
 // glm::translate, glm::rotate, glm::scale, glm::perspective
 #include <glm/gtc/type_ptr.hpp> // glm::value_ptr
 
@@ -77,26 +78,39 @@ static void error_callback(int error, const char* description)
     fprintf(stderr, "Error: %s\n", description);
 }
 
+
+enum class eGameState
+{
+    PLAYING,
+    PAUSED
+};
+
+eGameState state;
+
 bool up = false;
 bool down = false;
 bool left = false;
 bool right = false;
+bool cameraLeft = false;
+bool cameraRight = false;
+
+
 bool interact = false;
 bool space = false;
 
 static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-        glfwSetWindowShouldClose(window, GLFW_TRUE);
+    {
+        //glfwSetWindowShouldClose(window, GLFW_TRUE);
+        state = eGameState::PAUSED;
+    }
 
-    //float cameraSpeed = 0.1f;
+    
 
-    // Basic camera controls
+    // Basic player controls
     if (key == GLFW_KEY_A && action == GLFW_PRESS)
     {
-        //cameraEye.x -= cameraSpeed;     // Go left
-        //flyCamera.MoveLeftRight_X(-flyCamera.movementSpeed);
-        //player->MoveLeft();
         left = true;
     }
     else if (key == GLFW_KEY_A && action == GLFW_RELEASE)
@@ -107,9 +121,6 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
 
     if (key == GLFW_KEY_D && action == GLFW_PRESS)
     {
-        //cameraEye.x += cameraSpeed;     // Go right
-        //flyCamera.MoveLeftRight_X(flyCamera.movementSpeed);
-        //player->MoveRight();
         right = true;
     }
     else if (key == GLFW_KEY_D && action == GLFW_RELEASE)
@@ -120,9 +131,6 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
 
     if (key == GLFW_KEY_W && action == GLFW_PRESS)
     {
-        //cameraEye.z += cameraSpeed;     // Go forward
-        //flyCamera.MoveForward_Z(flyCamera.movementSpeed);
-        //player->MoveFoward();
         up = true;
     }
     else if (key == GLFW_KEY_W && action == GLFW_RELEASE)
@@ -133,9 +141,6 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
 
     if (key == GLFW_KEY_S && action == GLFW_PRESS)
     {
-        //cameraEye.z -= cameraSpeed;     // Go backwards
-        //flyCamera.MoveForward_Z(-flyCamera.movementSpeed);
-        //player->MoveBackward();
         down = true;
     }
     else if (key == GLFW_KEY_S && action == GLFW_RELEASE)
@@ -144,27 +149,26 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
     }
 
 
-    if (key == GLFW_KEY_Q)
+    if (key == GLFW_KEY_Q && action == GLFW_PRESS)
     {
-        //cameraEye.y -= cameraSpeed;     // Go "Down"
-        //flyCamera.MoveUpDown_Y(-flyCamera.movementSpeed);
-        cameraAngle += 0.03f;
-        if (cameraAngle > 3.14f) { cameraAngle -= 6.28;  }
-        
+        cameraLeft = true;
     }
-    if (key == GLFW_KEY_E)
+    else if (key == GLFW_KEY_Q && action == GLFW_RELEASE)
     {
-        //cameraEye.y += cameraSpeed;     // Go "Up"
-        //flyCamera.MoveUpDown_Y(flyCamera.movementSpeed);
-        cameraAngle -= 0.03f;
-        if (cameraAngle < -3.14f) { cameraAngle += 6.28f; }
+        cameraLeft = false;
+    }
+
+    if (key == GLFW_KEY_E && action == GLFW_PRESS)
+    {
+        cameraRight= true;
+    }
+    else if (key == GLFW_KEY_E && action == GLFW_RELEASE)
+    {
+        cameraRight = false;
     }
 
     if (key == GLFW_KEY_X && action == GLFW_PRESS)
     {
-        //cameraEye.z += cameraSpeed;     // Go forward
-        //flyCamera.MoveForward_Z(flyCamera.movementSpeed);
-        //player->MoveFoward();
         interact = true;
     }
     else if (key == GLFW_KEY_X && action == GLFW_RELEASE)
@@ -195,8 +199,6 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
         gTheLights.LoadLightInformationFromFile("testLights.txt");
         gTheLights.CopyLightInfoToShader();
     }
-
-
     
 
     /*std::cout << "Camera: "
@@ -207,13 +209,27 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
 
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 {
-    if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
-        std::cout << "\tglick." << std::endl;
+    if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS && state == eGameState::PAUSED) {
+
+        double x, y;
+        glfwGetCursorPos(window, &x, &y);
+        //std::cout << x << ":" << y << std::endl
+
+        if (y > 290 && y < 333)
+        {
+            if (x > 386 && x < 583)
+            {
+                glfwSetWindowShouldClose(window, GLFW_TRUE);
+            }
+            else if (x > 690 && x < 888)
+            {
+                state = eGameState::PLAYING;
+            }
+        }
+        
+
     }
 }
-
-
-
 
 
 //-------------------
@@ -253,6 +269,10 @@ int main(void)
     gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
     //    gladLoadGL(glfwGetProcAddress);
     glfwSwapInterval(1);
+
+
+    state = eGameState::PLAYING;
+
 
     // NOTE: OpenGL error checks have been omitted for brevity
 
@@ -302,6 +322,7 @@ int main(void)
     modelNames.push_back("SpriteHolder.ply");
     modelNames.push_back("Invader_Single_Cube.ply");
     modelNames.push_back("Isosphere_Smooth_Inverted_Normals_for_SkyBox.ply");
+    modelNames.push_back("Quad_1_sided_aligned_on_XY_plane.ply");
 
     for (int i = 0; i < modelNames.size(); i++)
     {
@@ -319,7 +340,16 @@ int main(void)
         }
     }
     
-
+    cMesh* button = new cMesh();
+    button->meshName = "Quad_1_sided_aligned_on_XY_plane.ply";
+    //button->meshName = "SpriteHolder.ply";
+    button->textureNames[0] = "EscapeButton.bmp";
+    button->textureRatios[0] = 1;
+    button->orientationXYZ.y = -3.14;
+    button->scale = glm::vec3(.0005);
+    button->scale.x *= .3;
+    button->positionXYZ = glm::vec3(-.0003, .0008,0);
+    button->bDontLight = true;
 
     cMesh* debug = new cMesh();
     debug->meshName = "debug_triangle.ply";
@@ -519,36 +549,57 @@ int main(void)
         //    async controls
         //======================
 
-        if (up)
+        if (state == eGameState::PLAYING)
         {
-            player->MoveFoward();
-        }
+            if (up)
+            {
+                player->MoveFoward();
+            }
 
-        if (down)
-        {
-            player->MoveBackward();
-        }
+            if (down)
+            {
+                player->MoveBackward();
+            }
 
-        if (left)
-        {
-            player->MoveLeft();
-        }
+            if (left)
+            {
+                player->MoveLeft();
+            }
 
-        if (right)
-        {
-            player->MoveRight();
-        }
+            if (right)
+            {
+                player->MoveRight();
+            }
 
-        if (space)
-        {
-            player->Jump();
-            //space = false;
-        }
+            if (cameraLeft)
+            {
+                cameraAngle += 0.03f;
+                if (cameraAngle > 3.14f)
+                {
+                    //cameraAngle -= 6.28;  
+                }
+            }
 
-        if (interact) {
-            sceneManager.PlayerInteract();
-        }
+            if (cameraRight)
+            {
+                cameraAngle -= 0.03f;
+                if (cameraAngle < -3.14f)
+                {
+                    //cameraAngle += 6.28f; 
+                }
+            }
 
+            if (space)
+            {
+                player->Jump();
+                //space = false;
+            }
+
+            if (interact)
+            {
+                sceneManager.PlayerInteract();
+            }
+        }
         // *******************************************************
         // Screen is cleared and we are ready to draw the scene...
         // *******************************************************
@@ -559,12 +610,19 @@ int main(void)
         //=================================================================
         player->Update(deltaTime); 
         glm::vec3 direction = flyCamera.eye - player->mesh->positionXYZ;
-        glm::vec3 newCameraPos(0.0f);
+        glm::vec3 newCameraPos(10.0f, 0.0f, .0f);
         //position = (Rotate(some other angle, (0, 1, 0)) * (position - target)) + target;
-        newCameraPos = (glm::angleAxis(lastCameraAngle - cameraAngle, glm::vec3(0, 1, 0)) * direction) + player->mesh->positionXYZ;      
-  
+        //newCameraPos = (glm::angleAxis(lastCameraAngle - cameraAngle, glm::vec3(0, 1, 0)) * direction) + player->mesh->positionXYZ;      
+        
+        
+        newCameraPos = player->mesh->positionXYZ + glm::rotate(newCameraPos, (-cameraAngle), glm::vec3(0,1,0));
+        
+        newCameraPos.y = player->mesh->positionXYZ.y + 2.5f; //if you don't have this outside the if it goes brrrrrrrrrrrrrrr
+
+        
         float curDistance = glm::distance(player->mesh->positionXYZ, flyCamera.eye);
 
+        
         if (curDistance != distance) {
             // Calculate the normal.
             glm::vec3 normal = player->mesh->positionXYZ - flyCamera.eye;
@@ -581,7 +639,7 @@ int main(void)
             }
 
             glm::vec3 resolveMove = normal * penetration;
-            newCameraPos += resolveMove;
+            //newCameraPos += resolveMove;
 
             newCameraPos.y = player->mesh->positionXYZ.y + 2.5f;
         }
@@ -642,7 +700,16 @@ int main(void)
         glUniformMatrix4fv(matView_Location, 1, GL_FALSE, glm::value_ptr(v));
         glUniformMatrix4fv(matProjection_Location, 1, GL_FALSE, glm::value_ptr(p));
 
-       
+        GLint paused_loc = glGetUniformLocation(program, "paused");
+
+        if (state == eGameState::PAUSED)
+        {
+            glUniform1f(paused_loc, (GLfloat)GL_TRUE);
+        }
+        else
+        {
+            glUniform1f(paused_loc, (GLfloat)GL_FALSE);
+        }
 
         
 
@@ -787,6 +854,65 @@ int main(void)
 
         }
 
+        if (state == eGameState::PAUSED)
+        {
+
+            {
+                GLint bDiscardTransparencyWindowsOn_LodID = glGetUniformLocation(program, "bDiscardTransparencyWindowsOn");
+
+                //                GLuint discardTextureNumber = ::g_pTextureManager->getTextureIDFromName("Lisse_mobile_shipyard-mal1.bmp");
+                GLuint discardTextureNumber = gTextureManager->getTextureIDFromName(button->textureNames[0]);
+                // I'm picking texture unit 30 since it's not in use.
+                GLuint discardTextureUnit = 30;			// Texture unit go from 0 to 79
+                glActiveTexture(discardTextureUnit + GL_TEXTURE0);	// GL_TEXTURE0 = 33984
+                glBindTexture(GL_TEXTURE_2D, discardTextureNumber);
+                GLint discardTexture_LocID = glGetUniformLocation(program, "discardTexture");
+                glUniform1i(discardTexture_LocID, discardTextureUnit);
+
+                // Turn discard function on
+                glUniform1f(bDiscardTransparencyWindowsOn_LodID, (GLfloat)GL_TRUE);
+            }
+
+
+
+            matModel = glm::mat4(1.0f);  // "Identity" ("do nothing", like x1)
+            glm::vec3 eyeForFullScreenQuad = glm::vec3(0.0f, 0.0f, -100.0f);   // "eye" is 100 units away from the quad
+            glm::vec3 atForFullScreenQuad = glm::vec3(0.0f, 0.0f, 0.0f);    // "at" the quad
+            glm::vec3 upForFullScreenQuad = glm::vec3(0.0f, 1.0f, 0.0f);      // "at" the quad
+            glm::mat4 matView = glm::lookAt(eyeForFullScreenQuad,
+                atForFullScreenQuad,
+                upForFullScreenQuad);      // up in y direction
+
+            glm::mat4 matProjection = glm::ortho(
+                0.0f,   // Left
+                1.0f / (float)width,  // Right
+                0.0f,   // Top
+                1.0f / (float)height, // Bottom
+                0.f, // zNear  Eye is at 450, quad is at 500, so 50 units away
+                1000.0f); // zFar
+
+
+
+            glUniformMatrix4fv(matView_Location, 1, GL_FALSE, glm::value_ptr(matView));
+            glUniformMatrix4fv(matProjection_Location, 1, GL_FALSE, glm::value_ptr(matProjection));
+
+
+            glUniform1f(paused_loc, (GLfloat)GL_FALSE);
+
+            DrawObject(button, matModel, matModel_Location, matModelInverseTranspose_Location, program,
+                gVAOManager, gTextureManager, gradualIncrease);
+
+            //this should go out of scope itself
+            cMesh button2 = *button;
+
+            button2.textureNames[0] = "ResumeButton.bmp";
+            button2.positionXYZ.x = -.000485;
+
+            DrawObject(&button2, matModel, matModel_Location, matModelInverseTranspose_Location, program,
+                gVAOManager, gTextureManager, gradualIncrease);
+        }
+
+
 
 
         glfwSwapBuffers(window);
@@ -808,6 +934,8 @@ int main(void)
     
     delete gTextureManager;
     delete gVAOManager;
+
+    delete button;
 
     glfwDestroyWindow(window);
 

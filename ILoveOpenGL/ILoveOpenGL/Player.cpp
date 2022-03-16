@@ -14,17 +14,8 @@ Player::Player(cMesh* mesh) : Entity(mesh)
 	hasMoved = false;
 	moveTimer = 0.0f;
 
-	//Floor plat1;
-	//plat1.position = glm::vec3(0.f, 10.f, 0.f);
-	//plat1.width = 10.f;
-	//plat1.length = 10.f;
-	//plataforms.push_back(plat1);
 
-	//Floor plat2;
-	//plat2.position = glm::vec3(5.f, 0.f, 0.f);
-	//plat2.width = 10.f;
-	//plat2.length = 10.f;
-	//plataforms.push_back(plat2);
+
 }
 
 Player::~Player() 

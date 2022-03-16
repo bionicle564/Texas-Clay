@@ -100,6 +100,8 @@ uniform float blackHoleSize;
 // Skybox or reflection or light probe
 //uniform samplerCube skyBox;			// GL_TEXTURE_CUBE_MAP
 
+uniform bool paused;
+
 
 
 vec4 calcualteLightContrib( vec3 vertexMaterialColour, vec3 vertexNormal, 
@@ -185,6 +187,11 @@ void main()
 //			pixelColour.rgb += texture( cubeMap_03, fNormal.xyz ).rgb * cubeMap_Ratios0to3.w;
 //		}
 
+		if(paused)
+		{
+			pixelColour.rgb *= .4;
+		}
+
 		return;	
 	}//if ( bIsSkyBox )
 
@@ -229,11 +236,17 @@ void main()
 			// + etc... the other 4 texture units
 	}
 
+
+
 	// Don't run the lighting calculation
 	if ( bDontLightObject )
 	{
 		// Early exit from shader
 		pixelColour.rgb = vertexDiffuseColour.rgb;
+		if(paused)
+		{
+			pixelColour.rgb *= .4;
+		}
 		return;
 	}
 	
@@ -241,9 +254,15 @@ void main()
 	                                        fNormal.xyz, 		// Normal at the vertex (in world coords)
                                             fVertWorldLocation.xyz,	// Vertex WORLD position
 											wholeObjectSpecularColour.rgba );
-											
+							
+
+							
 	pixelColour = outColour;
 	
+	if(paused)
+	{
+		pixelColour.rgb *= .4;
+	}
 	
 	pixelColour.a = wholeObjectAlphaTransparency;
 
