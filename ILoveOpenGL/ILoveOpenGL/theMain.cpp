@@ -94,14 +94,11 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
         glfwSetWindowShouldClose(window, GLFW_TRUE);
 
-    //float cameraSpeed = 0.1f;
+    
 
-    // Basic camera controls
+    // Basic player controls
     if (key == GLFW_KEY_A && action == GLFW_PRESS)
     {
-        //cameraEye.x -= cameraSpeed;     // Go left
-        //flyCamera.MoveLeftRight_X(-flyCamera.movementSpeed);
-        //player->MoveLeft();
         left = true;
     }
     else if (key == GLFW_KEY_A && action == GLFW_RELEASE)
@@ -112,9 +109,6 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
 
     if (key == GLFW_KEY_D && action == GLFW_PRESS)
     {
-        //cameraEye.x += cameraSpeed;     // Go right
-        //flyCamera.MoveLeftRight_X(flyCamera.movementSpeed);
-        //player->MoveRight();
         right = true;
     }
     else if (key == GLFW_KEY_D && action == GLFW_RELEASE)
@@ -125,9 +119,6 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
 
     if (key == GLFW_KEY_W && action == GLFW_PRESS)
     {
-        //cameraEye.z += cameraSpeed;     // Go forward
-        //flyCamera.MoveForward_Z(flyCamera.movementSpeed);
-        //player->MoveFoward();
         up = true;
     }
     else if (key == GLFW_KEY_W && action == GLFW_RELEASE)
@@ -138,9 +129,6 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
 
     if (key == GLFW_KEY_S && action == GLFW_PRESS)
     {
-        //cameraEye.z -= cameraSpeed;     // Go backwards
-        //flyCamera.MoveForward_Z(-flyCamera.movementSpeed);
-        //player->MoveBackward();
         down = true;
     }
     else if (key == GLFW_KEY_S && action == GLFW_RELEASE)
@@ -152,10 +140,6 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
     if (key == GLFW_KEY_Q && action == GLFW_PRESS)
     {
         cameraLeft = true;
-
-        //cameraAngle += 0.03f;
-        //if (cameraAngle > 3.14f) { cameraAngle -= 6.28;  }
-        
     }
     else if (key == GLFW_KEY_Q && action == GLFW_RELEASE)
     {
@@ -164,12 +148,7 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
 
     if (key == GLFW_KEY_E && action == GLFW_PRESS)
     {
-        //cameraEye.y += cameraSpeed;     // Go "Up"
-        //flyCamera.MoveUpDown_Y(flyCamera.movementSpeed);
         cameraRight= true;
-
-        //cameraAngle -= 0.03f;
-        //if (cameraAngle < -3.14f) { cameraAngle += 6.28f; }
     }
     else if (key == GLFW_KEY_E && action == GLFW_RELEASE)
     {
@@ -178,9 +157,6 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
 
     if (key == GLFW_KEY_X && action == GLFW_PRESS)
     {
-        //cameraEye.z += cameraSpeed;     // Go forward
-        //flyCamera.MoveForward_Z(flyCamera.movementSpeed);
-        //player->MoveFoward();
         interact = true;
     }
     else if (key == GLFW_KEY_X && action == GLFW_RELEASE)
@@ -211,8 +187,6 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
         gTheLights.LoadLightInformationFromFile("testLights.txt");
         gTheLights.CopyLightInfoToShader();
     }
-
-
     
 
     /*std::cout << "Camera: "
@@ -227,9 +201,6 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
         std::cout << "\tglick." << std::endl;
     }
 }
-
-
-
 
 
 //-------------------
@@ -600,7 +571,7 @@ int main(void)
         
         newCameraPos = player->mesh->positionXYZ + glm::rotate(newCameraPos, (-cameraAngle), glm::vec3(0,1,0));
         
-        newCameraPos.y = player->mesh->positionXYZ.y + 2.5f; //if you don't have this outse the if it goes brrrrrrrrrrrrrrr
+        newCameraPos.y = player->mesh->positionXYZ.y + 2.5f; //if you don't have this outside the if it goes brrrrrrrrrrrrrrr
 
         
         float curDistance = glm::distance(player->mesh->positionXYZ, flyCamera.eye);
