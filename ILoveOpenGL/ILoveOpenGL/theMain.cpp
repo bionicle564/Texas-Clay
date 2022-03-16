@@ -85,7 +85,7 @@ enum class eGameState
     PAUSED
 };
 
-
+eGameState state;
 
 bool up = false;
 bool down = false;
@@ -101,7 +101,10 @@ bool space = false;
 static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-        glfwSetWindowShouldClose(window, GLFW_TRUE);
+    {
+        //glfwSetWindowShouldClose(window, GLFW_TRUE);
+        state = eGameState::PAUSED;
+    }
 
     
 
@@ -206,8 +209,25 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
 
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 {
-    if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
-        std::cout << "\tglick." << std::endl;
+    if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS && state == eGameState::PAUSED) {
+
+        double x, y;
+        glfwGetCursorPos(window, &x, &y);
+        //std::cout << x << ":" << y << std::endl
+
+        if (y > 290 && y < 333)
+        {
+            if (x > 386 && x < 583)
+            {
+                glfwSetWindowShouldClose(window, GLFW_TRUE);
+            }
+            else if (x > 690 && x < 888)
+            {
+                state = eGameState::PLAYING;
+            }
+        }
+        
+
     }
 }
 
@@ -251,7 +271,7 @@ int main(void)
     glfwSwapInterval(1);
 
 
-
+    state = eGameState::PLAYING;
 
 
     // NOTE: OpenGL error checks have been omitted for brevity
@@ -529,54 +549,57 @@ int main(void)
         //    async controls
         //======================
 
-        if (up)
+        if (state == eGameState::PLAYING)
         {
-            player->MoveFoward();
-        }
-
-        if (down)
-        {
-            player->MoveBackward();
-        }
-
-        if (left)
-        {
-            player->MoveLeft();
-        }
-
-        if (right)
-        {
-            player->MoveRight();
-        }
-
-        if (cameraLeft)
-        {
-            cameraAngle += 0.03f;
-            if (cameraAngle > 3.14f) 
+            if (up)
             {
-                //cameraAngle -= 6.28;  
+                player->MoveFoward();
+            }
+
+            if (down)
+            {
+                player->MoveBackward();
+            }
+
+            if (left)
+            {
+                player->MoveLeft();
+            }
+
+            if (right)
+            {
+                player->MoveRight();
+            }
+
+            if (cameraLeft)
+            {
+                cameraAngle += 0.03f;
+                if (cameraAngle > 3.14f)
+                {
+                    //cameraAngle -= 6.28;  
+                }
+            }
+
+            if (cameraRight)
+            {
+                cameraAngle -= 0.03f;
+                if (cameraAngle < -3.14f)
+                {
+                    //cameraAngle += 6.28f; 
+                }
+            }
+
+            if (space)
+            {
+                player->Jump();
+                //space = false;
+            }
+
+            if (interact)
+            {
+                sceneManager.PlayerInteract();
             }
         }
-
-        if (cameraRight)
-        {
-            cameraAngle -= 0.03f;
-            if (cameraAngle < -3.14f)
-            {
-                //cameraAngle += 6.28f; 
-            }
-        }
-
-        if (space)
-        {
-            player->Jump();
-            //space = false;
-        }
-
-        if (interact) {
-            sceneManager.PlayerInteract();
-        }
-
         // *******************************************************
         // Screen is cleared and we are ready to draw the scene...
         // *******************************************************
@@ -677,7 +700,16 @@ int main(void)
         glUniformMatrix4fv(matView_Location, 1, GL_FALSE, glm::value_ptr(v));
         glUniformMatrix4fv(matProjection_Location, 1, GL_FALSE, glm::value_ptr(p));
 
-       
+        GLint paused_loc = glGetUniformLocation(program, "paused");
+
+        if (state == eGameState::PAUSED)
+        {
+            glUniform1f(paused_loc, (GLfloat)GL_TRUE);
+        }
+        else
+        {
+            glUniform1f(paused_loc, (GLfloat)GL_FALSE);
+        }
 
         
 
@@ -822,68 +854,66 @@ int main(void)
 
         }
 
+        if (state == eGameState::PAUSED)
         {
-            GLint bDiscardTransparencyWindowsOn_LodID = glGetUniformLocation(program, "bDiscardTransparencyWindowsOn");
 
-            //                GLuint discardTextureNumber = ::g_pTextureManager->getTextureIDFromName("Lisse_mobile_shipyard-mal1.bmp");
-            GLuint discardTextureNumber = gTextureManager->getTextureIDFromName(button->textureNames[0]);
-            // I'm picking texture unit 30 since it's not in use.
-            GLuint discardTextureUnit = 30;			// Texture unit go from 0 to 79
-            glActiveTexture(discardTextureUnit + GL_TEXTURE0);	// GL_TEXTURE0 = 33984
-            glBindTexture(GL_TEXTURE_2D, discardTextureNumber);
-            GLint discardTexture_LocID = glGetUniformLocation(program, "discardTexture");
-            glUniform1i(discardTexture_LocID, discardTextureUnit);
+            {
+                GLint bDiscardTransparencyWindowsOn_LodID = glGetUniformLocation(program, "bDiscardTransparencyWindowsOn");
 
-            // Turn discard function on
-            glUniform1f(bDiscardTransparencyWindowsOn_LodID, (GLfloat)GL_TRUE);
+                //                GLuint discardTextureNumber = ::g_pTextureManager->getTextureIDFromName("Lisse_mobile_shipyard-mal1.bmp");
+                GLuint discardTextureNumber = gTextureManager->getTextureIDFromName(button->textureNames[0]);
+                // I'm picking texture unit 30 since it's not in use.
+                GLuint discardTextureUnit = 30;			// Texture unit go from 0 to 79
+                glActiveTexture(discardTextureUnit + GL_TEXTURE0);	// GL_TEXTURE0 = 33984
+                glBindTexture(GL_TEXTURE_2D, discardTextureNumber);
+                GLint discardTexture_LocID = glGetUniformLocation(program, "discardTexture");
+                glUniform1i(discardTexture_LocID, discardTextureUnit);
+
+                // Turn discard function on
+                glUniform1f(bDiscardTransparencyWindowsOn_LodID, (GLfloat)GL_TRUE);
+            }
+
+
+
+            matModel = glm::mat4(1.0f);  // "Identity" ("do nothing", like x1)
+            glm::vec3 eyeForFullScreenQuad = glm::vec3(0.0f, 0.0f, -100.0f);   // "eye" is 100 units away from the quad
+            glm::vec3 atForFullScreenQuad = glm::vec3(0.0f, 0.0f, 0.0f);    // "at" the quad
+            glm::vec3 upForFullScreenQuad = glm::vec3(0.0f, 1.0f, 0.0f);      // "at" the quad
+            glm::mat4 matView = glm::lookAt(eyeForFullScreenQuad,
+                atForFullScreenQuad,
+                upForFullScreenQuad);      // up in y direction
+
+            glm::mat4 matProjection = glm::ortho(
+                0.0f,   // Left
+                1.0f / (float)width,  // Right
+                0.0f,   // Top
+                1.0f / (float)height, // Bottom
+                0.f, // zNear  Eye is at 450, quad is at 500, so 50 units away
+                1000.0f); // zFar
+
+
+
+            glUniformMatrix4fv(matView_Location, 1, GL_FALSE, glm::value_ptr(matView));
+            glUniformMatrix4fv(matProjection_Location, 1, GL_FALSE, glm::value_ptr(matProjection));
+
+
+            glUniform1f(paused_loc, (GLfloat)GL_FALSE);
+
+            DrawObject(button, matModel, matModel_Location, matModelInverseTranspose_Location, program,
+                gVAOManager, gTextureManager, gradualIncrease);
+
+            //this should go out of scope itself
+            cMesh button2 = *button;
+
+            button2.textureNames[0] = "ResumeButton.bmp";
+            button2.positionXYZ.x = -.000485;
+
+            DrawObject(&button2, matModel, matModel_Location, matModelInverseTranspose_Location, program,
+                gVAOManager, gTextureManager, gradualIncrease);
         }
 
-        // Turn discard transparency off
-        //glUniform1f(bDiscardTransparencyWindowsOn_LodID, (GLfloat)GL_FALSE);
-
-        matModel = glm::mat4(1.0f);  // "Identity" ("do nothing", like x1)
-        glm::vec3 eyeForFullScreenQuad = glm::vec3(0.0f, 0.0f, -100.0f);   // "eye" is 100 units away from the quad
-        glm::vec3 atForFullScreenQuad = glm::vec3(0.0f, 0.0f, 0.0f);    // "at" the quad
-        glm::vec3 upForFullScreenQuad = glm::vec3(0.0f, 1.0f, 0.0f);      // "at" the quad
-        glm::mat4 matView = glm::lookAt(eyeForFullScreenQuad,
-            atForFullScreenQuad,
-            upForFullScreenQuad);      // up in y direction
-
-//detail::tmat4x4<T> glm::gtc::matrix_transform::ortho	(	T const & 	left,
-//                                                         T const & 	right,
-//                                                         T const & 	bottom,
-//                                                         T const & 	top,
-//                                                         T const & 	zNear,
-//                                                         T const & 	zFar )		
-        glm::mat4 matProjection = glm::ortho(
-            0.0f,   // Left
-            1.0f / (float)width,  // Right
-            0.0f,   // Top
-            1.0f / (float)height, // Bottom
-            0.f, // zNear  Eye is at 450, quad is at 500, so 50 units away
-            1000.0f); // zFar
 
 
-
-        glUniformMatrix4fv(matView_Location, 1, GL_FALSE, glm::value_ptr(matView));
-        glUniformMatrix4fv(matProjection_Location, 1, GL_FALSE, glm::value_ptr(matProjection));
-        //glUniform4f(eyeLocation_Location, cameraEye.x, cameraEye.y, cameraEye.z, 0);
-
-        //glCullFace(GL_FRONT);
-        //glCullFace(GL_BACK);
-
-
-        // All the draw code was here:
-        DrawObject(button, matModel, matModel_Location, matModelInverseTranspose_Location, program,
-            gVAOManager, gTextureManager, gradualIncrease);
-
-        cMesh button2 = *button;
-
-        button2.textureNames[0] = "ResumeButton.bmp";
-        button2.positionXYZ.x = -.000485;
-
-        DrawObject(&button2, matModel, matModel_Location, matModelInverseTranspose_Location, program,
-            gVAOManager, gTextureManager, gradualIncrease);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
