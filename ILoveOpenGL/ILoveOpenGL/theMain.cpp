@@ -11,6 +11,7 @@
 #include <glm/vec4.hpp> // glm::vec4
 #include <glm/mat4x4.hpp> // glm::mat4
 #include <glm/gtc/matrix_transform.hpp> 
+#include <glm/gtx/rotate_vector.hpp>
 // glm::translate, glm::rotate, glm::scale, glm::perspective
 #include <glm/gtc/type_ptr.hpp> // glm::value_ptr
 
@@ -559,7 +560,7 @@ int main(void)
             cameraAngle += 0.03f;
             if (cameraAngle > 3.14f) 
             {
-                cameraAngle -= 6.28;  
+                //cameraAngle -= 6.28;  
             }
         }
 
@@ -568,7 +569,7 @@ int main(void)
             cameraAngle -= 0.03f;
             if (cameraAngle < -3.14f)
             {
-                cameraAngle += 6.28f; 
+                //cameraAngle += 6.28f; 
             }
         }
 
@@ -592,12 +593,19 @@ int main(void)
         //=================================================================
         player->Update(deltaTime); 
         glm::vec3 direction = flyCamera.eye - player->mesh->positionXYZ;
-        glm::vec3 newCameraPos(0.0f);
+        glm::vec3 newCameraPos(10.0f, 0.0f, .0f);
         //position = (Rotate(some other angle, (0, 1, 0)) * (position - target)) + target;
-        newCameraPos = (glm::angleAxis(lastCameraAngle - cameraAngle, glm::vec3(0, 1, 0)) * direction) + player->mesh->positionXYZ;      
-  
+        //newCameraPos = (glm::angleAxis(lastCameraAngle - cameraAngle, glm::vec3(0, 1, 0)) * direction) + player->mesh->positionXYZ;      
+        
+        
+        newCameraPos = player->mesh->positionXYZ + glm::rotate(newCameraPos, (-cameraAngle), glm::vec3(0,1,0));
+        
+        newCameraPos.y = player->mesh->positionXYZ.y + 2.5f; //if you don't have this outse the if it goes brrrrrrrrrrrrrrr
+
+        
         float curDistance = glm::distance(player->mesh->positionXYZ, flyCamera.eye);
 
+        
         if (curDistance != distance) {
             // Calculate the normal.
             glm::vec3 normal = player->mesh->positionXYZ - flyCamera.eye;

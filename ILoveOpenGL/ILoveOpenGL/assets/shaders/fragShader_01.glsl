@@ -241,7 +241,9 @@ void main()
 	                                        fNormal.xyz, 		// Normal at the vertex (in world coords)
                                             fVertWorldLocation.xyz,	// Vertex WORLD position
 											wholeObjectSpecularColour.rgba );
-											
+							
+
+							
 	pixelColour = outColour;
 	
 	
