@@ -78,6 +78,15 @@ static void error_callback(int error, const char* description)
     fprintf(stderr, "Error: %s\n", description);
 }
 
+
+enum class eGameState
+{
+    PLAYING,
+    PAUSED
+};
+
+
+
 bool up = false;
 bool down = false;
 bool left = false;
@@ -241,6 +250,10 @@ int main(void)
     //    gladLoadGL(glfwGetProcAddress);
     glfwSwapInterval(1);
 
+
+
+
+
     // NOTE: OpenGL error checks have been omitted for brevity
 
     cShaderManager::cShader vertShader;
@@ -289,6 +302,7 @@ int main(void)
     modelNames.push_back("SpriteHolder.ply");
     modelNames.push_back("Invader_Single_Cube.ply");
     modelNames.push_back("Isosphere_Smooth_Inverted_Normals_for_SkyBox.ply");
+    modelNames.push_back("Quad_1_sided_aligned_on_XY_plane.ply");
 
     for (int i = 0; i < modelNames.size(); i++)
     {
@@ -306,7 +320,16 @@ int main(void)
         }
     }
     
-
+    cMesh* button = new cMesh();
+    button->meshName = "Quad_1_sided_aligned_on_XY_plane.ply";
+    //button->meshName = "SpriteHolder.ply";
+    button->textureNames[0] = "EscapeButton.bmp";
+    button->textureRatios[0] = 1;
+    button->orientationXYZ.y = -3.14;
+    button->scale = glm::vec3(.0005);
+    button->scale.x *= .3;
+    button->positionXYZ = glm::vec3(-.0003, .0008,0);
+    button->bDontLight = true;
 
     cMesh* debug = new cMesh();
     debug->meshName = "debug_triangle.ply";
@@ -593,7 +616,7 @@ int main(void)
             }
 
             glm::vec3 resolveMove = normal * penetration;
-            newCameraPos += resolveMove;
+            //newCameraPos += resolveMove;
 
             newCameraPos.y = player->mesh->positionXYZ.y + 2.5f;
         }
@@ -799,7 +822,68 @@ int main(void)
 
         }
 
+        {
+            GLint bDiscardTransparencyWindowsOn_LodID = glGetUniformLocation(program, "bDiscardTransparencyWindowsOn");
 
+            //                GLuint discardTextureNumber = ::g_pTextureManager->getTextureIDFromName("Lisse_mobile_shipyard-mal1.bmp");
+            GLuint discardTextureNumber = gTextureManager->getTextureIDFromName(button->textureNames[0]);
+            // I'm picking texture unit 30 since it's not in use.
+            GLuint discardTextureUnit = 30;			// Texture unit go from 0 to 79
+            glActiveTexture(discardTextureUnit + GL_TEXTURE0);	// GL_TEXTURE0 = 33984
+            glBindTexture(GL_TEXTURE_2D, discardTextureNumber);
+            GLint discardTexture_LocID = glGetUniformLocation(program, "discardTexture");
+            glUniform1i(discardTexture_LocID, discardTextureUnit);
+
+            // Turn discard function on
+            glUniform1f(bDiscardTransparencyWindowsOn_LodID, (GLfloat)GL_TRUE);
+        }
+
+        // Turn discard transparency off
+        //glUniform1f(bDiscardTransparencyWindowsOn_LodID, (GLfloat)GL_FALSE);
+
+        matModel = glm::mat4(1.0f);  // "Identity" ("do nothing", like x1)
+        glm::vec3 eyeForFullScreenQuad = glm::vec3(0.0f, 0.0f, -100.0f);   // "eye" is 100 units away from the quad
+        glm::vec3 atForFullScreenQuad = glm::vec3(0.0f, 0.0f, 0.0f);    // "at" the quad
+        glm::vec3 upForFullScreenQuad = glm::vec3(0.0f, 1.0f, 0.0f);      // "at" the quad
+        glm::mat4 matView = glm::lookAt(eyeForFullScreenQuad,
+            atForFullScreenQuad,
+            upForFullScreenQuad);      // up in y direction
+
+//detail::tmat4x4<T> glm::gtc::matrix_transform::ortho	(	T const & 	left,
+//                                                         T const & 	right,
+//                                                         T const & 	bottom,
+//                                                         T const & 	top,
+//                                                         T const & 	zNear,
+//                                                         T const & 	zFar )		
+        glm::mat4 matProjection = glm::ortho(
+            0.0f,   // Left
+            1.0f / (float)width,  // Right
+            0.0f,   // Top
+            1.0f / (float)height, // Bottom
+            0.f, // zNear  Eye is at 450, quad is at 500, so 50 units away
+            1000.0f); // zFar
+
+
+
+        glUniformMatrix4fv(matView_Location, 1, GL_FALSE, glm::value_ptr(matView));
+        glUniformMatrix4fv(matProjection_Location, 1, GL_FALSE, glm::value_ptr(matProjection));
+        //glUniform4f(eyeLocation_Location, cameraEye.x, cameraEye.y, cameraEye.z, 0);
+
+        //glCullFace(GL_FRONT);
+        //glCullFace(GL_BACK);
+
+
+        // All the draw code was here:
+        DrawObject(button, matModel, matModel_Location, matModelInverseTranspose_Location, program,
+            gVAOManager, gTextureManager, gradualIncrease);
+
+        cMesh button2 = *button;
+
+        button2.textureNames[0] = "ResumeButton.bmp";
+        button2.positionXYZ.x = -.000485;
+
+        DrawObject(&button2, matModel, matModel_Location, matModelInverseTranspose_Location, program,
+            gVAOManager, gTextureManager, gradualIncrease);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
@@ -820,6 +904,8 @@ int main(void)
     
     delete gTextureManager;
     delete gVAOManager;
+
+    delete button;
 
     glfwDestroyWindow(window);
 
