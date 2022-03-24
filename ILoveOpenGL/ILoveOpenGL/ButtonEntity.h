@@ -11,6 +11,7 @@ public:
 	int platformIndex;
 
 	float interactRadius;
+	float buttonTimer;
 
 	glm::vec3 offset;
 
@@ -18,6 +19,8 @@ public:
 	~ButtonEntity();
 
 	void SetPlayerReference(Player* player);
+
+	void Process(float deltaTime);
 
 	bool GetPlayerInteractable();
 	float CalcButtonDistance();

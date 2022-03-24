@@ -11,7 +11,7 @@ TreasureEntity::~TreasureEntity() {
 
 }
 
-void TreasureEntity::Process() {
+void TreasureEntity::Process(float deltaTime) {
 	float distance = glm::distance(mesh->positionXYZ, player->mesh->positionXYZ);
 	distance = fabsf(distance);
 

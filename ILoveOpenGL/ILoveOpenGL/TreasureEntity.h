@@ -11,7 +11,7 @@ public:
 	TreasureEntity(cMesh* mesh, float captureRadius, Player* player);
 	~TreasureEntity();
 
-	void Process();
+	void Process(float deltaTime);
 
 };
 

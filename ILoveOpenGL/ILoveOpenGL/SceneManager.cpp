@@ -69,10 +69,12 @@ void SceneManager::CopyOverSpriteEntities(std::vector<Entity*>& sprites) {
 	}
 }
 
-void SceneManager::Process() {
+void SceneManager::Process(float deltaTime) {
 	//check for player falling
+	bool isOnPlatform = false;
+	//player->isAirBorne = true;
 	for (int i = 0; i < platforms.size(); i++) {
-		
+
 		float maxX = platforms[i]->mesh->positionXYZ.x + (platforms[i]->width / 2.0f);
 		float minX = platforms[i]->mesh->positionXYZ.x - (platforms[i]->width / 2.0f);
 		float maxZ = platforms[i]->mesh->positionXYZ.z + (platforms[i]->length / 2.0f);
@@ -83,20 +85,40 @@ void SceneManager::Process() {
 			&& player->verticalSpeed < 0.0f)
 		{
 			float distanceFromPlataform = player->mesh->positionXYZ.y - platforms[i]->mesh->positionXYZ.y;
-			if (distanceFromPlataform <= 0.2f && distanceFromPlataform >= 0.0f)
+			if (distanceFromPlataform <= 0.2f && distanceFromPlataform >= -0.0f)
 			{
 				player->mesh->positionXYZ.y = platforms[i]->mesh->positionXYZ.y;
 				player->verticalSpeed = 0.0f;
 				player->isAirBorne = false;
 				break;
 			}
+			
+		}
+	}
+	for (int i = 0; i < platforms.size(); i++) { //why do I have to do this again? who the hell knows
+		float maxX = platforms[i]->mesh->positionXYZ.x + (platforms[i]->width / 2.0f);
+		float minX = platforms[i]->mesh->positionXYZ.x - (platforms[i]->width / 2.0f);
+		float maxZ = platforms[i]->mesh->positionXYZ.z + (platforms[i]->length / 2.0f);
+		float minZ = platforms[i]->mesh->positionXYZ.z - (platforms[i]->length / 2.0f);
+
+		if ((player->mesh->positionXYZ.x <= maxX && player->mesh->positionXYZ.x >= minX)
+			&& (player->mesh->positionXYZ.z <= maxZ && player->mesh->positionXYZ.z >= minZ)) { //if the player is over this platform
+			isOnPlatform = true;
+			break;
 		}
 
+	}
+	if (!isOnPlatform) {
 		player->isAirBorne = true;
 	}
 
+	player->Process(deltaTime);
+
 	for (int i = 0; i < treasures.size(); i++) {
-		treasures[i]->Process();
+		treasures[i]->Process(deltaTime);
+	}
+	for (int i = 0; i < buttons.size(); i++) {
+		buttons[i]->Process(deltaTime);
 	}
 
 	if (player->mesh->positionXYZ.y < 0.0f) {

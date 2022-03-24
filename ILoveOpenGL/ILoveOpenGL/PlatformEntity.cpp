@@ -13,3 +13,7 @@ PlatformEntity::PlatformEntity(cMesh* mesh, float width, float length) : Entity(
 PlatformEntity::~PlatformEntity() {
 
 }
+
+void PlatformEntity::Process(float deltaTime) {
+
+}

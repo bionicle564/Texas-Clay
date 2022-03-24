@@ -18,6 +18,17 @@ void ButtonEntity::SetPlayerReference(Player* player) {
 	this->player = player;
 }
 
+void ButtonEntity::Process(float deltaTime) {
+	if (isPressed) {
+		buttonTimer += deltaTime;
+		if (buttonTimer >= 2.0f) {
+			buttonTimer = 0.0f;
+			isPressed = false;
+			mesh->textureNames[0] = "ButtonUp.bmp";
+		}
+	}
+}
+
 bool ButtonEntity::GetPlayerInteractable() {
 	if (isPressed) { return false; }
 

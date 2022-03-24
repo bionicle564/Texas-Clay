@@ -20,7 +20,7 @@ public:
 	void CopyOverWorldEntities(std::vector<Entity*>& world);
 	void CopyOverSpriteEntities(std::vector<Entity*>& sprites);
 
-	void Process();
+	void Process(float deltaTime);
 
 	void PlayerInteract();
 

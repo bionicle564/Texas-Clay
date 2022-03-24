@@ -12,6 +12,9 @@ public:
 
 	PlatformEntity(cMesh* mesh, float width, float length);
 	~PlatformEntity();
+
+	void Process(float deltaTime);
+
 private:
 
 };
