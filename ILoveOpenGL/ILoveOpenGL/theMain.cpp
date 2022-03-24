@@ -62,6 +62,8 @@ Player* player;
 //std::vector<cLevel*> levels;
 //cLevel* currentLevel;
 
+int levelIndex = 0;
+
 //std::vector<cMesh> g_vecMeshes;
 std::vector<Entity*> world;
 std::vector<Entity*> sprites;
@@ -420,7 +422,7 @@ int main(void)
     //currentLevel = levels[0];
     SceneManager sceneManager(player);
     sceneManager.LoadTextures(gTextureManager);
-    sceneManager.SetUpLevel(1);
+    sceneManager.SetUpLevel(levelIndex);
     sceneManager.CopyOverWorldEntities(world);
     sceneManager.CopyOverSpriteEntities(sprites);
     //sceneManager.RegisterPlatform(groundEntity);
@@ -588,6 +590,17 @@ int main(void)
         // *******************************************************
 
         sceneManager.Process(deltaTime);
+        
+        if (sceneManager.isSceneDone) {
+            levelIndex++;
+            sceneManager.CleanUpLevel();
+            world.erase(world.begin() + 1, world.end());
+            sprites.erase(sprites.begin() + 1, sprites.end());
+            sceneManager.SetUpLevel(levelIndex);
+            sceneManager.CopyOverWorldEntities(world);
+            sceneManager.CopyOverSpriteEntities(sprites);
+            continue;
+        }
 
         //Calcs for arcball camera and Movement
         //=================================================================

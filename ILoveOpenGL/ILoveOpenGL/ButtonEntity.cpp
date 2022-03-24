@@ -5,6 +5,10 @@ ButtonEntity::ButtonEntity(cMesh* mesh, float radius, glm::vec3 offset, int plat
 	this->offset = offset;
 
 	this->interactRadius = radius;
+	behaviour = BUTTON_MOVE;
+
+	buttonTimer = 0.0f;
+	resetTime = 2.0f;
 
 	isPressed = false;
 	moved = false;
@@ -21,7 +25,7 @@ void ButtonEntity::SetPlayerReference(Player* player) {
 void ButtonEntity::Process(float deltaTime) {
 	if (isPressed) {
 		buttonTimer += deltaTime;
-		if (buttonTimer >= 2.0f) {
+		if (buttonTimer >= resetTime) {
 			buttonTimer = 0.0f;
 			isPressed = false;
 			mesh->textureNames[0] = "ButtonUp.bmp";

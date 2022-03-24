@@ -135,6 +135,7 @@ void cLoader::LoadSpecificLevel(std::string levelFileName, cLevel* level)
         platformMesh->positionXYZ.x = plataforms[i]["position"]["x"].GetFloat();
         platformMesh->positionXYZ.y = plataforms[i]["position"]["y"].GetFloat();
         platformMesh->positionXYZ.z = plataforms[i]["position"]["z"].GetFloat();
+        int type = plataforms[i]["type"].GetInt();
         platformMesh->textureNames[0] = "futurebrick.bmp";
         platformMesh->textureRatios[0] = 1.0f;
         // change whatever you need for the mesh here
@@ -143,6 +144,17 @@ void cLoader::LoadSpecificLevel(std::string levelFileName, cLevel* level)
         float platformLength = plataforms[i]["length"].GetFloat();
 
         PlatformEntity* newPlatform = new PlatformEntity(platformMesh, platformWidth, platformLength);
+        if (type == 1) {
+            newPlatform->behaviour = PLATFORM_MOVING;
+            float xPos = plataforms[i]["offset"]["x"].GetFloat();
+            float yPos = plataforms[i]["offset"]["y"].GetFloat();
+            float zPos = plataforms[i]["offset"]["z"].GetFloat();
+
+            newPlatform->target = glm::vec3(xPos, yPos, xPos);
+
+            newPlatform->resetTime = plataforms[i]["reset"].GetFloat();
+            newPlatform->resetTime = plataforms[i]["move"].GetFloat();
+        }
         level->plataforms.push_back(newPlatform);
     }
 
@@ -181,6 +193,7 @@ void cLoader::LoadSpecificLevel(std::string levelFileName, cLevel* level)
         platformAlternatePosition.y = buttons[i]["alternatePosition"]["y"].GetFloat();
         platformAlternatePosition.z = buttons[i]["alternatePosition"]["z"].GetFloat();
 
+        int type = buttons[i]["type"].GetInt();
         int platformId = buttons[i]["plataformId"].GetInt();
 
         ButtonEntity* newButton = new ButtonEntity(buttonMesh, 0.5f, platformAlternatePosition, platformId);

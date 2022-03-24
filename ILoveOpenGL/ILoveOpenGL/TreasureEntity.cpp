@@ -5,6 +5,9 @@
 TreasureEntity::TreasureEntity(cMesh* mesh, float captureRadius, Player* player) : Entity(mesh) {
 	this->player = player;
 	this->captureRadius = captureRadius;
+
+	isMainTreasure = false;
+	isCaptured = false;
 }
 
 TreasureEntity::~TreasureEntity() {
@@ -16,6 +19,7 @@ void TreasureEntity::Process(float deltaTime) {
 	distance = fabsf(distance);
 
 	if (distance < captureRadius) {
+		isCaptured = true;
 		std::cout << "playing: Fanfare.ogg" << std::endl;
 		std::cout << "A Winner is YOU" << std::endl;
 	}

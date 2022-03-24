@@ -235,6 +235,18 @@
     <None Include="SceneAnims.json">
       <Filter>Debug\JSON</Filter>
     </None>
+    <None Include="assets\LevelList.json">
+      <Filter>ExternConfig</Filter>
+    </None>
+    <None Include="assets\levels\level1.json">
+      <Filter>ExternConfig</Filter>
+    </None>
+    <None Include="assets\levels\level2.json">
+      <Filter>ExternConfig</Filter>
+    </None>
+    <None Include="level3.json">
+      <Filter>ExternConfig</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="testLights.txt">

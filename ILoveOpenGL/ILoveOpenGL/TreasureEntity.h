@@ -4,6 +4,9 @@
 
 class TreasureEntity : public Entity {
 public:
+	bool isMainTreasure;
+	bool isCaptured;
+
 	float captureRadius;
 
 	Player* player;
