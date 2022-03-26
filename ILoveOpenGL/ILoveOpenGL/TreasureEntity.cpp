@@ -2,9 +2,10 @@
 
 #include <iostream>
 
-TreasureEntity::TreasureEntity(cMesh* mesh, float captureRadius, Player* player) : Entity(mesh) {
+TreasureEntity::TreasureEntity(cMesh* mesh) : Entity(mesh) {
 	this->player = player;
-	this->captureRadius = captureRadius;
+	
+	captureRadius = 0.5f;
 
 	isMainTreasure = false;
 	isCaptured = false;
@@ -18,9 +19,20 @@ void TreasureEntity::Process(float deltaTime) {
 	float distance = glm::distance(mesh->positionXYZ, player->mesh->positionXYZ);
 	distance = fabsf(distance);
 
-	if (distance < captureRadius) {
+	if (distance < captureRadius && !isCaptured) {
 		isCaptured = true;
-		std::cout << "playing: Fanfare.ogg" << std::endl;
-		std::cout << "A Winner is YOU" << std::endl;
+		mesh->render = false;
+		if (isMainTreasure) {
+			std::cout << "playing: Fanfare.ogg" << std::endl;
+			std::cout << "A Winner is YOU" << std::endl;
+		}
+		else {
+			std::cout << "+1 super guy points" << std::endl;
+		}
 	}
+
+}
+
+void TreasureEntity::SetPlayerReference(Player* player) {
+	this->player = player;
 }

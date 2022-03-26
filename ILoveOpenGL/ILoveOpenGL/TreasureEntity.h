@@ -11,10 +11,12 @@ public:
 
 	Player* player;
 
-	TreasureEntity(cMesh* mesh, float captureRadius, Player* player);
+	TreasureEntity(cMesh* mesh);
 	~TreasureEntity();
 
 	void Process(float deltaTime);
+
+	void SetPlayerReference(Player* player);
 
 };
 

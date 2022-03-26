@@ -51,24 +51,29 @@ void PlatformEntity::Process(float deltaTime) {
 		else {
 			moveTimer += deltaTime;
 
+			float timePos = moveTimer / moveTime;
+
+			if (timePos > 1.0f) { timePos = 1.0f; }
+
 			if (isMovingBack) {
-				mesh->positionXYZ = origin + (target * moveTimer);
+				mesh->positionXYZ = origin + (-target * timePos);
 			}
 			else {
-				mesh->positionXYZ = origin + (-target * moveTimer);
+				mesh->positionXYZ = origin + (target * timePos);
 			}
 
-			if (moveTimer >= moveTime) {
-				moveTimer = moveTime;
+			if (timePos >= 1.0f) {
+				/*moveTimer = moveTime;
 				if (isMovingBack) {
-					mesh->positionXYZ = origin + (target * moveTimer);
-				}
-				else {
 					mesh->positionXYZ = origin + (-target * moveTimer);
 				}
+				else {
+					mesh->positionXYZ = origin + (target * moveTimer);
+				}*/
 				origin = mesh->positionXYZ;
 				isMovingBack = !isMovingBack;
 				timer = 0.0f;
+				moveTimer = 0.0f;
 			}
 		}
 	}

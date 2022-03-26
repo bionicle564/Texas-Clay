@@ -813,6 +813,7 @@ int main(void)
 
             // So the code is a little easier...
             cMesh* curMesh = sprites[index]->mesh;
+            if (!curMesh->render) { continue; }
 
             {
                 GLint bDiscardTransparencyWindowsOn_LodID = glGetUniformLocation(program, "bDiscardTransparencyWindowsOn");
@@ -843,7 +844,7 @@ int main(void)
             // Basic "alpha transparency"
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-            if (index < 19) { glDisable(GL_BLEND); } //if we're not at the transparent stuff, don't actully blend
+            if (index < 30) { glDisable(GL_BLEND); } //if we're not at the transparent stuff, don't actully blend
 
             DrawObject(curMesh, matModel, matModel_Location, matModelInverseTranspose_Location, program,
                 gVAOManager, gTextureManager, gradualIncrease);

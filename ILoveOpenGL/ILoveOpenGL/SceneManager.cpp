@@ -6,22 +6,6 @@ SceneManager::SceneManager(Player* player)
 
 	isSceneDone = false;
 
-	//good enough for now
-	cMesh* treasure = new cMesh();
-	treasure->meshName = "SpriteHolder.ply";
-	treasure->scale = glm::vec3(0.5f);
-	treasure->positionXYZ = glm::vec3(0.0f, 1.0f, 0.0f);
-	treasure->orientationXYZ.y = -1.57f;
-	treasure->orientationXYZ.x = -1.57f;
-	treasure->bDontLight = true;
-	treasure->textureNames[0] = "Crown.bmp";
-	treasure->textureRatios[0] = 1.0f;
-
-	TreasureEntity* treasureEntity = new TreasureEntity(treasure, 0.5f, player);
-	treasureEntity->isMainTreasure = true;
-	treasures.push_back(treasureEntity);
-	//good enough end
-
 	loader.LoadAllLevels();
 }
 
@@ -53,9 +37,13 @@ void SceneManager::SetUpLevel(int levelIndex) {
 		buttons[i]->SetPlayerReference(player);
 	}
 
+	for (int i = 0; i < level->treasures.size(); i++) {
+		treasures.push_back(level->treasures[i]);
+		treasures[i]->SetPlayerReference(player);
+	}
+
 	player->mesh->positionXYZ = level->spawnPosition;
 	spawn = level->spawnPosition;
-	treasures[0]->mesh->positionXYZ = level->goalPosition;
 }
 
 void SceneManager::CleanUpLevel() {
@@ -74,10 +62,10 @@ void SceneManager::CleanUpLevel() {
 	buttons.clear();
 
 	for (int i = 0; i < treasures.size(); i++) {
-		if (treasures[i]->isMainTreasure ) {
-			treasures[i]->isCaptured = false;
-		}
+		delete treasures[i];
+		treasures[i] = 0;
 	}
+	treasures.clear();
 }
 
 void SceneManager::CopyOverWorldEntities(std::vector<Entity*>& world) {
