@@ -62,7 +62,7 @@ Player* player;
 //std::vector<cLevel*> levels;
 //cLevel* currentLevel;
 
-int levelIndex = 0;
+int levelIndex = 3;
 
 //std::vector<cMesh> g_vecMeshes;
 std::vector<Entity*> world;

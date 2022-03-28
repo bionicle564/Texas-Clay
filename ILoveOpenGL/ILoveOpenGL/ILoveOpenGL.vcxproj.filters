@@ -247,6 +247,9 @@
     <None Include="assets\levels\level3.json">
       <Filter>ExternConfig</Filter>
     </None>
+    <None Include="assets\levels\level4.json">
+      <Filter>ExternConfig</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="testLights.txt">
