@@ -23,7 +23,7 @@ Player::~Player()
 
 }
 
-void Player::Update(float deltaTime) 
+void Player::Process(float deltaTime) 
 {	
 	//std::cout << "POSITION: " << mesh->positionXYZ.x << ", " << mesh->positionXYZ.y << ", " << mesh->positionXYZ.z << std::endl;
 	//std::cout << "SPEED: " << verticalSpeed << std::endl;
@@ -127,6 +127,40 @@ void Player::Update(float deltaTime)
 	{
 		mesh->positionXYZ.y += verticalSpeed * deltaTime;
 		verticalSpeed += gravity * deltaTime;
+		if (verticalSpeed < 0.0f) {
+			switch (facing)
+			{
+			case FACING_UP:
+				mesh->textureNames[0] = "TexasClayBackFall.bmp";
+				break;
+			case FACING_DOWN:
+				mesh->textureNames[0] = "TexasClayFrontFall.bmp";
+				break;
+			case FACING_LEFT:
+				mesh->textureNames[0] = "TexasClayLeftFall.bmp";
+				break;
+			case FACING_RIGHT:
+				mesh->textureNames[0] = "TexasClayRightFall.bmp";
+				break;
+			}
+		}
+		else if (verticalSpeed > 0.0f){
+			switch (facing)
+			{
+			case FACING_UP:
+				mesh->textureNames[0] = "TexasClayBackJump.bmp";
+				break;
+			case FACING_DOWN:
+				mesh->textureNames[0] = "TexasClayFrontJump.bmp";
+				break;
+			case FACING_LEFT:
+				mesh->textureNames[0] = "TexasClayLeftJump.bmp";
+				break;
+			case FACING_RIGHT:
+				mesh->textureNames[0] = "TexasClayRightJump.bmp";
+				break;
+			}
+		}
 	}
 }
 
@@ -260,11 +294,11 @@ void Player::Jump()
 	//if (!jumpingUp && jumpOffset <= 0.0f) {
 	//	jumpingUp = true;
 	//}
-	std::cout << "JUMP" << std::endl;
+	//std::cout << "JUMP" << std::endl;
 
 	if (!isAirBorne)
 	{
-		verticalSpeed = 5.f;
+		verticalSpeed = 5.0f;
 		isAirBorne = true;
 	}
 }

@@ -23,6 +23,8 @@ public:
 
 	bool bDontLight;
 
+	bool render;
+
 	bool bIsWireframe;
 
 	bool bDisableDepthBufferCheck;

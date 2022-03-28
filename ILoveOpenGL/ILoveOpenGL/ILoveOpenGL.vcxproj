@@ -203,6 +203,10 @@
     <ClInclude Include="Vertex_Types.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="assets\LevelList.json" />
+    <None Include="assets\levels\level1.json" />
+    <None Include="assets\levels\level2.json" />
+    <None Include="assets\levels\level3.json" />
     <None Include="RecentLight.json" />
     <None Include="RecentModel.json" />
     <None Include="SceneAnims.json" />

@@ -4,21 +4,7 @@ SceneManager::SceneManager(Player* player)
 {
 	this->player = player;
 
-
-	//good enough for now
-	cMesh* treasure = new cMesh();
-	treasure->meshName = "SpriteHolder.ply";
-	treasure->scale = glm::vec3(0.5f);
-	treasure->positionXYZ = glm::vec3(0.0f, 1.0f, 0.0f);
-	treasure->orientationXYZ.y = -1.57f;
-	treasure->orientationXYZ.x = -1.57f;
-	treasure->bDontLight = true;
-	treasure->textureNames[0] = "Crown.bmp";
-	treasure->textureRatios[0] = 1.0f;
-
-	TreasureEntity* treasureEntity = new TreasureEntity(treasure, 0.5f, player);
-	treasures.push_back(treasureEntity);
-	//good enough end
+	isSceneDone = false;
 
 	loader.LoadAllLevels();
 }
@@ -38,6 +24,8 @@ void SceneManager::LoadTextures(cBasicTextureManager* manager) {
 void SceneManager::SetUpLevel(int levelIndex) {
 	if (levelIndex >= loader.levels.size()) { return; }
 
+	isSceneDone = false;
+
 	cLevel* level = loader.levels[levelIndex];
 
 	for (int i = 0; i < level->plataforms.size(); i++) {
@@ -49,9 +37,35 @@ void SceneManager::SetUpLevel(int levelIndex) {
 		buttons[i]->SetPlayerReference(player);
 	}
 
+	for (int i = 0; i < level->treasures.size(); i++) {
+		treasures.push_back(level->treasures[i]);
+		treasures[i]->SetPlayerReference(player);
+	}
+
 	player->mesh->positionXYZ = level->spawnPosition;
 	spawn = level->spawnPosition;
-	treasures[0]->mesh->positionXYZ = level->goalPosition;
+}
+
+void SceneManager::CleanUpLevel() {
+	isSceneDone = false;
+
+	for (int i = platforms.size() - 1; i >= 0; i--) {
+		delete platforms[i];
+		platforms[i] = 0;
+	}
+	platforms.clear(); //is this part nessacary?
+
+	for (int i = buttons.size() - 1; i >= 0; i--) {
+		delete buttons[i];
+		buttons[i] = 0;
+	}
+	buttons.clear();
+
+	for (int i = 0; i < treasures.size(); i++) {
+		delete treasures[i];
+		treasures[i] = 0;
+	}
+	treasures.clear();
 }
 
 void SceneManager::CopyOverWorldEntities(std::vector<Entity*>& world) {
@@ -69,10 +83,12 @@ void SceneManager::CopyOverSpriteEntities(std::vector<Entity*>& sprites) {
 	}
 }
 
-void SceneManager::Process() {
+void SceneManager::Process(float deltaTime) {
 	//check for player falling
+	bool isOnPlatform = false;
+	//player->isAirBorne = true;
 	for (int i = 0; i < platforms.size(); i++) {
-		
+
 		float maxX = platforms[i]->mesh->positionXYZ.x + (platforms[i]->width / 2.0f);
 		float minX = platforms[i]->mesh->positionXYZ.x - (platforms[i]->width / 2.0f);
 		float maxZ = platforms[i]->mesh->positionXYZ.z + (platforms[i]->length / 2.0f);
@@ -83,20 +99,46 @@ void SceneManager::Process() {
 			&& player->verticalSpeed < 0.0f)
 		{
 			float distanceFromPlataform = player->mesh->positionXYZ.y - platforms[i]->mesh->positionXYZ.y;
-			if (distanceFromPlataform <= 0.2f && distanceFromPlataform >= 0.0f)
+			if (distanceFromPlataform <= 0.2f && distanceFromPlataform >= -0.0f)
 			{
 				player->mesh->positionXYZ.y = platforms[i]->mesh->positionXYZ.y;
 				player->verticalSpeed = 0.0f;
 				player->isAirBorne = false;
 				break;
 			}
+			
+		}
+	}
+	for (int i = 0; i < platforms.size(); i++) { //why do I have to do this again? who the hell knows
+		float maxX = platforms[i]->mesh->positionXYZ.x + (platforms[i]->width / 2.0f);
+		float minX = platforms[i]->mesh->positionXYZ.x - (platforms[i]->width / 2.0f);
+		float maxZ = platforms[i]->mesh->positionXYZ.z + (platforms[i]->length / 2.0f);
+		float minZ = platforms[i]->mesh->positionXYZ.z - (platforms[i]->length / 2.0f);
+
+		if ((player->mesh->positionXYZ.x <= maxX && player->mesh->positionXYZ.x >= minX)
+			&& (player->mesh->positionXYZ.z <= maxZ && player->mesh->positionXYZ.z >= minZ)) { //if the player is over this platform
+			isOnPlatform = true;
+			break;
 		}
 
+	}
+	if (!isOnPlatform) {
 		player->isAirBorne = true;
 	}
 
+	player->Process(deltaTime);
+
+	for (int i = 0; i < platforms.size(); i++) {
+		platforms[i]->Process(deltaTime);
+	}
 	for (int i = 0; i < treasures.size(); i++) {
-		treasures[i]->Process();
+		treasures[i]->Process(deltaTime);
+		if (treasures[i]->isMainTreasure && treasures[i]->isCaptured) {
+			isSceneDone = true;
+		}
+	}
+	for (int i = 0; i < buttons.size(); i++) {
+		buttons[i]->Process(deltaTime);
 	}
 
 	if (player->mesh->positionXYZ.y < 0.0f) {
@@ -110,6 +152,7 @@ void SceneManager::PlayerInteract() {
 	int index = -1;
 	float closestDistance = 100.0f; //an unreasonable amount;
 	for (int i = 0; i < buttons.size(); i++) {
+		
 		if (buttons[i]->GetPlayerInteractable()) {
 			float buttonDistance = buttons[i]->CalcButtonDistance();
 			if (buttonDistance < closestDistance) {
@@ -117,6 +160,7 @@ void SceneManager::PlayerInteract() {
 				closestDistance = buttonDistance;
 			}
 		}
+
 	}
 	if (index >= 0) {
 		UseButton(index);
@@ -132,17 +176,27 @@ bool SceneManager::UseButton(int buttonIndex) {
 		button->isPressed = true;
 		button->mesh->textureNames[0] = "ButtonDown.bmp";
 		int index = button->platformIndex;
+		
+		if (button->behaviour == BUTTON_MOVE) {
+			if (!platforms[index]->isMoving) {
 
-		if (!platforms[index]->isMoving) {
-			//TODO: make this change gradual
-			if (button->moved) {
-				platforms[index]->mesh->positionXYZ -= button->offset;
+				if (button->moved) {
+					platforms[index]->origin = platforms[index]->mesh->positionXYZ;
+					platforms[index]->target = -button->offset;
+				}
+				else {
+					platforms[index]->origin = platforms[index]->mesh->positionXYZ;
+					platforms[index]->target = button->offset;
+				}
+				platforms[index]->isMoving = true;
 			}
-			else {
-				platforms[index]->mesh->positionXYZ += button->offset;
+			button->moved = !button->moved;
+		}
+		else if (button->behaviour == BUTTON_PAUSE) {
+			if (platforms[index]->isMoving) {
+				platforms[index]->isMoving = false;
 			}
 		}
-		button->moved = !button->moved;
 	}
 
 	return false;

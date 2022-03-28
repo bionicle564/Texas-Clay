@@ -110,11 +110,40 @@ void cLoader::LoadSpecificLevel(std::string levelFileName, cLevel* level)
     spawnPosition.z = d["spawnPosition"]["z"].GetFloat();
     level->spawnPosition = spawnPosition;
 
-    glm::vec3 goalPosition;
+    /*glm::vec3 goalPosition;
     goalPosition.x = d["goalPosition"]["x"].GetFloat();
     goalPosition.y = d["goalPosition"]["y"].GetFloat();
     goalPosition.z = d["goalPosition"]["z"].GetFloat();
-    level->goalPosition = goalPosition;
+    level->goalPosition = goalPosition;*/
+
+    const Value& treasures = d["treasures"];
+    for (int i = 0; i < treasures.Size(); i++) {
+        
+        cMesh* treasure = new cMesh();
+        treasure->meshName = "SpriteHolder.ply";
+        treasure->scale = glm::vec3(0.5f);
+        treasure->orientationXYZ.y = -1.57f;
+        treasure->orientationXYZ.x = -1.57f;
+        treasure->bDontLight = true;
+        int end = treasures[i]["end"].GetInt();
+        treasure->positionXYZ.x = treasures[i]["position"]["x"].GetFloat();
+        treasure->positionXYZ.y = treasures[i]["position"]["y"].GetFloat();
+        treasure->positionXYZ.z = treasures[i]["position"]["z"].GetFloat();
+        if (end == 1) {
+            treasure->textureNames[0] = "Crown.bmp";
+            treasure->textureRatios[0] = 1.0f;
+        }
+        else {
+            treasure->textureNames[0] = "Coins.bmp";
+            treasure->textureRatios[0] = 1.0f;
+        }
+
+        TreasureEntity* treasureEntity = new TreasureEntity(treasure);
+        if (end == 1) {
+            treasureEntity->isMainTreasure = true;
+        }
+        level->treasures.push_back(treasureEntity);
+    }
 
     const Value& plataforms = d["plataforms"];
     for (int i = 0; i < plataforms.Size(); i++)
@@ -135,6 +164,7 @@ void cLoader::LoadSpecificLevel(std::string levelFileName, cLevel* level)
         platformMesh->positionXYZ.x = plataforms[i]["position"]["x"].GetFloat();
         platformMesh->positionXYZ.y = plataforms[i]["position"]["y"].GetFloat();
         platformMesh->positionXYZ.z = plataforms[i]["position"]["z"].GetFloat();
+        int type = plataforms[i]["type"].GetInt();
         platformMesh->textureNames[0] = "futurebrick.bmp";
         platformMesh->textureRatios[0] = 1.0f;
         // change whatever you need for the mesh here
@@ -143,6 +173,19 @@ void cLoader::LoadSpecificLevel(std::string levelFileName, cLevel* level)
         float platformLength = plataforms[i]["length"].GetFloat();
 
         PlatformEntity* newPlatform = new PlatformEntity(platformMesh, platformWidth, platformLength);
+        if (type == 1) {
+            newPlatform->behaviour = PLATFORM_MOVING;
+            float xPos = plataforms[i]["offset"]["x"].GetFloat();
+            float yPos = plataforms[i]["offset"]["y"].GetFloat();
+            float zPos = plataforms[i]["offset"]["z"].GetFloat();
+
+            newPlatform->target = glm::vec3(xPos, yPos, zPos);
+
+            newPlatform->resetTime = plataforms[i]["reset"].GetFloat();
+            newPlatform->moveTime = plataforms[i]["move"].GetFloat();
+
+            newPlatform->isMoving = true;
+        }
         level->plataforms.push_back(newPlatform);
     }
 
@@ -181,9 +224,13 @@ void cLoader::LoadSpecificLevel(std::string levelFileName, cLevel* level)
         platformAlternatePosition.y = buttons[i]["alternatePosition"]["y"].GetFloat();
         platformAlternatePosition.z = buttons[i]["alternatePosition"]["z"].GetFloat();
 
+        int type = buttons[i]["type"].GetInt();
         int platformId = buttons[i]["plataformId"].GetInt();
 
         ButtonEntity* newButton = new ButtonEntity(buttonMesh, 0.5f, platformAlternatePosition, platformId);
+        if (type == 1) {
+            newButton->behaviour = BUTTON_PAUSE;
+        }
         level->buttons.push_back(newButton);
     }
 

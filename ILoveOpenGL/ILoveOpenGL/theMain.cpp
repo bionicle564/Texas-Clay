@@ -62,6 +62,8 @@ Player* player;
 //std::vector<cLevel*> levels;
 //cLevel* currentLevel;
 
+int levelIndex = 0;
+
 //std::vector<cMesh> g_vecMeshes;
 std::vector<Entity*> world;
 std::vector<Entity*> sprites;
@@ -346,9 +348,9 @@ int main(void)
     button->textureNames[0] = "EscapeButton.bmp";
     button->textureRatios[0] = 1;
     button->orientationXYZ.y = -3.14;
-    button->scale = glm::vec3(.0005);
-    button->scale.x *= .3;
-    button->positionXYZ = glm::vec3(-.0003, .0008,0);
+    button->scale = glm::vec3(0.0005f);
+    button->scale.x *= 0.3f;
+    button->positionXYZ = glm::vec3(-0.0003f, 0.0008f,0);
     button->bDontLight = true;
 
     cMesh* debug = new cMesh();
@@ -372,23 +374,6 @@ int main(void)
     dude->orientationXYZ.y = -1.57f;
     dude->orientationXYZ.x = -1.57f;
     dude->bDontLight = true;
-
-    /*cMesh* goal1 = new cMesh();
-    goal1->meshName = "SpriteHolder.ply";
-    goal1->scale = glm::vec3(0.5f);
-    goal1->positionXYZ = glm::vec3(10.0f, 0.0f, 10.5f);
-    goal1->orientationXYZ.y = -1.57f;
-    goal1->orientationXYZ.x = -1.57f;
-    goal1->bDontLight = true;
-
-    cMesh* goal2 = new cMesh();
-    goal2->meshName = "SpriteHolder.ply";
-    goal2->scale = glm::vec3(0.5f);
-    goal2->positionXYZ = glm::vec3(-8.0f, 0.0f, 10.5f);
-    goal2->orientationXYZ.y = -1.57f;
-    goal2->orientationXYZ.x = -1.57f;
-    goal2->bDontLight = true;*/
-
 
     // Create a skybox object (a sphere with inverted normals that moves with the camera eye)
     cMesh* pSkyBox = new cMesh();
@@ -437,7 +422,7 @@ int main(void)
     //currentLevel = levels[0];
     SceneManager sceneManager(player);
     sceneManager.LoadTextures(gTextureManager);
-    sceneManager.SetUpLevel(1);
+    sceneManager.SetUpLevel(levelIndex);
     sceneManager.CopyOverWorldEntities(world);
     sceneManager.CopyOverSpriteEntities(sprites);
     //sceneManager.RegisterPlatform(groundEntity);
@@ -604,11 +589,22 @@ int main(void)
         // Screen is cleared and we are ready to draw the scene...
         // *******************************************************
 
-        sceneManager.Process();
+        sceneManager.Process(deltaTime);
+        
+        if (sceneManager.isSceneDone) {
+            levelIndex++;
+            sceneManager.CleanUpLevel();
+            world.erase(world.begin() + 1, world.end());
+            sprites.erase(sprites.begin() + 1, sprites.end());
+            sceneManager.SetUpLevel(levelIndex);
+            sceneManager.CopyOverWorldEntities(world);
+            sceneManager.CopyOverSpriteEntities(sprites);
+            continue;
+        }
 
         //Calcs for arcball camera and Movement
         //=================================================================
-        player->Update(deltaTime); 
+        //player->Update(deltaTime); 
         glm::vec3 direction = flyCamera.eye - player->mesh->positionXYZ;
         glm::vec3 newCameraPos(10.0f, 0.0f, .0f);
         //position = (Rotate(some other angle, (0, 1, 0)) * (position - target)) + target;
@@ -817,6 +813,7 @@ int main(void)
 
             // So the code is a little easier...
             cMesh* curMesh = sprites[index]->mesh;
+            if (!curMesh->render) { continue; }
 
             {
                 GLint bDiscardTransparencyWindowsOn_LodID = glGetUniformLocation(program, "bDiscardTransparencyWindowsOn");
@@ -847,7 +844,7 @@ int main(void)
             // Basic "alpha transparency"
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-            if (index < 19) { glDisable(GL_BLEND); } //if we're not at the transparent stuff, don't actully blend
+            if (index < 30) { glDisable(GL_BLEND); } //if we're not at the transparent stuff, don't actully blend
 
             DrawObject(curMesh, matModel, matModel_Location, matModelInverseTranspose_Location, program,
                 gVAOManager, gTextureManager, gradualIncrease);

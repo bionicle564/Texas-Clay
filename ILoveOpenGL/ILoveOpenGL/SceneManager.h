@@ -9,6 +9,8 @@
 class SceneManager
 {
 public:
+	bool isSceneDone;
+
 	SceneManager(Player* player);
 	~SceneManager();
 
@@ -17,10 +19,11 @@ public:
 
 	//maybe make all these return sucess bools?
 	void SetUpLevel(int levelIndex);
+	void CleanUpLevel();
 	void CopyOverWorldEntities(std::vector<Entity*>& world);
 	void CopyOverSpriteEntities(std::vector<Entity*>& sprites);
 
-	void Process();
+	void Process(float deltaTime);
 
 	void PlayerInteract();
 

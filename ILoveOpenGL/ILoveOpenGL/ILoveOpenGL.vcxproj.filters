@@ -55,6 +55,9 @@
     <Filter Include="SceneStuff">
       <UniqueIdentifier>{c073172d-b8c0-4864-98af-d57f6fdbbac4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="LuCaSstuFF">
+      <UniqueIdentifier>{42d5456a-1ef9-43e7-ad03-b9f184ac8543}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="theMain.cpp">
@@ -130,7 +133,7 @@
       <Filter>Commands And Adjencent\Entities</Filter>
     </ClCompile>
     <ClCompile Include="cLevel.cpp">
-      <Filter>PlayerStuff</Filter>
+      <Filter>LuCaSstuFF</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -197,15 +200,6 @@
     <ClInclude Include="cLoader.h">
       <Filter>Loader</Filter>
     </ClInclude>
-    <ClInclude Include="sPlataform.h">
-      <Filter>PlayerStuff</Filter>
-    </ClInclude>
-    <ClInclude Include="cLevel.h">
-      <Filter>PlayerStuff</Filter>
-    </ClInclude>
-    <ClInclude Include="cButton.h">
-      <Filter>PlayerStuff</Filter>
-    </ClInclude>
     <ClInclude Include="PlatformEntity.h">
       <Filter>Commands And Adjencent\Entities</Filter>
     </ClInclude>
@@ -214,6 +208,15 @@
     </ClInclude>
     <ClInclude Include="ButtonEntity.h">
       <Filter>Commands And Adjencent\Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="cButton.h">
+      <Filter>LuCaSstuFF</Filter>
+    </ClInclude>
+    <ClInclude Include="cLevel.h">
+      <Filter>LuCaSstuFF</Filter>
+    </ClInclude>
+    <ClInclude Include="sPlataform.h">
+      <Filter>LuCaSstuFF</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -231,6 +234,18 @@
     </None>
     <None Include="SceneAnims.json">
       <Filter>Debug\JSON</Filter>
+    </None>
+    <None Include="assets\LevelList.json">
+      <Filter>ExternConfig</Filter>
+    </None>
+    <None Include="assets\levels\level1.json">
+      <Filter>ExternConfig</Filter>
+    </None>
+    <None Include="assets\levels\level2.json">
+      <Filter>ExternConfig</Filter>
+    </None>
+    <None Include="assets\levels\level3.json">
+      <Filter>ExternConfig</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

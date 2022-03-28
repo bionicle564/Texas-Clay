@@ -11,6 +11,8 @@ cMesh::cMesh()
 
 	this->bIsWireframe = false;
 
+	render = true;
+
 	this->objectDebugColourRGBA = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);	// White
 	this->bUseObjectDebugColour = false;
 	this->bDontLight = false;

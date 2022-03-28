@@ -24,7 +24,7 @@ public:
 	Player(cMesh* mesh);
 	~Player();
 
-	void Update(float deltaTime);
+	void Process(float deltaTime);
 
 	void MoveFoward();
 	void MoveRight();
