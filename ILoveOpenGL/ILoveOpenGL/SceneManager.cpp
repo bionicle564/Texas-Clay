@@ -144,6 +144,7 @@ void SceneManager::Process(float deltaTime) {
 	if (player->mesh->positionXYZ.y < 0.0f) {
 		player->mesh->positionXYZ = spawn;
 		player->isAirBorne = false;
+		player->hasDied = true;
 	}
 }
 

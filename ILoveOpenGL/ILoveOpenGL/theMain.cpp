@@ -24,6 +24,7 @@
 #include <string>
 #include <vector>       // "smart array"
 #include <fstream>      // C++ file I-O library (look like any other stream)
+#include <sstream>
 
 #include "VAOManager.h"
 #include "Entity.h"
@@ -493,8 +494,9 @@ int main(void)
     
     cSoundPanel jukebox;
 
-    jukebox.PlayMusic("Beneath the Mask - Persona 5.mp3");
+    jukebox.PlayMusic("The cave is not a natural formation.mp3");
     jukebox.SetPauseMusic(false);
+    
 
 
     //time to set up camera stuff
@@ -510,6 +512,10 @@ int main(void)
 
     const double MAX_DELTA_TIME = 0.1;  // 100 ms
     double previousTime = glfwGetTime();
+
+    float levelEndTimer = 7;
+    bool inEndGame = false;
+
     while (!glfwWindowShouldClose(window))
     {
         float ratio;
@@ -539,7 +545,7 @@ int main(void)
         //    async controls
         //======================
 
-        if (state == eGameState::PLAYING)
+        if (state == eGameState::PLAYING || inEndGame)
         {
             if (up)
             {
@@ -581,8 +587,17 @@ int main(void)
 
             if (space)
             {
+                std::stringstream soundFile;
+                soundFile << "jump ";
+
+                int number = (rand() % 7) + 1;
+
+                soundFile << number << ".mp3";
+
+                jukebox.PlaySound(soundFile.str());
+
                 player->Jump();
-                //space = false;
+                space = false;
             }
 
             if (interact)
@@ -595,16 +610,43 @@ int main(void)
         // *******************************************************
 
         sceneManager.Process(deltaTime);
+
+        if (player->hasDied)
+        {
+            jukebox.PlaySound("death.mp3");
+            player->hasDied = false;
+        }
         
         if (sceneManager.isSceneDone) {
-            levelIndex++;
-            sceneManager.CleanUpLevel();
-            world.erase(world.begin() + 1, world.end());
-            sprites.erase(sprites.begin() + 1, sprites.end());
-            sceneManager.SetUpLevel(levelIndex);
-            sceneManager.CopyOverWorldEntities(world);
-            sceneManager.CopyOverSpriteEntities(sprites);
-            continue;
+            if (!inEndGame)
+            {
+                jukebox.SetPauseMusic(true);
+
+                jukebox.PlaySound("fanfare.mp3");
+                inEndGame = true;
+            }
+            else
+            {
+                if (levelEndTimer > 0)
+                {
+                    levelEndTimer -= deltaTime;
+                }
+                else
+                {
+
+                    levelIndex++;
+                    sceneManager.CleanUpLevel();
+                    world.erase(world.begin() + 1, world.end());
+                    sprites.erase(sprites.begin() + 1, sprites.end());
+                    sceneManager.SetUpLevel(levelIndex);
+                    sceneManager.CopyOverWorldEntities(world);
+                    sceneManager.CopyOverSpriteEntities(sprites);
+                    levelEndTimer = 7;
+                    jukebox.SetPauseMusic(false);
+                    inEndGame = false;
+                    continue;
+                }
+            }
         }
 
         //Calcs for arcball camera and Movement
