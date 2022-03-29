@@ -27,7 +27,7 @@ cSoundPanel::cSoundPanel()
 
 	LoadMusic();
 	LoadSounds();
-	LoadBg();
+	//LoadBg();
 
 	musicPan = 0;
 	musicIsPaused = true;
@@ -380,17 +380,18 @@ void cSoundPanel::LoadBg()
 		tempMusic->sound = backGroundStream;
 		tempMusic->name = bgName;
 
-		this->bgSound = tempMusic;
+		//this->bgSound = tempMusic;
 
-		result = system->playSound(backGroundStream, 0, false, &backgroundChannel);
-		if (result != FMOD_OK)
-		{
-			std::cout << "ERROR: Found, but was unable to play background sounds: " << bgName << std::endl;
-		}
+		//result = system->playSound(backGroundStream, 0, false, &backgroundChannel);
+		//if (result != FMOD_OK)
+		//{
+		//	std::cout << "ERROR: Found, but was unable to play background sounds: " << bgName << std::endl;
+		//}
 
 		backgroundChannel->setReverbProperties(0, 0);
 		backgroundChannel->setLowPassGain(1);
 		backgroundChannel->setVolume(1.1f);
+		
 	}
 	else
 	{

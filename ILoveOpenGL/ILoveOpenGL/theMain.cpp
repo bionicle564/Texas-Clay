@@ -494,7 +494,7 @@ int main(void)
     cSoundPanel jukebox;
 
     jukebox.PlayMusic("Beneath the Mask - Persona 5.mp3");
-
+    jukebox.SetPauseMusic(false);
 
 
     //time to set up camera stuff
