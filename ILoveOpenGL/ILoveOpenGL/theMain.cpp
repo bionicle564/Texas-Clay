@@ -40,6 +40,7 @@
 #include "cBasicTextureManager.h"
 #include "MainHelpers.h"
 #include "SceneManager.h"
+#include "cSoundPanel.h"
 
 // 2 stages: Load file into the RAM, then copy RAM into GPU format
 bool LoadPlyFile(std::string fileName);
@@ -488,9 +489,13 @@ int main(void)
         std::cout << "\t" << *itTexName << std::endl;
     }
 
-
     //texture end
     
+    cSoundPanel jukebox;
+
+    jukebox.PlayMusic("Beneath the Mask - Persona 5.mp3");
+
+
 
     //time to set up camera stuff
     glm::vec3 cameraPos(0.0f);

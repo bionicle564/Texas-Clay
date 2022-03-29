@@ -126,8 +126,11 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glfw3.lib;fmod_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PreBuildEvent>
+      <Command>xcopy /Y "$(ProjectDir)lib\x64\debug\*.dll" "$(OutDir)"</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -143,8 +146,11 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>fmod_vc.lib;glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PreBuildEvent>
+      <Command>xcopy /Y "$(ProjectDir)lib\x64\release\*.dll" "$(OutDir)"</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="ButtonEntity.cpp" />
@@ -153,6 +159,7 @@
     <ClCompile Include="cFlyCamera.cpp" />
     <ClCompile Include="cLevel.cpp" />
     <ClCompile Include="cLoader.cpp" />
+    <ClCompile Include="cSoundPanel.cpp" />
     <ClCompile Include="CTextureFromBMP.cpp" />
     <ClCompile Include="DebugMarker.cpp" />
     <ClCompile Include="Entity.cpp" />
@@ -182,6 +189,7 @@
     <ClInclude Include="cLevel.h" />
     <ClInclude Include="cLoader.h" />
     <ClInclude Include="Command.h" />
+    <ClInclude Include="cSoundPanel.h" />
     <ClInclude Include="CTextureFromBMP.h" />
     <ClInclude Include="DebugMarker.h" />
     <ClInclude Include="Entity.h" />
