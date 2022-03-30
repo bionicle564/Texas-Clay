@@ -325,6 +325,7 @@ int main(void)
     modelNames.push_back("Invader_Single_Cube.ply");
     modelNames.push_back("Isosphere_Smooth_Inverted_Normals_for_SkyBox.ply");
     modelNames.push_back("Quad_1_sided_aligned_on_XY_plane.ply");
+    modelNames.push_back("UIQuad.ply");
 
     for (int i = 0; i < modelNames.size(); i++)
     {
@@ -389,6 +390,17 @@ int main(void)
 
     player = new Player(dude);
     sprites.push_back(player);
+
+    cMesh* testSprite = new cMesh();
+    testSprite->meshName = "UIQuad.ply";
+    testSprite->positionXYZ = glm::vec3(0.f, 2.f, 0.f);
+    //testSprite->scale = glm::vec3(0.0005f);
+    //testSprite->orientationXYZ.x = glm::radians(180.f);
+    testSprite->bDontLight = true;
+    testSprite->textureRatios[0] = 1.f;
+    testSprite->textureNames[0] = "Letters.bmp";
+    //world.push_back(new Entity(testSprite));
+    //sprites.push_back(new Entity(testSprite));
 
     //Entity* goal1Entity = new TreasureEntity(goal1, 0.5f, player);
     //sprites.push_back(goal1Entity);
@@ -907,9 +919,58 @@ int main(void)
 
             DrawObject(&button2, matModel, matModel_Location, matModelInverseTranspose_Location, program,
                 gVAOManager, gTextureManager, gradualIncrease);
+
+            testSprite->positionXYZ = glm::vec3(0.f, 0.f, 0.f);
+            testSprite->scale = glm::vec3(0.0005f);
+
+            gVAOManager->UpdateUIQuadUVs('1', program);
+
+            DrawObject(testSprite, matModel, matModel_Location, matModelInverseTranspose_Location, program,
+                gVAOManager, gTextureManager, gradualIncrease);
         }
 
+        {
+            GLint bDiscardTransparencyWindowsOn_LodID = glGetUniformLocation(program, "bDiscardTransparencyWindowsOn");
 
+            //                GLuint discardTextureNumber = ::g_pTextureManager->getTextureIDFromName("Lisse_mobile_shipyard-mal1.bmp");
+            GLuint discardTextureNumber = gTextureManager->getTextureIDFromName(testSprite->textureNames[0]);
+            // I'm picking texture unit 30 since it's not in use.
+            GLuint discardTextureUnit = 30;			// Texture unit go from 0 to 79
+            glActiveTexture(discardTextureUnit + GL_TEXTURE0);	// GL_TEXTURE0 = 33984
+            glBindTexture(GL_TEXTURE_2D, discardTextureNumber);
+            GLint discardTexture_LocID = glGetUniformLocation(program, "discardTexture");
+            glUniform1i(discardTexture_LocID, discardTextureUnit);
+
+            // Turn discard function on
+            glUniform1f(bDiscardTransparencyWindowsOn_LodID, (GLfloat)GL_TRUE);
+        }
+
+        matModel = glm::mat4(1.0f);  // "Identity" ("do nothing", like x1)
+        glm::vec3 eyeForFullScreenQuad = glm::vec3(0.0f, 0.0f, -100.0f);   // "eye" is 100 units away from the quad
+        glm::vec3 atForFullScreenQuad = glm::vec3(0.0f, 0.0f, 0.0f);    // "at" the quad
+        glm::vec3 upForFullScreenQuad = glm::vec3(0.0f, 1.0f, 0.0f);      // "at" the quad
+        glm::mat4 matView = glm::lookAt(eyeForFullScreenQuad,
+            atForFullScreenQuad,
+            upForFullScreenQuad);      // up in y direction
+
+        glm::mat4 matProjection = glm::ortho(
+            0.0f,   // Left
+            1.0f / (float)width,  // Right
+            0.0f,   // Top
+            1.0f / (float)height, // Bottom
+            0.f, // zNear  Eye is at 450, quad is at 500, so 50 units away
+            1000.0f); // zFar
+
+        glUniformMatrix4fv(matView_Location, 1, GL_FALSE, glm::value_ptr(matView));
+        glUniformMatrix4fv(matProjection_Location, 1, GL_FALSE, glm::value_ptr(matProjection));
+
+        testSprite->positionXYZ = glm::vec3(0.f, 0.f, 0.f);
+        testSprite->scale = glm::vec3(0.0005f);
+        
+        gVAOManager->UpdateUIQuadUVs('1', program);
+
+        DrawObject(testSprite, matModel, matModel_Location, matModelInverseTranspose_Location, program,
+            gVAOManager, gTextureManager, gradualIncrease);
 
 
         glfwSwapBuffers(window);

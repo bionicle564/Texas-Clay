@@ -145,6 +145,8 @@ public:
 		bool bSaveRGB, bool bSaveNormals, bool bSaveUVs,
 		std::string& error);
 
+	void UpdateUIQuadUVs(char c, unsigned int shaderProgramID);
+
 private:
 
 	std::map< std::string /*model name*/,

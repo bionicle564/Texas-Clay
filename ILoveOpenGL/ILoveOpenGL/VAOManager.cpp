@@ -1037,6 +1037,47 @@ bool cVAOManager::SaveAsPlyFile(sModelDrawInfo& drawInfo, std::string fileName, 
     return true;
 }
 
+void cVAOManager::UpdateUIQuadUVs(char c, unsigned int shaderProgramID)
+{
+    int index = 0;
+
+    // 7 by 6 grid
+
+    if (c >= 65 && c <= 90) // A-Z
+        index = c - 65;
+    else if (c >= 48 && c <= 57) // 0-9
+        index = c - 48 + 27;
+    else
+        return;
+
+    int row = index / 7;
+    int column = index % 7;
+
+    if (row > 2)
+        row = row % 3;
+    else
+        row = 5 - row;
+
+    int rowMaxPixel = 35;
+    int columnMaxPizel = 30;
+
+    float topV = (float)(row * 5) / (float)columnMaxPizel;
+    float bottomV = (float)(row * 5 + 5) / (float)columnMaxPizel;
+    float leftU = (float)(column * 5) / (float)rowMaxPixel;
+    float rightU = (float)(column * 5 + 5) / (float)rowMaxPixel;
+
+    m_map_ModelName_to_VAOID["UIQuad.ply"].pVertices[0].u0 = leftU; // top left vertex
+    m_map_ModelName_to_VAOID["UIQuad.ply"].pVertices[0].v0 = topV; // top left vertex
+    m_map_ModelName_to_VAOID["UIQuad.ply"].pVertices[1].u0 = rightU; // bottom right vertex
+    m_map_ModelName_to_VAOID["UIQuad.ply"].pVertices[1].v0 = bottomV; // bottom right vertex
+    m_map_ModelName_to_VAOID["UIQuad.ply"].pVertices[2].u0 = rightU; // top right vertex
+    m_map_ModelName_to_VAOID["UIQuad.ply"].pVertices[2].v0 = topV; // top right vertex
+    m_map_ModelName_to_VAOID["UIQuad.ply"].pVertices[3].u0 = leftU; // bottom left vertex
+    m_map_ModelName_to_VAOID["UIQuad.ply"].pVertices[3].v0 = bottomV; // bottom left vertex
+
+    LoadModelIntoVAO(m_map_ModelName_to_VAOID["UIQuad.ply"], shaderProgramID);
+}
+
 
 // Added November 24, 2021: To handle the cylindrical projection UV mapping for applying planet textures to spheres
 // This projects on a cylinder that has an axis along the y-axis.

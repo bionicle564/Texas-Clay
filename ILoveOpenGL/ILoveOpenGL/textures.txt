@@ -1,4 +1,4 @@
-29
+30
 futurebrick.bmp
 TexasClayFront1.bmp
 TexasClayFront2.bmp
@@ -28,3 +28,4 @@ ButtonInteract.bmp
 Blank.bmp
 EscapeButton.bmp
 ResumeButton.bmp
+Letters.bmp

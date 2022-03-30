@@ -207,6 +207,7 @@
     <None Include="assets\levels\level1.json" />
     <None Include="assets\levels\level2.json" />
     <None Include="assets\levels\level3.json" />
+    <None Include="assets\shaders\fragShader_01.glsl" />
     <None Include="RecentLight.json" />
     <None Include="RecentModel.json" />
     <None Include="SceneAnims.json" />
