@@ -393,9 +393,9 @@ int main(void)
 
     cMesh* testSprite = new cMesh();
     testSprite->meshName = "UIQuad.ply";
-    testSprite->positionXYZ = glm::vec3(0.f, 2.f, 0.f);
+    testSprite->positionXYZ = glm::vec3(0.f, 2.5f, 0.f);
     //testSprite->scale = glm::vec3(0.0005f);
-    //testSprite->orientationXYZ.x = glm::radians(180.f);
+    testSprite->orientationXYZ.x = glm::radians(180.f);
     testSprite->bDontLight = true;
     testSprite->textureRatios[0] = 1.f;
     testSprite->textureNames[0] = "Letters.bmp";
@@ -502,6 +502,9 @@ int main(void)
 
 
     //texture end
+
+    float levelTimer = 0.f;
+    bool passTime = true;
     
 
     //time to set up camera stuff
@@ -532,6 +535,9 @@ int main(void)
         deltaTime = (deltaTime > MAX_DELTA_TIME ? MAX_DELTA_TIME : deltaTime);
         previousTime = currentTime;
 
+        if (passTime)
+            levelTimer += deltaTime;
+
         glfwGetFramebufferSize(window, &width, &height);
         ratio = width / (float)height;
 
@@ -548,6 +554,8 @@ int main(void)
 
         if (state == eGameState::PLAYING)
         {
+            passTime = true;
+
             if (up)
             {
                 player->MoveFoward();
@@ -603,7 +611,9 @@ int main(void)
 
         sceneManager.Process(deltaTime);
         
-        if (sceneManager.isSceneDone) {
+        if (sceneManager.isSceneDone) 
+        {
+            levelTimer = 0.f;
             levelIndex++;
             sceneManager.CleanUpLevel();
             world.erase(world.begin() + 1, world.end());
@@ -865,6 +875,7 @@ int main(void)
 
         if (state == eGameState::PAUSED)
         {
+            passTime = false;
 
             {
                 GLint bDiscardTransparencyWindowsOn_LodID = glGetUniformLocation(program, "bDiscardTransparencyWindowsOn");
@@ -964,13 +975,42 @@ int main(void)
         glUniformMatrix4fv(matView_Location, 1, GL_FALSE, glm::value_ptr(matView));
         glUniformMatrix4fv(matProjection_Location, 1, GL_FALSE, glm::value_ptr(matProjection));
 
-        testSprite->positionXYZ = glm::vec3(0.f, 0.f, 0.f);
-        testSprite->scale = glm::vec3(0.0005f);
-        
-        gVAOManager->UpdateUIQuadUVs('1', program);
+        testSprite->positionXYZ = glm::vec3(-0.00001f, 0.00145f, 0);
+        testSprite->scale = glm::vec3(0.0002f);
+        testSprite->scale.y *= 0.5f;
+        testSprite->scale.z *= 0.1f;
+        testSprite->orientationXYZ = glm::vec3(glm::radians(180.f), glm::radians(90.f), 0.f);
 
-        DrawObject(testSprite, matModel, matModel_Location, matModelInverseTranspose_Location, program,
-            gVAOManager, gTextureManager, gradualIncrease);
+        //int numOfDigits = 1;
+
+        std::string timerAsString = std::to_string((int)levelTimer);
+
+        for (int i = 0; i < timerAsString.length(); i++)
+        {
+            gVAOManager->UpdateUIQuadUVs(timerAsString[i], program);
+
+            testSprite->positionXYZ.x = -0.00001f - (i * 0.000027f);
+
+            DrawObject(testSprite, matModel, matModel_Location, matModelInverseTranspose_Location, program,
+                gVAOManager, gTextureManager, gradualIncrease);
+        }
+
+        //if (levelTimer > 100)
+        //    numOfDigits = 3;
+        //else if (levelTimer > 10)
+        //    numOfDigits = 2;
+
+        //for (int i = 1; i <= numOfDigits; i++)
+        //{
+        //    int digit = 
+
+        //    gVAOManager->UpdateUIQuadUVs('0' + digit, program);
+
+        //    testSprite->positionXYZ.x += (i - 1) * 0.000027f;
+
+        //    DrawObject(testSprite, matModel, matModel_Location, matModelInverseTranspose_Location, program,
+        //        gVAOManager, gTextureManager, gradualIncrease);
+        //}
 
 
         glfwSwapBuffers(window);
