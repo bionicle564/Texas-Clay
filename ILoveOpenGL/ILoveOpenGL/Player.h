@@ -17,6 +17,8 @@ public:
 	bool hasMoved;
 	float moveTimer;
 
+	bool hasDied;
+
 	//std::vector<Floor> plataforms;
 
 	float speed;
