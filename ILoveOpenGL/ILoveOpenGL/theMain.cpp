@@ -325,6 +325,7 @@ int main(void)
     modelNames.push_back("Invader_Single_Cube.ply");
     modelNames.push_back("Isosphere_Smooth_Inverted_Normals_for_SkyBox.ply");
     modelNames.push_back("Quad_1_sided_aligned_on_XY_plane.ply");
+    modelNames.push_back("UIQuad.ply");
 
     for (int i = 0; i < modelNames.size(); i++)
     {
@@ -389,6 +390,17 @@ int main(void)
 
     player = new Player(dude);
     sprites.push_back(player);
+
+    cMesh* testSprite = new cMesh();
+    testSprite->meshName = "UIQuad.ply";
+    testSprite->positionXYZ = glm::vec3(0.f, 2.5f, 0.f);
+    //testSprite->scale = glm::vec3(0.0005f);
+    testSprite->orientationXYZ.x = glm::radians(180.f);
+    testSprite->bDontLight = true;
+    testSprite->textureRatios[0] = 1.f;
+    testSprite->textureNames[0] = "Letters.bmp";
+    //world.push_back(new Entity(testSprite));
+    //sprites.push_back(new Entity(testSprite));
 
     //Entity* goal1Entity = new TreasureEntity(goal1, 0.5f, player);
     //sprites.push_back(goal1Entity);
@@ -490,6 +502,9 @@ int main(void)
 
 
     //texture end
+
+    float levelTimer = 0.f;
+    bool passTime = true;
     
 
     //time to set up camera stuff
@@ -520,6 +535,9 @@ int main(void)
         deltaTime = (deltaTime > MAX_DELTA_TIME ? MAX_DELTA_TIME : deltaTime);
         previousTime = currentTime;
 
+        if (passTime)
+            levelTimer += deltaTime;
+
         glfwGetFramebufferSize(window, &width, &height);
         ratio = width / (float)height;
 
@@ -536,6 +554,8 @@ int main(void)
 
         if (state == eGameState::PLAYING)
         {
+            passTime = true;
+
             if (up)
             {
                 player->MoveFoward();
@@ -591,7 +611,9 @@ int main(void)
 
         sceneManager.Process(deltaTime);
         
-        if (sceneManager.isSceneDone) {
+        if (sceneManager.isSceneDone) 
+        {
+            levelTimer = 0.f;
             levelIndex++;
             sceneManager.CleanUpLevel();
             world.erase(world.begin() + 1, world.end());
@@ -853,6 +875,7 @@ int main(void)
 
         if (state == eGameState::PAUSED)
         {
+            passTime = false;
 
             {
                 GLint bDiscardTransparencyWindowsOn_LodID = glGetUniformLocation(program, "bDiscardTransparencyWindowsOn");
@@ -907,9 +930,87 @@ int main(void)
 
             DrawObject(&button2, matModel, matModel_Location, matModelInverseTranspose_Location, program,
                 gVAOManager, gTextureManager, gradualIncrease);
+
+            testSprite->positionXYZ = glm::vec3(0.f, 0.f, 0.f);
+            testSprite->scale = glm::vec3(0.0005f);
+
+            gVAOManager->UpdateUIQuadUVs('1', program);
+
+            DrawObject(testSprite, matModel, matModel_Location, matModelInverseTranspose_Location, program,
+                gVAOManager, gTextureManager, gradualIncrease);
         }
 
+        {
+            GLint bDiscardTransparencyWindowsOn_LodID = glGetUniformLocation(program, "bDiscardTransparencyWindowsOn");
 
+            //                GLuint discardTextureNumber = ::g_pTextureManager->getTextureIDFromName("Lisse_mobile_shipyard-mal1.bmp");
+            GLuint discardTextureNumber = gTextureManager->getTextureIDFromName(testSprite->textureNames[0]);
+            // I'm picking texture unit 30 since it's not in use.
+            GLuint discardTextureUnit = 30;			// Texture unit go from 0 to 79
+            glActiveTexture(discardTextureUnit + GL_TEXTURE0);	// GL_TEXTURE0 = 33984
+            glBindTexture(GL_TEXTURE_2D, discardTextureNumber);
+            GLint discardTexture_LocID = glGetUniformLocation(program, "discardTexture");
+            glUniform1i(discardTexture_LocID, discardTextureUnit);
+
+            // Turn discard function on
+            glUniform1f(bDiscardTransparencyWindowsOn_LodID, (GLfloat)GL_TRUE);
+        }
+
+        matModel = glm::mat4(1.0f);  // "Identity" ("do nothing", like x1)
+        glm::vec3 eyeForFullScreenQuad = glm::vec3(0.0f, 0.0f, -100.0f);   // "eye" is 100 units away from the quad
+        glm::vec3 atForFullScreenQuad = glm::vec3(0.0f, 0.0f, 0.0f);    // "at" the quad
+        glm::vec3 upForFullScreenQuad = glm::vec3(0.0f, 1.0f, 0.0f);      // "at" the quad
+        glm::mat4 matView = glm::lookAt(eyeForFullScreenQuad,
+            atForFullScreenQuad,
+            upForFullScreenQuad);      // up in y direction
+
+        glm::mat4 matProjection = glm::ortho(
+            0.0f,   // Left
+            1.0f / (float)width,  // Right
+            0.0f,   // Top
+            1.0f / (float)height, // Bottom
+            0.f, // zNear  Eye is at 450, quad is at 500, so 50 units away
+            1000.0f); // zFar
+
+        glUniformMatrix4fv(matView_Location, 1, GL_FALSE, glm::value_ptr(matView));
+        glUniformMatrix4fv(matProjection_Location, 1, GL_FALSE, glm::value_ptr(matProjection));
+
+        testSprite->positionXYZ = glm::vec3(-0.00001f, 0.00145f, 0);
+        testSprite->scale = glm::vec3(0.0002f);
+        testSprite->scale.y *= 0.5f;
+        testSprite->scale.z *= 0.1f;
+        testSprite->orientationXYZ = glm::vec3(glm::radians(180.f), glm::radians(90.f), 0.f);
+
+        //int numOfDigits = 1;
+
+        std::string timerAsString = std::to_string((int)levelTimer);
+
+        for (int i = 0; i < timerAsString.length(); i++)
+        {
+            gVAOManager->UpdateUIQuadUVs(timerAsString[i], program);
+
+            testSprite->positionXYZ.x = -0.00001f - (i * 0.000027f);
+
+            DrawObject(testSprite, matModel, matModel_Location, matModelInverseTranspose_Location, program,
+                gVAOManager, gTextureManager, gradualIncrease);
+        }
+
+        //if (levelTimer > 100)
+        //    numOfDigits = 3;
+        //else if (levelTimer > 10)
+        //    numOfDigits = 2;
+
+        //for (int i = 1; i <= numOfDigits; i++)
+        //{
+        //    int digit = 
+
+        //    gVAOManager->UpdateUIQuadUVs('0' + digit, program);
+
+        //    testSprite->positionXYZ.x += (i - 1) * 0.000027f;
+
+        //    DrawObject(testSprite, matModel, matModel_Location, matModelInverseTranspose_Location, program,
+        //        gVAOManager, gTextureManager, gradualIncrease);
+        //}
 
 
         glfwSwapBuffers(window);

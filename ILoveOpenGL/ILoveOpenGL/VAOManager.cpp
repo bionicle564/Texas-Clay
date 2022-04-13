@@ -698,12 +698,16 @@ bool cVAOManager::LoadPLYModelFromFile(std::string fileName, sModelDrawInfo& dra
 // Uses a populated drawInfo structure, with the filename in the drawInfo.meshName
 bool cVAOManager::LoadModelIntoVAO(sModelDrawInfo& drawInfo, unsigned int shaderProgramID)
 {
+
+
     // Create a VAO (Vertex Array Object), which will 
     //	keep track of all the 'state' needed to draw 
     //	from this buffer...
 
+
     // Ask OpenGL for a new buffer ID...
-    glGenVertexArrays(1, &(drawInfo.VAO_ID));
+    if(drawInfo.VAO_ID == 0)
+        glGenVertexArrays(1, &(drawInfo.VAO_ID));
     // "Bind" this buffer:
     // - aka "make this the 'current' VAO buffer
     glBindVertexArray(drawInfo.VAO_ID);
@@ -715,7 +719,8 @@ bool cVAOManager::LoadModelIntoVAO(sModelDrawInfo& drawInfo, unsigned int shader
 
     // NOTE: OpenGL error checks have been omitted for brevity
 //	glGenBuffers(1, &vertex_buffer);
-    glGenBuffers(1, &(drawInfo.VertexBufferID));
+    if (drawInfo.VertexBufferID == 0)
+        glGenBuffers(1, &(drawInfo.VertexBufferID));
 
     //	glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer);
     glBindBuffer(GL_ARRAY_BUFFER, drawInfo.VertexBufferID);
@@ -736,7 +741,8 @@ bool cVAOManager::LoadModelIntoVAO(sModelDrawInfo& drawInfo, unsigned int shader
 
     // Copy the index buffer into the video card, too
     // Create an index buffer.
-    glGenBuffers(1, &(drawInfo.IndexBufferID));
+    if (drawInfo.IndexBufferID == 0)
+        glGenBuffers(1, &(drawInfo.IndexBufferID));
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, drawInfo.IndexBufferID);
 
@@ -1035,6 +1041,44 @@ bool cVAOManager::SaveAsPlyFile(sModelDrawInfo& drawInfo, std::string fileName, 
     error = "OK";
 
     return true;
+}
+
+void cVAOManager::UpdateUIQuadUVs(char c, unsigned int shaderProgramID)
+{
+    int index = 0;
+
+    // 7 by 6 grid
+
+    if (c >= 65 && c <= 90) // A-Z
+        index = c - 65;
+    else if (c >= 48 && c <= 57) // 0-9
+        index = c - 48 + 27;
+    else
+        return;
+
+    int row = index / 7;
+    int column = index % 7;
+
+    row = 5 - row;
+
+    int rowMaxPixel = 35;
+    int columnMaxPizel = 30;
+
+    float topV = (float)(row * 5) / (float)columnMaxPizel;
+    float bottomV = (float)(row * 5 + 5) / (float)columnMaxPizel;
+    float leftU = (float)(column * 5) / (float)rowMaxPixel;
+    float rightU = (float)(column * 5 + 5) / (float)rowMaxPixel;
+
+    m_map_ModelName_to_VAOID["UIQuad.ply"].pVertices[0].u0 = leftU; // top left vertex
+    m_map_ModelName_to_VAOID["UIQuad.ply"].pVertices[0].v0 = topV; // top left vertex
+    m_map_ModelName_to_VAOID["UIQuad.ply"].pVertices[1].u0 = rightU; // bottom right vertex
+    m_map_ModelName_to_VAOID["UIQuad.ply"].pVertices[1].v0 = bottomV; // bottom right vertex
+    m_map_ModelName_to_VAOID["UIQuad.ply"].pVertices[2].u0 = rightU; // top right vertex
+    m_map_ModelName_to_VAOID["UIQuad.ply"].pVertices[2].v0 = topV; // top right vertex
+    m_map_ModelName_to_VAOID["UIQuad.ply"].pVertices[3].u0 = leftU; // bottom left vertex
+    m_map_ModelName_to_VAOID["UIQuad.ply"].pVertices[3].v0 = bottomV; // bottom left vertex
+
+    LoadModelIntoVAO(m_map_ModelName_to_VAOID["UIQuad.ply"], shaderProgramID);
 }
 
 
